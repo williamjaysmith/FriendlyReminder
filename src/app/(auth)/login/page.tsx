@@ -51,6 +51,7 @@ export default function LoginPage() {
       const redirectUrl = `${siteUrl}/auth/callback?next=/dashboard`
       console.log('📍 Redirect URL:', redirectUrl)
       console.log('🌍 Window origin:', window.location.origin)
+      console.log('🔧 NEXT_PUBLIC_SITE_URL:', process.env.NEXT_PUBLIC_SITE_URL)
 
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',

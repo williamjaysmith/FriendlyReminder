@@ -16,11 +16,11 @@ function AuthCallbackContent() {
       console.log('📝 Search params:', Object.fromEntries(searchParams.entries()))
 
       try {
-        console.log('🎯 Getting session from Supabase...')
-        const { data, error } = await supabase.auth.getSession()
+        console.log('🎯 Exchanging code for session...')
+        const { data, error } = await supabase.auth.getUser()
         
-        console.log('📊 Session data:', data)
-        console.log('❓ Session error:', error)
+        console.log('📊 User data:', data)
+        console.log('❓ Auth error:', error)
         
         if (error) {
           console.error('❌ Auth callback error:', error)
@@ -28,15 +28,15 @@ function AuthCallbackContent() {
           return
         }
 
-        if (data.session) {
-          console.log('✅ Session found! User:', data.session.user.email)
+        if (data.user) {
+          console.log('✅ User authenticated! Email:', data.user.email)
           // Get the intended redirect destination
           const next = searchParams.get('next') || '/dashboard'
           console.log('🚀 Redirecting to:', next)
           router.push(next)
         } else {
-          console.log('❌ No session found')
-          // No session found, redirect to login
+          console.log('❌ No user found')
+          // No user found, redirect to login
           router.push('/login?error=' + encodeURIComponent('Authentication failed'))
         }
       } catch (error) {
