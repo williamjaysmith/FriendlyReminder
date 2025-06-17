@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useAuth } from '@/components/auth/auth-provider'
@@ -22,18 +22,7 @@ export default function DashboardPage() {
   const [loadingData, setLoadingData] = useState(true)
   const supabase = createClient()
 
-  useEffect(() => {
-    if (!loading && !user) {
-      router.push('/login')
-      return
-    }
-
-    if (user) {
-      fetchDashboardData()
-    }
-  }, [user, loading, router])
-
-  const fetchDashboardData = async () => {
+  const fetchDashboardData = useCallback(async () => {
     try {
       const { data: contactsData, error } = await supabase
         .from('contacts')
@@ -67,8 +56,18 @@ export default function DashboardPage() {
     } finally {
       setLoadingData(false)
     }
-  }
+  }, [user?.id, supabase])
 
+  useEffect(() => {
+    if (!loading && !user) {
+      router.push('/login')
+      return
+    }
+
+    if (user) {
+      fetchDashboardData()
+    }
+  }, [user, loading, router, fetchDashboardData])
 
   if (loading || loadingData) {
     return (

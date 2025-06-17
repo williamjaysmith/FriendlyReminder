@@ -3,7 +3,7 @@
 import { useState, forwardRef, InputHTMLAttributes } from 'react'
 import { cn } from '@/lib/utils/cn'
 
-export interface PasswordInputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> {}
+type PasswordInputProps = Omit<InputHTMLAttributes<HTMLInputElement>, 'type'>
 
 const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
   ({ className, ...props }, ref) => {

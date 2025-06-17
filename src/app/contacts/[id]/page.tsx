@@ -1,13 +1,14 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import Link from 'next/link'
 import { useAuth } from '@/components/auth/auth-provider'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { AppLayout } from '@/components/layout/app-layout'
 import { Contact } from '@/lib/types'
 
 export default function ContactDetailPage() {
@@ -35,16 +36,7 @@ export default function ContactDetailPage() {
     reminder_days: 30
   })
 
-  useEffect(() => {
-    if (!user) {
-      router.push('/login')
-      return
-    }
-
-    fetchContact()
-  }, [user, contactId])
-
-  const fetchContact = async () => {
+  const fetchContact = useCallback(async () => {
     try {
       const { data, error } = await supabase
         .from('contacts')
@@ -68,12 +60,21 @@ export default function ContactDetailPage() {
         interests: data.interests || '',
         reminder_days: data.reminder_days || 30
       })
-    } catch (error: any) {
-      setError(error.message)
+    } catch (error: unknown) {
+      setError(error instanceof Error ? error.message : 'An error occurred')
     } finally {
       setLoading(false)
     }
-  }
+  }, [contactId, user?.id, supabase])
+
+  useEffect(() => {
+    if (!user) {
+      router.push('/login')
+      return
+    }
+
+    fetchContact()
+  }, [user, contactId, fetchContact, router])
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target
@@ -109,8 +110,8 @@ export default function ContactDetailPage() {
 
       await fetchContact()
       setIsEditing(false)
-    } catch (error: any) {
-      setError(error.message)
+    } catch (error: unknown) {
+      setError(error instanceof Error ? error.message : 'An error occurred')
     } finally {
       setSaving(false)
     }
@@ -136,8 +137,8 @@ export default function ContactDetailPage() {
       if (error) throw error
 
       await fetchContact()
-    } catch (error: any) {
-      setError(error.message)
+    } catch (error: unknown) {
+      setError(error instanceof Error ? error.message : 'An error occurred')
     } finally {
       setSaving(false)
     }
@@ -161,16 +162,12 @@ export default function ContactDetailPage() {
       if (error) throw error
 
       router.push('/contacts')
-    } catch (error: any) {
-      setError(error.message)
+    } catch (error: unknown) {
+      setError(error instanceof Error ? error.message : 'An error occurred')
       setSaving(false)
     }
   }
 
-  const handleSignOut = async () => {
-    await supabase.auth.signOut()
-    router.push('/')
-  }
 
   const formatDate = (dateString: string | null | undefined) => {
     if (!dateString) return 'Never'
@@ -192,32 +189,7 @@ export default function ContactDetailPage() {
 
   if (!contact) {
     return (
-      <div className="min-h-screen bg-gray-50">
-        <header className="bg-white shadow-sm border-b">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between items-center h-16">
-              <div className="flex items-center">
-                <h1 className="text-xl font-semibold text-gray-900">
-                  Friendly Reminder
-                </h1>
-              </div>
-              <nav className="flex items-center space-x-4">
-                <Link href="/dashboard" className="text-gray-600 hover:text-gray-900">
-                  Dashboard
-                </Link>
-                <Link href="/contacts" className="text-gray-600 hover:text-gray-900">
-                  Contacts
-                </Link>
-                <Link href="/settings" className="text-gray-600 hover:text-gray-900">
-                  Settings
-                </Link>
-                <Button variant="outline" onClick={handleSignOut}>
-                  Sign Out
-                </Button>
-              </nav>
-            </div>
-          </div>
-        </header>
+      <AppLayout>
         <main className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <Card>
             <CardContent className="text-center py-12">
@@ -229,40 +201,12 @@ export default function ContactDetailPage() {
             </CardContent>
           </Card>
         </main>
-      </div>
+      </AppLayout>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <h1 className="text-xl font-semibold text-gray-900">
-                Friendly Reminder
-              </h1>
-            </div>
-            <nav className="flex items-center space-x-4">
-              <Link href="/dashboard" className="text-gray-600 hover:text-gray-900">
-                Dashboard
-              </Link>
-              <Link href="/contacts" className="text-gray-600 hover:text-gray-900">
-                Contacts
-              </Link>
-              <Link href="/settings" className="text-gray-600 hover:text-gray-900">
-                Settings
-              </Link>
-              <Button variant="outline" onClick={handleSignOut}>
-                Sign Out
-              </Button>
-            </nav>
-          </div>
-        </div>
-      </header>
-
-      {/* Main Content */}
+    <AppLayout>
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
           <div className="flex items-center space-x-4 mb-4">
@@ -567,6 +511,6 @@ export default function ContactDetailPage() {
           </div>
         </div>
       </main>
-    </div>
+    </AppLayout>
   )
 }

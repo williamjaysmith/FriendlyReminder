@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useAuth } from '@/components/auth/auth-provider'
@@ -8,6 +8,7 @@ import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { AppLayout } from '@/components/layout/app-layout'
 import { Contact } from '@/lib/types'
 
 export default function ContactsPage() {
@@ -19,27 +20,7 @@ export default function ContactsPage() {
   const [loadingData, setLoadingData] = useState(true)
   const supabase = createClient()
 
-  useEffect(() => {
-    if (!loading && !user) {
-      router.push('/login')
-      return
-    }
-
-    if (user) {
-      fetchContacts()
-    }
-  }, [user, loading, router])
-
-  useEffect(() => {
-    const filtered = contacts.filter(contact =>
-      contact.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      contact.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      contact.description?.toLowerCase().includes(searchTerm.toLowerCase())
-    )
-    setFilteredContacts(filtered)
-  }, [contacts, searchTerm])
-
-  const fetchContacts = async () => {
+  const fetchContacts = useCallback(async () => {
     try {
       const { data, error } = await supabase
         .from('contacts')
@@ -55,12 +36,28 @@ export default function ContactsPage() {
     } finally {
       setLoadingData(false)
     }
-  }
+  }, [user?.id, supabase])
 
-  const handleSignOut = async () => {
-    await supabase.auth.signOut()
-    router.push('/')
-  }
+  useEffect(() => {
+    if (!loading && !user) {
+      router.push('/login')
+      return
+    }
+
+    if (user) {
+      fetchContacts()
+    }
+  }, [user, loading, router, fetchContacts])
+
+  useEffect(() => {
+    const filtered = contacts.filter(contact =>
+      contact.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      contact.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      contact.description?.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    setFilteredContacts(filtered)
+  }, [contacts, searchTerm])
+
 
   const formatDate = (dateString: string | null | undefined) => {
     if (!dateString) return 'Never'
@@ -85,35 +82,7 @@ export default function ContactsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <h1 className="text-xl font-semibold text-gray-900">
-                Friendly Reminder
-              </h1>
-            </div>
-            <nav className="flex items-center space-x-4">
-              <Link href="/dashboard" className="text-gray-600 hover:text-gray-900">
-                Dashboard
-              </Link>
-              <Link href="/contacts" className="text-blue-600 font-medium">
-                Contacts
-              </Link>
-              <Link href="/settings" className="text-gray-600 hover:text-gray-900">
-                Settings
-              </Link>
-              <Button variant="outline" onClick={handleSignOut}>
-                Sign Out
-              </Button>
-            </nav>
-          </div>
-        </div>
-      </header>
-
-      {/* Main Content */}
+    <AppLayout>
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex justify-between items-center mb-8">
           <div>
@@ -229,6 +198,6 @@ export default function ContactsPage() {
           </div>
         )}
       </main>
-    </div>
+    </AppLayout>
   )
 }

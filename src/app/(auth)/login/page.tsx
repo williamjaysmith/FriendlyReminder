@@ -76,7 +76,7 @@ export default function LoginPage() {
           // Try multiple redirect methods
           try {
             window.location.assign(data.url)
-          } catch (e) {
+          } catch {
             console.log('📍 Assign failed, trying href')
             window.location.href = data.url
           }

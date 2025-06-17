@@ -11,15 +11,15 @@ export default function TestDB() {
     async function testConnection() {
       try {
         // Test basic connection
-        const { data, error } = await supabase.from('profiles').select('count')
+        const { error } = await supabase.from('profiles').select('count')
         
         if (error) {
           setStatus(`Database Error: ${error.message}`)
         } else {
           setStatus('✅ Database connection successful!')
         }
-      } catch (err: any) {
-        setStatus(`Connection Error: ${err.message}`)
+      } catch (err: unknown) {
+        setStatus(`Connection Error: ${err instanceof Error ? err.message : 'Unknown error'}`)
       }
     }
 

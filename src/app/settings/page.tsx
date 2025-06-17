@@ -1,14 +1,14 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
-import Link from 'next/link'
 import { useAuth } from '@/components/auth/auth-provider'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { PasswordInput } from '@/components/ui/password-input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { AppLayout } from '@/components/layout/app-layout'
 
 export default function SettingsPage() {
   const { user } = useAuth()
@@ -30,16 +30,7 @@ export default function SettingsPage() {
     confirmPassword: ''
   })
 
-  useEffect(() => {
-    if (!user) {
-      router.push('/login')
-      return
-    }
-
-    fetchProfile()
-  }, [user])
-
-  const fetchProfile = async () => {
+  const fetchProfile = useCallback(async () => {
     try {
       const { data, error } = await supabase
         .from('profiles')
@@ -55,12 +46,21 @@ export default function SettingsPage() {
         username: data?.username || user?.user_metadata?.username || '',
         email: data?.email || user?.email || ''
       })
-    } catch (error: any) {
-      setError(error.message)
+    } catch (error: unknown) {
+      setError(error instanceof Error ? error.message : 'An error occurred')
     } finally {
       setLoading(false)
     }
-  }
+  }, [user?.id, user?.user_metadata?.username, user?.email, supabase])
+
+  useEffect(() => {
+    if (!user) {
+      router.push('/login')
+      return
+    }
+
+    fetchProfile()
+  }, [user, fetchProfile, router])
 
   const handleProfileUpdate = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -80,8 +80,8 @@ export default function SettingsPage() {
       if (error) throw error
 
       setSuccess('Profile updated successfully!')
-    } catch (error: any) {
-      setError(error.message)
+    } catch (error: unknown) {
+      setError(error instanceof Error ? error.message : 'An error occurred')
     } finally {
       setSaving(false)
     }
@@ -118,8 +118,8 @@ export default function SettingsPage() {
         newPassword: '',
         confirmPassword: ''
       })
-    } catch (error: any) {
-      setError(error.message)
+    } catch (error: unknown) {
+      setError(error instanceof Error ? error.message : 'An error occurred')
     } finally {
       setSaving(false)
     }
@@ -146,16 +146,12 @@ export default function SettingsPage() {
       // Sign out and redirect
       await supabase.auth.signOut()
       router.push('/')
-    } catch (error: any) {
-      setError(error.message)
+    } catch (error: unknown) {
+      setError(error instanceof Error ? error.message : 'An error occurred')
       setDeleting(false)
     }
   }
 
-  const handleSignOut = async () => {
-    await supabase.auth.signOut()
-    router.push('/')
-  }
 
   if (loading) {
     return (
@@ -166,35 +162,7 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <h1 className="text-xl font-semibold text-gray-900">
-                Friendly Reminder
-              </h1>
-            </div>
-            <nav className="flex items-center space-x-4">
-              <Link href="/dashboard" className="text-gray-600 hover:text-gray-900">
-                Dashboard
-              </Link>
-              <Link href="/contacts" className="text-gray-600 hover:text-gray-900">
-                Contacts
-              </Link>
-              <Link href="/settings" className="text-blue-600 font-medium">
-                Settings
-              </Link>
-              <Button variant="outline" onClick={handleSignOut}>
-                Sign Out
-              </Button>
-            </nav>
-          </div>
-        </div>
-      </header>
-
-      {/* Main Content */}
+    <AppLayout>
       <main className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
           <h2 className="text-2xl font-bold text-gray-900 mb-2">Account Settings</h2>
@@ -366,7 +334,7 @@ export default function SettingsPage() {
                     link.download = `friendly-reminder-export-${new Date().toISOString().split('T')[0]}.json`
                     link.click()
                     URL.revokeObjectURL(url)
-                  } catch (error) {
+                  } catch {
                     setError('Failed to export data')
                   }
                 }}
@@ -404,6 +372,6 @@ export default function SettingsPage() {
           </Card>
         </div>
       </main>
-    </div>
+    </AppLayout>
   )
 }
