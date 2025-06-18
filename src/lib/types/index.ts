@@ -16,6 +16,7 @@ export interface Contact {
   reminder_days: number
   next_reminder?: string
   birthday_reminder: boolean
+  email_reminders: boolean
   created_at: string
   updated_at: string
   tags?: Tag[]

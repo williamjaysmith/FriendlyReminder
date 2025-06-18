@@ -33,7 +33,9 @@ export default function ContactDetailPage() {
     work_position: '',
     how_we_met: '',
     interests: '',
-    reminder_days: 30
+    reminder_days: 30,
+    email_reminders: false,
+    birthday_reminder: false
   })
 
   const fetchContact = useCallback(async () => {
@@ -58,7 +60,9 @@ export default function ContactDetailPage() {
         work_position: data.work_position || '',
         how_we_met: data.how_we_met || '',
         interests: data.interests || '',
-        reminder_days: data.reminder_days || 30
+        reminder_days: data.reminder_days || 30,
+        email_reminders: data.email_reminders || false,
+        birthday_reminder: data.birthday_reminder || false
       })
     } catch (error: unknown) {
       setError(error instanceof Error ? error.message : 'An error occurred')
@@ -77,10 +81,10 @@ export default function ContactDetailPage() {
   }, [user, contactId, fetchContact, router])
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value } = e.target
+    const { name, value, type, checked } = e.target as HTMLInputElement
     setFormData(prev => ({
       ...prev,
-      [name]: value
+      [name]: type === 'checkbox' ? checked : value
     }))
   }
 
@@ -101,7 +105,9 @@ export default function ContactDetailPage() {
           work_position: formData.work_position || null,
           how_we_met: formData.how_we_met || null,
           interests: formData.interests || null,
-          reminder_days: formData.reminder_days
+          reminder_days: formData.reminder_days,
+          email_reminders: formData.email_reminders,
+          birthday_reminder: formData.birthday_reminder
         })
         .eq('id', contactId)
         .eq('user_id', user?.id)
@@ -436,24 +442,74 @@ export default function ContactDetailPage() {
               </CardHeader>
               <CardContent className="space-y-4">
                 {isEditing ? (
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Reminder Interval (days)
-                    </label>
-                    <Input
-                      name="reminder_days"
-                      type="number"
-                      min="1"
-                      max="365"
-                      value={formData.reminder_days}
-                      onChange={handleInputChange}
-                    />
-                  </div>
+                  <>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Reminder Interval (days)
+                      </label>
+                      <Input
+                        name="reminder_days"
+                        type="number"
+                        min="1"
+                        max="365"
+                        value={formData.reminder_days}
+                        onChange={handleInputChange}
+                      />
+                    </div>
+                    <div className="space-y-3">
+                      <div className="flex items-center space-x-2">
+                        <input
+                          type="checkbox"
+                          id="email_reminders"
+                          name="email_reminders"
+                          checked={formData.email_reminders}
+                          onChange={handleInputChange}
+                          className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                        />
+                        <label htmlFor="email_reminders" className="text-sm font-medium text-gray-700">
+                          Send email reminders
+                        </label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <input
+                          type="checkbox"
+                          id="birthday_reminder"
+                          name="birthday_reminder"
+                          checked={formData.birthday_reminder}
+                          onChange={handleInputChange}
+                          className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                        />
+                        <label htmlFor="birthday_reminder" className="text-sm font-medium text-gray-700">
+                          Send birthday reminders
+                        </label>
+                      </div>
+                    </div>
+                  </>
                 ) : (
-                  <div>
-                    <span className="text-sm text-gray-500">Reminder Interval</span>
-                    <p className="font-medium">Every {contact.reminder_days} days</p>
-                  </div>
+                  <>
+                    <div>
+                      <span className="text-sm text-gray-500">Reminder Interval</span>
+                      <p className="font-medium">Every {contact.reminder_days} days</p>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-gray-500">Email Reminders</span>
+                        <span className={`text-sm font-medium ${
+                          contact.email_reminders ? 'text-green-600' : 'text-gray-400'
+                        }`}>
+                          {contact.email_reminders ? 'Enabled' : 'Disabled'}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-gray-500">Birthday Reminders</span>
+                        <span className={`text-sm font-medium ${
+                          contact.birthday_reminder ? 'text-green-600' : 'text-gray-400'
+                        }`}>
+                          {contact.birthday_reminder ? 'Enabled' : 'Disabled'}
+                        </span>
+                      </div>
+                    </div>
+                  </>
                 )}
                 
                 <div>
