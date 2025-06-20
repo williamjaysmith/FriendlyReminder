@@ -46,8 +46,8 @@ export default function LoginPage() {
     setError(null)
 
     try {
-      // Use the site URL from environment or current origin
-      const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || window.location.origin
+      // Always use current origin to ensure correct environment redirect
+      const siteUrl = window.location.origin
       const redirectUrl = `${siteUrl}/auth/callback?next=/dashboard`
       console.log('📍 Redirect URL:', redirectUrl)
       console.log('🌍 Window origin:', window.location.origin)
