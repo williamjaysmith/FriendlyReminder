@@ -4,11 +4,15 @@ import { useEffect, useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useAuth } from '@/components/auth/auth-provider'
-import { createClient } from '@/lib/supabase/client'
+import { databases } from '@/lib/appwrite/client'
+import { DATABASE_ID, COLLECTIONS } from '@/lib/appwrite/types'
+import { mapDocumentToContact } from '@/lib/appwrite/helpers'
+import { Query } from 'appwrite'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { AppLayout } from '@/components/layout/app-layout'
 import { Contact } from '@/lib/types'
+import { LoadingSpinner } from '@/components/ui/loading-spinner'
 
 export default function DashboardPage() {
   const { user, loading } = useAuth()
@@ -20,34 +24,37 @@ export default function DashboardPage() {
     upcoming: 0
   })
   const [loadingData, setLoadingData] = useState(true)
-  const supabase = createClient()
 
   const fetchDashboardData = useCallback(async () => {
     try {
-      const { data: contactsData, error } = await supabase
-        .from('contacts')
-        .select('*')
-        .eq('user_id', user?.id)
-        .order('created_at', { ascending: false })
+      const response = await databases.listDocuments(
+        DATABASE_ID,
+        COLLECTIONS.CONTACTS,
+        [
+          Query.equal('user_id', user?.$id || ''),
+          Query.orderDesc('$createdAt')
+        ]
+      )
 
-      if (error) throw error
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const contactsData = response.documents.map((doc: any) => mapDocumentToContact(doc))
 
       const now = new Date()
       const sevenDaysFromNow = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000)
 
-      const overdue = contactsData?.filter(contact => 
+      const overdue = contactsData.filter(contact => 
         contact.next_reminder && new Date(contact.next_reminder) < now
-      ) || []
+      )
 
-      const upcoming = contactsData?.filter(contact => 
+      const upcoming = contactsData.filter(contact => 
         contact.next_reminder && 
         new Date(contact.next_reminder) >= now && 
         new Date(contact.next_reminder) <= sevenDaysFromNow
-      ) || []
+      )
 
-      setContacts(contactsData || [])
+      setContacts(contactsData)
       setStats({
-        total: contactsData?.length || 0,
+        total: contactsData.length,
         overdue: overdue.length,
         upcoming: upcoming.length
       })
@@ -56,7 +63,7 @@ export default function DashboardPage() {
     } finally {
       setLoadingData(false)
     }
-  }, [user?.id, supabase])
+  }, [user?.$id])
 
   useEffect(() => {
     if (!loading && !user) {
@@ -71,8 +78,8 @@ export default function DashboardPage() {
 
   if (loading || loadingData) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <LoadingSpinner />
       </div>
     )
   }
@@ -86,7 +93,7 @@ export default function DashboardPage() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
           <h2 className="text-2xl font-bold text-gray-900 mb-2">
-            Welcome back, {user.user_metadata?.username || user.email}!
+            Welcome back, {user.name || user.email}!
           </h2>
           <p className="text-gray-600">
             Here&apos;s what&apos;s happening with your network today.

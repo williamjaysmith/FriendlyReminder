@@ -4,20 +4,21 @@ import { useEffect, useState, useCallback } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import Link from 'next/link'
 import { useAuth } from '@/components/auth/auth-provider'
-import { createClient } from '@/lib/supabase/client'
+import { databases } from '@/lib/appwrite/client'
+import { DATABASE_ID, COLLECTIONS } from '@/lib/appwrite/types'
+import { mapDocumentToContact } from '@/lib/appwrite/helpers'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { AppLayout } from '@/components/layout/app-layout'
 import { Contact } from '@/lib/types'
+import { LoadingSpinner } from '@/components/ui/loading-spinner'
 
 export default function ContactDetailPage() {
   const { user } = useAuth()
   const router = useRouter()
   const params = useParams()
   const contactId = params.id as string
-  const supabase = createClient()
-  
   const [contact, setContact] = useState<Contact | null>(null)
   const [isEditing, setIsEditing] = useState(false)
   const [loading, setLoading] = useState(true)
@@ -40,36 +41,41 @@ export default function ContactDetailPage() {
 
   const fetchContact = useCallback(async () => {
     try {
-      const { data, error } = await supabase
-        .from('contacts')
-        .select('*')
-        .eq('id', contactId)
-        .eq('user_id', user?.id)
-        .single()
+      const response = await databases.getDocument(
+        DATABASE_ID,
+        COLLECTIONS.CONTACTS,
+        contactId
+      )
 
-      if (error) throw error
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const contactData = mapDocumentToContact(response as any)
 
-      setContact(data)
+      // Check if this contact belongs to the current user
+      if (contactData.user_id !== user?.$id) {
+        throw new Error('Contact not found')
+      }
+
+      setContact(contactData)
       setFormData({
-        name: data.name || '',
-        email: data.email || '',
-        gender: data.gender || '',
-        birthday: data.birthday || '',
-        description: data.description || '',
-        work_company: data.work_company || '',
-        work_position: data.work_position || '',
-        how_we_met: data.how_we_met || '',
-        interests: data.interests || '',
-        reminder_days: data.reminder_days || 30,
-        email_reminders: data.email_reminders || false,
-        birthday_reminder: data.birthday_reminder || false
+        name: contactData.name || '',
+        email: contactData.email || '',
+        gender: contactData.gender || '',
+        birthday: contactData.birthday || '',
+        description: contactData.description || '',
+        work_company: contactData.work_company || '',
+        work_position: contactData.work_position || '',
+        how_we_met: contactData.how_we_met || '',
+        interests: contactData.interests || '',
+        reminder_days: contactData.reminder_days || 30,
+        email_reminders: contactData.email_reminders || false,
+        birthday_reminder: contactData.birthday_reminder || false
       })
     } catch (error: unknown) {
       setError(error instanceof Error ? error.message : 'An error occurred')
     } finally {
       setLoading(false)
     }
-  }, [contactId, user?.id, supabase])
+  }, [contactId, user?.$id])
 
   useEffect(() => {
     if (!user) {
@@ -93,26 +99,27 @@ export default function ContactDetailPage() {
     setError(null)
 
     try {
-      const { error } = await supabase
-        .from('contacts')
-        .update({
-          name: formData.name,
-          email: formData.email || null,
-          gender: formData.gender || null,
-          birthday: formData.birthday || null,
-          description: formData.description || null,
-          work_company: formData.work_company || null,
-          work_position: formData.work_position || null,
-          how_we_met: formData.how_we_met || null,
-          interests: formData.interests || null,
-          reminder_days: formData.reminder_days,
-          email_reminders: formData.email_reminders,
-          birthday_reminder: formData.birthday_reminder
-        })
-        .eq('id', contactId)
-        .eq('user_id', user?.id)
+      const updateData = {
+        name: formData.name,
+        email: formData.email || undefined,
+        gender: formData.gender || undefined,
+        birthday: formData.birthday || undefined,
+        description: formData.description || undefined,
+        work_company: formData.work_company || undefined,
+        work_position: formData.work_position || undefined,
+        how_we_met: formData.how_we_met || undefined,
+        interests: formData.interests || undefined,
+        reminder_days: formData.reminder_days,
+        email_reminders: formData.email_reminders,
+        birthday_reminder: formData.birthday_reminder
+      }
 
-      if (error) throw error
+      await databases.updateDocument(
+        DATABASE_ID,
+        COLLECTIONS.CONTACTS,
+        contactId,
+        updateData
+      )
 
       await fetchContact()
       setIsEditing(false)
@@ -128,19 +135,18 @@ export default function ContactDetailPage() {
     setError(null)
 
     try {
-      const now = new Date().toISOString()
-      const nextReminder = new Date(Date.now() + (contact?.reminder_days || 30) * 24 * 60 * 60 * 1000).toISOString()
+      const now = new Date().toISOString().split('T')[0] // YYYY-MM-DD format
+      const nextReminder = new Date(Date.now() + (contact?.reminder_days || 30) * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
 
-      const { error } = await supabase
-        .from('contacts')
-        .update({
+      await databases.updateDocument(
+        DATABASE_ID,
+        COLLECTIONS.CONTACTS,
+        contactId,
+        {
           last_conversation: now,
           next_reminder: nextReminder
-        })
-        .eq('id', contactId)
-        .eq('user_id', user?.id)
-
-      if (error) throw error
+        }
+      )
 
       await fetchContact()
     } catch (error: unknown) {
@@ -159,13 +165,11 @@ export default function ContactDetailPage() {
     setError(null)
 
     try {
-      const { error } = await supabase
-        .from('contacts')
-        .delete()
-        .eq('id', contactId)
-        .eq('user_id', user?.id)
-
-      if (error) throw error
+      await databases.deleteDocument(
+        DATABASE_ID,
+        COLLECTIONS.CONTACTS,
+        contactId
+      )
 
       router.push('/contacts')
     } catch (error: unknown) {
@@ -187,8 +191,8 @@ export default function ContactDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <LoadingSpinner />
       </div>
     )
   }

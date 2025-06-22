@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { createClient } from '@/lib/supabase/client'
+import { useAuth } from '@/components/auth/auth-provider'
 import { Button } from '@/components/ui/button'
 
 interface AppLayoutProps {
@@ -13,11 +13,11 @@ interface AppLayoutProps {
 export function AppLayout({ children }: AppLayoutProps) {
   const pathname = usePathname()
   const router = useRouter()
-  const supabase = createClient()
+  const { signOut } = useAuth()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   const handleSignOut = async () => {
-    await supabase.auth.signOut()
+    await signOut()
     router.push('/')
   }
 
@@ -100,7 +100,7 @@ export function AppLayout({ children }: AppLayoutProps) {
         <div className="fixed inset-0 z-50 sm:hidden">
           {/* Backdrop */}
           <div 
-            className="fixed inset-0 bg-black bg-opacity-25" 
+            className="fixed inset-0 bg-gray-100 bg-opacity-75" 
             onClick={closeMobileMenu}
           />
           

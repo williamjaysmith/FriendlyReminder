@@ -1,13 +1,16 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { createClient } from '@/lib/supabase/client'
+import { account } from '@/lib/appwrite/client'
+import { OAuthProvider } from 'appwrite'
+import { useAuth } from '@/components/auth/auth-provider'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { PasswordInput } from '@/components/ui/password-input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { LoadingSpinner } from '@/components/ui/loading-spinner'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
@@ -15,29 +18,55 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const router = useRouter()
-  const supabase = createClient()
+  const { user, loading: authLoading, refreshUser } = useAuth()
 
-  // Debug: Check Supabase configuration
-  console.log('🔧 Supabase URL:', process.env.NEXT_PUBLIC_SUPABASE_URL)
-  console.log('🔑 Supabase Key exists:', !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)
+  // Debug: Check Appwrite configuration
+  console.log('🔧 Appwrite Endpoint:', process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT)
+  console.log('🔑 Appwrite Project ID exists:', !!process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID)
+
+  // Redirect if already logged in
+  useEffect(() => {
+    if (!authLoading && user) {
+      console.log('🔄 User already logged in, redirecting to dashboard...')
+      router.push('/dashboard')
+    }
+  }, [user, authLoading, router])
 
   const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
     setError(null)
 
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password
-    })
-
-    if (error) {
-      setError(error.message)
-    } else {
+    try {
+      // Clear any existing session first to avoid conflicts
+      try {
+        await account.deleteSession('current')
+        console.log('🧹 Cleared existing session before email login')
+      } catch {
+        // Ignore if no session exists
+      }
+      
+      // Clear stored session data
+      localStorage.removeItem('appwrite-session')
+      document.cookie = `a_session_${process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID}=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT`
+      
+      const session = await account.createEmailPasswordSession(email, password)
+      console.log('✅ Email login session created:', session)
+      
+      // Store session for middleware
+      localStorage.setItem('appwrite-session', session.$id)
+      document.cookie = `a_session_${process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID}=${session.$id}; path=/; SameSite=Lax`
+      
+      // Refresh auth state to pick up the new user
+      await refreshUser()
+      
       router.push('/dashboard')
+    } catch (error: unknown) {
+      console.error('❌ Email login error:', error)
+      setError(error instanceof Error ? error.message : 'An error occurred')
+    } finally {
+      setLoading(false)
     }
-    
-    setLoading(false)
   }
 
   const handleGoogleLogin = async () => {
@@ -46,61 +75,37 @@ export default function LoginPage() {
     setError(null)
 
     try {
-      // Always use current origin to ensure correct environment redirect
+      // Use current origin for redirect URLs
       const siteUrl = window.location.origin
-      const redirectUrl = `${siteUrl}/auth/callback?next=/dashboard`
-      console.log('📍 Redirect URL:', redirectUrl)
-      console.log('🌍 Window origin:', window.location.origin)
-      console.log('🔧 NEXT_PUBLIC_SITE_URL:', process.env.NEXT_PUBLIC_SITE_URL)
-
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: redirectUrl,
-          queryParams: {
-            access_type: 'offline',
-            prompt: 'consent',
-          }
-        }
-      })
-
-      console.log('📊 OAuth response data:', data)
+      const successUrl = `${siteUrl}/auth/callback?next=/dashboard`
+      const failureUrl = `${siteUrl}/login`
       
-      if (error) {
-        console.error('❌ OAuth error:', error)
-        setError(error.message)
-        setLoading(false)
-      } else {
-        console.log('✅ OAuth initiated successfully')
-        if (data?.url) {
-          console.log('🔀 Redirecting to:', data.url)
-          // Try multiple redirect methods
-          try {
-            window.location.assign(data.url)
-          } catch {
-            console.log('📍 Assign failed, trying href')
-            window.location.href = data.url
-          }
-          // Fallback: open in current window after a short delay
-          setTimeout(() => {
-            if (window.location.href.includes('localhost')) {
-              console.log('🚀 Fallback redirect')
-              window.open(data.url, '_self')
-            }
-          }, 1000)
-        } else {
-          console.error('❌ No OAuth URL returned')
-          setError('OAuth URL not generated')
-          setLoading(false)
-        }
-      }
-    } catch (err) {
-      console.error('💥 Unexpected error:', err)
-      setError('An unexpected error occurred')
+      console.log('📍 Success URL:', successUrl)
+      console.log('📍 Failure URL:', failureUrl)
+
+      // Use proper Appwrite SDK OAuth method
+      await account.createOAuth2Session(
+        OAuthProvider.Google,
+        successUrl,
+        failureUrl
+      )
+    } catch (error: unknown) {
+      console.error('❌ OAuth error:', error)
+      setError(error instanceof Error ? error.message : 'An error occurred')
+    } finally {
       setLoading(false)
     }
   }
 
+
+  // Show loading while checking authentication
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <LoadingSpinner />
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">

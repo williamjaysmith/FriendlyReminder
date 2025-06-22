@@ -2,12 +2,12 @@
 
 import { useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { createClient } from '@/lib/supabase/client'
+import { account } from '@/lib/appwrite/client'
+import { LoadingSpinner } from '@/components/ui/loading-spinner'
 
 function AuthCallbackContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const supabase = createClient()
 
   useEffect(() => {
     const handleAuthCallback = async () => {
@@ -15,28 +15,45 @@ function AuthCallbackContent() {
       console.log('🔗 Current URL:', window.location.href)
       console.log('📝 Search params:', Object.fromEntries(searchParams.entries()))
 
+      // Check if we have OAuth parameters
+      const userId = searchParams.get('userId')
+      const secret = searchParams.get('secret')
+      
+      console.log('🔑 OAuth params:', { userId, secret: secret ? '***' : null })
+
       try {
-        console.log('🎯 Exchanging code for session...')
-        const { data, error } = await supabase.auth.getUser()
-        
-        console.log('📊 User data:', data)
-        console.log('❓ Auth error:', error)
-        
-        if (error) {
-          console.error('❌ Auth callback error:', error)
-          router.push('/login?error=' + encodeURIComponent(error.message))
-          return
+        // If we have OAuth session parameters, create the session
+        if (userId && secret) {
+          console.log('🔐 Creating OAuth session...')
+          await account.createSession(userId, secret)
+          console.log('✅ OAuth session created successfully')
         }
 
-        if (data.user) {
-          console.log('✅ User authenticated! Email:', data.user.email)
+        // Now get the user
+        console.log('🎯 Getting user session...')
+        const user = await account.get()
+        
+        console.log('📊 User data:', user)
+        
+        if (user) {
+          console.log('✅ User authenticated! Email:', user.email)
+          
+          // Store session for middleware after OAuth
+          try {
+            const session = await account.getSession('current')
+            console.log('💾 OAuth: Storing session for middleware...')
+            localStorage.setItem('appwrite-session', session.$id)
+            document.cookie = `a_session_${process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID}=${session.$id}; path=/; SameSite=Lax`
+          } catch (sessionError) {
+            console.log('⚠️ OAuth: Could not get session details:', sessionError)
+          }
+          
           // Get the intended redirect destination
           const next = searchParams.get('next') || '/dashboard'
           console.log('🚀 Redirecting to:', next)
           router.push(next)
         } else {
           console.log('❌ No user found')
-          // No user found, redirect to login
           router.push('/login?error=' + encodeURIComponent('Authentication failed'))
         }
       } catch (error) {
@@ -46,12 +63,12 @@ function AuthCallbackContent() {
     }
 
     handleAuthCallback()
-  }, [router, searchParams, supabase.auth])
+  }, [router, searchParams])
 
   return (
-    <div className="min-h-screen flex items-center justify-center">
+    <div className="min-h-screen flex items-center justify-center bg-white">
       <div className="text-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+        <LoadingSpinner className="mx-auto mb-4" />
         <p className="text-gray-600">Completing sign in...</p>
       </div>
     </div>
@@ -61,9 +78,9 @@ function AuthCallbackContent() {
 export default function AuthCallback() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-white">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <LoadingSpinner className="mx-auto mb-4" />
           <p className="text-gray-600">Loading...</p>
         </div>
       </div>

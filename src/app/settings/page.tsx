@@ -3,18 +3,19 @@
 import { useEffect, useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/components/auth/auth-provider'
-import { createClient } from '@/lib/supabase/client'
+import { databases, account } from '@/lib/appwrite/client'
+import { DATABASE_ID, COLLECTIONS } from '@/lib/appwrite/types'
+import { Query } from 'appwrite'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { PasswordInput } from '@/components/ui/password-input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { AppLayout } from '@/components/layout/app-layout'
+import { LoadingSpinner } from '@/components/ui/loading-spinner'
 
 export default function SettingsPage() {
   const { user } = useAuth()
   const router = useRouter()
-  const supabase = createClient()
-  
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [deleting, setDeleting] = useState(false)
@@ -32,26 +33,28 @@ export default function SettingsPage() {
 
   const fetchProfile = useCallback(async () => {
     try {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('username, email')
-        .eq('id', user?.id)
-        .single()
+      // Try to get profile from database
+      const response = await databases.listDocuments(
+        DATABASE_ID,
+        COLLECTIONS.PROFILES,
+        [Query.equal('user_id', user?.$id || '')]
+      )
 
-      if (error && error.code !== 'PGRST116') { // PGRST116 = no rows returned
-        throw error
+      let profileData = null
+      if (response.documents.length > 0) {
+        profileData = response.documents[0]
       }
 
       setProfile({
-        username: data?.username || user?.user_metadata?.username || '',
-        email: data?.email || user?.email || ''
+        username: profileData?.username || user?.name || '',
+        email: profileData?.email || user?.email || ''
       })
     } catch (error: unknown) {
       setError(error instanceof Error ? error.message : 'An error occurred')
     } finally {
       setLoading(false)
     }
-  }, [user?.id, user?.user_metadata?.username, user?.email, supabase])
+  }, [user?.$id, user?.name, user?.email])
 
   useEffect(() => {
     if (!user) {
@@ -69,15 +72,37 @@ export default function SettingsPage() {
     setSuccess(null)
 
     try {
-      const { error } = await supabase
-        .from('profiles')
-        .upsert({
-          id: user?.id,
-          username: profile.username,
-          email: profile.email
-        })
+      // Try to update existing profile or create new one
+      const existingProfiles = await databases.listDocuments(
+        DATABASE_ID,
+        COLLECTIONS.PROFILES,
+        [Query.equal('user_id', user?.$id || '')]
+      )
 
-      if (error) throw error
+      if (existingProfiles.documents.length > 0) {
+        // Update existing profile
+        await databases.updateDocument(
+          DATABASE_ID,
+          COLLECTIONS.PROFILES,
+          existingProfiles.documents[0].$id,
+          {
+            username: profile.username,
+            email: profile.email
+          }
+        )
+      } else {
+        // Create new profile
+        await databases.createDocument(
+          DATABASE_ID,
+          COLLECTIONS.PROFILES,
+          'unique()',
+          {
+            user_id: user?.$id,
+            username: profile.username,
+            email: profile.email
+          }
+        )
+      }
 
       setSuccess('Profile updated successfully!')
     } catch (error: unknown) {
@@ -106,11 +131,10 @@ export default function SettingsPage() {
     }
 
     try {
-      const { error } = await supabase.auth.updateUser({
-        password: passwordData.newPassword
-      })
-
-      if (error) throw error
+      await account.updatePassword(
+        passwordData.newPassword,
+        passwordData.currentPassword
+      )
 
       setSuccess('Password updated successfully!')
       setPasswordData({
@@ -139,12 +163,28 @@ export default function SettingsPage() {
 
     try {
       // Delete all user data first
-      await supabase.from('contacts').delete().eq('user_id', user?.id)
-      await supabase.from('tags').delete().eq('user_id', user?.id)
-      await supabase.from('profiles').delete().eq('id', user?.id)
+      const userContacts = await databases.listDocuments(
+        DATABASE_ID,
+        COLLECTIONS.CONTACTS,
+        [Query.equal('user_id', user?.$id || '')]
+      )
+      
+      for (const contact of userContacts.documents) {
+        await databases.deleteDocument(DATABASE_ID, COLLECTIONS.CONTACTS, contact.$id)
+      }
 
-      // Sign out and redirect
-      await supabase.auth.signOut()
+      const userTags = await databases.listDocuments(
+        DATABASE_ID,
+        COLLECTIONS.TAGS,
+        [Query.equal('user_id', user?.$id || '')]
+      )
+      
+      for (const tag of userTags.documents) {
+        await databases.deleteDocument(DATABASE_ID, COLLECTIONS.TAGS, tag.$id)
+      }
+
+      // Delete user account
+      await account.deleteSession('current')
       router.push('/')
     } catch (error: unknown) {
       setError(error instanceof Error ? error.message : 'An error occurred')
@@ -155,8 +195,8 @@ export default function SettingsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <LoadingSpinner />
       </div>
     )
   }
@@ -292,13 +332,13 @@ export default function SettingsPage() {
                 <div>
                   <span className="text-sm text-gray-500">Account Created</span>
                   <p className="font-medium">
-                    {user?.created_at ? new Date(user.created_at).toLocaleDateString() : 'Unknown'}
+                    {user?.$createdAt ? new Date(user.$createdAt).toLocaleDateString() : 'Unknown'}
                   </p>
                 </div>
                 <div>
                   <span className="text-sm text-gray-500">Last Sign In</span>
                   <p className="font-medium">
-                    {user?.last_sign_in_at ? new Date(user.last_sign_in_at).toLocaleDateString() : 'Unknown'}
+                    {user?.$updatedAt ? new Date(user.$updatedAt).toLocaleDateString() : 'Unknown'}
                   </p>
                 </div>
               </div>
@@ -321,12 +361,13 @@ export default function SettingsPage() {
                 variant="outline"
                 onClick={async () => {
                   try {
-                    const { data: contacts } = await supabase
-                      .from('contacts')
-                      .select('*')
-                      .eq('user_id', user?.id)
+                    const contacts = await databases.listDocuments(
+                      DATABASE_ID,
+                      COLLECTIONS.CONTACTS,
+                      [Query.equal('user_id', user?.$id || '')]
+                    )
 
-                    const dataStr = JSON.stringify(contacts, null, 2)
+                    const dataStr = JSON.stringify(contacts.documents, null, 2)
                     const dataBlob = new Blob([dataStr], { type: 'application/json' })
                     const url = URL.createObjectURL(dataBlob)
                     const link = document.createElement('a')

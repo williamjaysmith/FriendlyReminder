@@ -1,55 +1,90 @@
 'use client'
 
 import { createContext, useContext, useEffect, useState } from 'react'
-import { User } from '@supabase/supabase-js'
-import { createClient } from '@/lib/supabase/client'
+import { Models } from 'appwrite'
+import { account } from '@/lib/appwrite/client'
 
 interface AuthContextType {
-  user: User | null
+  user: Models.User<Models.Preferences> | null
   loading: boolean
+  signOut: () => Promise<void>
+  refreshUser: () => Promise<void>
 }
 
-const AuthContext = createContext<AuthContextType>({ user: null, loading: true })
+const AuthContext = createContext<AuthContextType>({ 
+  user: null, 
+  loading: true, 
+  signOut: async () => {},
+  refreshUser: async () => {}
+})
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null)
+  const [user, setUser] = useState<Models.User<Models.Preferences> | null>(null)
   const [loading, setLoading] = useState(true)
-  const supabase = createClient()
+
+  const getSession = async () => {
+    console.log('🔍 AuthProvider: Getting session...')
+    try {
+      const currentUser = await account.get()
+      console.log('📊 AuthProvider: Session:', {
+        hasUser: !!currentUser,
+        userId: currentUser?.$id,
+        email: currentUser?.email
+      })
+      
+      // Store session info for middleware
+      if (currentUser && typeof window !== 'undefined') {
+        try {
+          const session = await account.getSession('current')
+          console.log('💾 Storing session for middleware...')
+          localStorage.setItem('appwrite-session', session.$id)
+          // Set cookie for middleware detection
+          document.cookie = `a_session_${process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID}=${session.$id}; path=/; SameSite=Lax`
+        } catch (sessionError) {
+          console.log('⚠️ Could not get session details:', sessionError)
+        }
+      }
+      
+      setUser(currentUser)
+    } catch (error) {
+      console.log('❌ AuthProvider: No active session:', error)
+      // Clear stored session data
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('appwrite-session')
+        document.cookie = `a_session_${process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID}=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT`
+      }
+      setUser(null)
+    }
+    setLoading(false)
+  }
+
+  const refreshUser = async () => {
+    await getSession()
+  }
 
   useEffect(() => {
-    const getSession = async () => {
-      console.log('🔍 AuthProvider: Getting initial session...')
-      const { data: { session }, error } = await supabase.auth.getSession()
-      console.log('📊 AuthProvider: Initial session:', {
-        hasSession: !!session,
-        userId: session?.user?.id,
-        email: session?.user?.email,
-        error: error?.message
-      })
-      setUser(session?.user ?? null)
-      setLoading(false)
-    }
-
     getSession()
+  }, [])
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        console.log('🔄 AuthProvider: Auth state changed:', {
-          event,
-          hasSession: !!session,
-          userId: session?.user?.id,
-          email: session?.user?.email
-        })
-        setUser(session?.user ?? null)
-        setLoading(false)
+  const signOut = async () => {
+    try {
+      console.log('🚪 AuthProvider: Signing out...')
+      await account.deleteSession('current')
+    } catch (error) {
+      console.error('AuthProvider: Sign out error:', error)
+    } finally {
+      // Always clear local data and update state
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('appwrite-session')
+        document.cookie = `a_session_${process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID}=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT`
       }
-    )
-
-    return () => subscription.unsubscribe()
-  }, [supabase.auth])
+      setUser(null)
+      console.log('✅ AuthProvider: User signed out')
+    }
+  }
 
   return (
-    <AuthContext.Provider value={{ user, loading }}>
+    <AuthContext.Provider value={{ user, loading, signOut, refreshUser }}>
       {children}
     </AuthContext.Provider>
   )

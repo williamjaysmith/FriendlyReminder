@@ -1,23 +1,28 @@
 import { NextResponse, type NextRequest } from 'next/server'
-import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs'
 
 export async function middleware(req: NextRequest) {
   const res = NextResponse.next()
   
   try {
     console.log('🔒 Middleware checking:', req.nextUrl.pathname)
-    const supabase = createMiddlewareClient({ req, res })
-
-    const {
-      data: { session },
-      error
-    } = await supabase.auth.getSession()
+    
+    // Debug: Log all cookies to see what Appwrite actually sets
+    const allCookies = req.cookies.getAll()
+    console.log('🍪 All cookies:', allCookies.map(c => ({ name: c.name, hasValue: !!c.value })))
+    
+    // Check for various possible Appwrite session cookie names
+    const sessionCookie = req.cookies.get('appwrite-session') || 
+                         req.cookies.get('a_session_' + process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID) ||
+                         req.cookies.get('a_session') ||
+                         allCookies.find(c => c.name.includes('session') || c.name.includes('appwrite'))
+    
+    const hasSession = !!sessionCookie?.value
 
     console.log('👤 Session in middleware:', {
-      hasSession: !!session,
-      userId: session?.user?.id,
-      email: session?.user?.email,
-      error: error?.message
+      hasSession,
+      sessionExists: !!sessionCookie,
+      sessionCookieName: sessionCookie?.name,
+      cookieValue: sessionCookie?.value ? '***exists***' : null
     })
 
     const isAuthPage = req.nextUrl.pathname.startsWith('/login') || 
@@ -38,13 +43,13 @@ export async function middleware(req: NextRequest) {
     }
     
     // Redirect authenticated users away from auth pages
-    if (session && isAuthPage) {
+    if (hasSession && isAuthPage) {
       console.log('🔀 Authenticated user on auth page, redirecting to dashboard')
       return NextResponse.redirect(new URL('/dashboard', req.url))
     }
 
     // Redirect unauthenticated users to login (except for auth pages)
-    if (!session && !isAuthPage) {
+    if (!hasSession && !isAuthPage) {
       console.log('🚫 Unauthenticated user, redirecting to login')
       return NextResponse.redirect(new URL('/login', req.url))
     }
@@ -52,7 +57,7 @@ export async function middleware(req: NextRequest) {
     console.log('✅ Middleware allowing request')
     return res
   } catch (error) {
-    // If there's an error with Supabase, allow the request to continue
+    // If there's an error, allow the request to continue
     console.error('💥 Middleware error:', error)
     return res
   }

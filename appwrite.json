@@ -1,0 +1,362 @@
+{
+  "projectId": "friendly-reminder",
+  "projectName": "Friendly Reminder",
+  "functions": [],
+  "databases": [
+    {
+      "databaseId": "friendly-reminder-db",
+      "name": "Friendly Reminder Database",
+      "collections": [
+        {
+          "databaseId": "friendly-reminder-db",
+          "collectionId": "profiles",
+          "name": "Profiles",
+          "enabled": true,
+          "documentSecurity": true,
+          "attributes": [
+            {
+              "key": "user_id",
+              "type": "string",
+              "size": 255,
+              "required": true,
+              "array": false,
+              "default": null
+            },
+            {
+              "key": "username",
+              "type": "string", 
+              "size": 255,
+              "required": false,
+              "array": false,
+              "default": null
+            },
+            {
+              "key": "email",
+              "type": "string",
+              "size": 255, 
+              "required": false,
+              "array": false,
+              "default": null
+            }
+          ],
+          "indexes": [
+            {
+              "key": "user_id_index",
+              "type": "key",
+              "attributes": ["user_id"],
+              "orders": ["ASC"]
+            }
+          ]
+        },
+        {
+          "databaseId": "friendly-reminder-db",
+          "collectionId": "contacts",
+          "name": "Contacts", 
+          "enabled": true,
+          "documentSecurity": true,
+          "attributes": [
+            {
+              "key": "user_id",
+              "type": "string",
+              "size": 255,
+              "required": true,
+              "array": false,
+              "default": null
+            },
+            {
+              "key": "name",
+              "type": "string",
+              "size": 255,
+              "required": true,
+              "array": false,
+              "default": null
+            },
+            {
+              "key": "email",
+              "type": "string",
+              "size": 255,
+              "required": false,
+              "array": false,
+              "default": null
+            },
+            {
+              "key": "gender",
+              "type": "string",
+              "size": 50,
+              "required": false,
+              "array": false,
+              "default": null
+            },
+            {
+              "key": "birthday",
+              "type": "string",
+              "size": 10,
+              "required": false,
+              "array": false,
+              "default": null
+            },
+            {
+              "key": "description",
+              "type": "string",
+              "size": 1000,
+              "required": false,
+              "array": false,
+              "default": null
+            },
+            {
+              "key": "work_company",
+              "type": "string",
+              "size": 255,
+              "required": false,
+              "array": false,
+              "default": null
+            },
+            {
+              "key": "work_position",
+              "type": "string",
+              "size": 255,
+              "required": false,
+              "array": false,
+              "default": null
+            },
+            {
+              "key": "how_we_met",
+              "type": "string",
+              "size": 500,
+              "required": false,
+              "array": false,
+              "default": null
+            },
+            {
+              "key": "interests",
+              "type": "string",
+              "size": 500,
+              "required": false,
+              "array": false,
+              "default": null
+            },
+            {
+              "key": "last_conversation",
+              "type": "string",
+              "size": 10,
+              "required": false,
+              "array": false,
+              "default": null
+            },
+            {
+              "key": "reminder_days",
+              "type": "integer",
+              "required": true,
+              "array": false,
+              "default": 30
+            },
+            {
+              "key": "next_reminder",
+              "type": "string",
+              "size": 10,
+              "required": false,
+              "array": false,
+              "default": null
+            },
+            {
+              "key": "birthday_reminder",
+              "type": "boolean",
+              "required": true,
+              "array": false,
+              "default": false
+            },
+            {
+              "key": "email_reminders",
+              "type": "boolean", 
+              "required": true,
+              "array": false,
+              "default": false
+            }
+          ],
+          "indexes": [
+            {
+              "key": "user_id_index",
+              "type": "key",
+              "attributes": ["user_id"],
+              "orders": ["ASC"]
+            },
+            {
+              "key": "next_reminder_index", 
+              "type": "key",
+              "attributes": ["next_reminder"],
+              "orders": ["ASC"]
+            }
+          ]
+        },
+        {
+          "databaseId": "friendly-reminder-db",
+          "collectionId": "tags",
+          "name": "Tags",
+          "enabled": true,
+          "documentSecurity": true,
+          "attributes": [
+            {
+              "key": "user_id",
+              "type": "string",
+              "size": 255,
+              "required": true,
+              "array": false,
+              "default": null
+            },
+            {
+              "key": "name",
+              "type": "string",
+              "size": 100,
+              "required": true,
+              "array": false,
+              "default": null
+            },
+            {
+              "key": "color",
+              "type": "string",
+              "size": 7,
+              "required": false,
+              "array": false,
+              "default": null
+            }
+          ],
+          "indexes": [
+            {
+              "key": "user_id_index",
+              "type": "key",
+              "attributes": ["user_id"],
+              "orders": ["ASC"]
+            }
+          ]
+        },
+        {
+          "databaseId": "friendly-reminder-db",
+          "collectionId": "contact_tags",
+          "name": "Contact Tags",
+          "enabled": true,
+          "documentSecurity": true,
+          "attributes": [
+            {
+              "key": "contact_id",
+              "type": "string",
+              "size": 255,
+              "required": true,
+              "array": false,
+              "default": null
+            },
+            {
+              "key": "tag_id",
+              "type": "string",
+              "size": 255,
+              "required": true,
+              "array": false,
+              "default": null
+            }
+          ],
+          "indexes": [
+            {
+              "key": "contact_id_index",
+              "type": "key",
+              "attributes": ["contact_id"],
+              "orders": ["ASC"]
+            },
+            {
+              "key": "tag_id_index",
+              "type": "key",
+              "attributes": ["tag_id"],
+              "orders": ["ASC"]
+            }
+          ]
+        },
+        {
+          "databaseId": "friendly-reminder-db",
+          "collectionId": "social_links",
+          "name": "Social Links",
+          "enabled": true,
+          "documentSecurity": true,
+          "attributes": [
+            {
+              "key": "contact_id",
+              "type": "string",
+              "size": 255,
+              "required": true,
+              "array": false,
+              "default": null
+            },
+            {
+              "key": "platform",
+              "type": "string",
+              "size": 50,
+              "required": true,
+              "array": false,
+              "default": null
+            },
+            {
+              "key": "url",
+              "type": "string",
+              "size": 500,
+              "required": true,
+              "array": false,
+              "default": null
+            }
+          ],
+          "indexes": [
+            {
+              "key": "contact_id_index",
+              "type": "key",
+              "attributes": ["contact_id"],
+              "orders": ["ASC"]
+            }
+          ]
+        },
+        {
+          "databaseId": "friendly-reminder-db",
+          "collectionId": "conversations",
+          "name": "Conversations",
+          "enabled": true,
+          "documentSecurity": true,
+          "attributes": [
+            {
+              "key": "contact_id",
+              "type": "string",
+              "size": 255,
+              "required": true,
+              "array": false,
+              "default": null
+            },
+            {
+              "key": "notes",
+              "type": "string",
+              "size": 5000,
+              "required": true,
+              "array": false,
+              "default": null
+            },
+            {
+              "key": "date",
+              "type": "string",
+              "size": 10,
+              "required": true,
+              "array": false,
+              "default": null
+            }
+          ],
+          "indexes": [
+            {
+              "key": "contact_id_index",
+              "type": "key",
+              "attributes": ["contact_id"],
+              "orders": ["ASC"]
+            },
+            {
+              "key": "date_index",
+              "type": "key",
+              "attributes": ["date"],
+              "orders": ["ASC"]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

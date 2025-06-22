@@ -4,7 +4,8 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useAuth } from '@/components/auth/auth-provider'
-import { createClient } from '@/lib/supabase/client'
+import { databases, ID } from '@/lib/appwrite/client'
+import { DATABASE_ID, COLLECTIONS } from '@/lib/appwrite/types'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -13,7 +14,6 @@ import { AppLayout } from '@/components/layout/app-layout'
 export default function AddContactPage() {
   const { user } = useAuth()
   const router = useRouter()
-  const supabase = createClient()
   
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -46,25 +46,28 @@ export default function AddContactPage() {
     setError(null)
 
     try {
-      const { error } = await supabase
-        .from('contacts')
-        .insert([
-          {
-            user_id: user.id,
-            name: formData.name,
-            email: formData.email || null,
-            gender: formData.gender || null,
-            birthday: formData.birthday || null,
-            description: formData.description || null,
-            work_company: formData.work_company || null,
-            work_position: formData.work_position || null,
-            how_we_met: formData.how_we_met || null,
-            interests: formData.interests || null,
-            reminder_days: formData.reminder_days
-          }
-        ])
+      const contactData = {
+        user_id: user.$id,
+        name: formData.name,
+        email: formData.email || undefined,
+        gender: formData.gender || undefined,
+        birthday: formData.birthday || undefined,
+        description: formData.description || undefined,
+        work_company: formData.work_company || undefined,
+        work_position: formData.work_position || undefined,
+        how_we_met: formData.how_we_met || undefined,
+        interests: formData.interests || undefined,
+        reminder_days: formData.reminder_days,
+        birthday_reminder: false,
+        email_reminders: false
+      }
 
-      if (error) throw error
+      await databases.createDocument(
+        DATABASE_ID,
+        COLLECTIONS.CONTACTS,
+        ID.unique(),
+        contactData
+      )
 
       router.push('/contacts')
     } catch (error: unknown) {

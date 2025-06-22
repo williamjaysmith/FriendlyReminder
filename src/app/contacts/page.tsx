@@ -4,12 +4,16 @@ import { useEffect, useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useAuth } from '@/components/auth/auth-provider'
-import { createClient } from '@/lib/supabase/client'
+import { databases } from '@/lib/appwrite/client'
+import { DATABASE_ID, COLLECTIONS } from '@/lib/appwrite/types'
+import { mapDocumentToContact } from '@/lib/appwrite/helpers'
+import { Query } from 'appwrite'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { AppLayout } from '@/components/layout/app-layout'
 import { Contact } from '@/lib/types'
+import { LoadingSpinner } from '@/components/ui/loading-spinner'
 
 export default function ContactsPage() {
   const { user, loading } = useAuth()
@@ -18,25 +22,28 @@ export default function ContactsPage() {
   const [filteredContacts, setFilteredContacts] = useState<Contact[]>([])
   const [searchTerm, setSearchTerm] = useState('')
   const [loadingData, setLoadingData] = useState(true)
-  const supabase = createClient()
 
   const fetchContacts = useCallback(async () => {
     try {
-      const { data, error } = await supabase
-        .from('contacts')
-        .select('*')
-        .eq('user_id', user?.id)
-        .order('name')
+      const response = await databases.listDocuments(
+        DATABASE_ID,
+        COLLECTIONS.CONTACTS,
+        [
+          Query.equal('user_id', user?.$id || ''),
+          Query.orderAsc('name')
+        ]
+      )
 
-      if (error) throw error
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const contactsData = response.documents.map((doc: any) => mapDocumentToContact(doc))
 
-      setContacts(data || [])
+      setContacts(contactsData)
     } catch (error) {
       console.error('Error fetching contacts:', error)
     } finally {
       setLoadingData(false)
     }
-  }, [user?.id, supabase])
+  }, [user?.$id])
 
   useEffect(() => {
     if (!loading && !user) {
@@ -71,8 +78,8 @@ export default function ContactsPage() {
 
   if (loading || loadingData) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <LoadingSpinner />
       </div>
     )
   }

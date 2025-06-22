@@ -1,0 +1,304 @@
+{
+  "database": {
+    "$id": "friendly-reminder-db",
+    "name": "Friendly Reminder Database"
+  },
+  "collections": [
+    {
+      "$id": "profiles",
+      "name": "Profiles",
+      "attributes": [
+        {
+          "key": "user_id",
+          "type": "string",
+          "required": true,
+          "array": false,
+          "size": 255
+        },
+        {
+          "key": "username", 
+          "type": "string",
+          "required": false,
+          "array": false,
+          "size": 255
+        },
+        {
+          "key": "email",
+          "type": "string", 
+          "required": false,
+          "array": false,
+          "size": 255
+        }
+      ],
+      "indexes": [
+        {
+          "key": "user_id_index",
+          "type": "key",
+          "attributes": ["user_id"]
+        }
+      ]
+    },
+    {
+      "$id": "contacts",
+      "name": "Contacts",
+      "attributes": [
+        {
+          "key": "user_id",
+          "type": "string",
+          "required": true,
+          "array": false,
+          "size": 255
+        },
+        {
+          "key": "name",
+          "type": "string",
+          "required": true,
+          "array": false,
+          "size": 255
+        },
+        {
+          "key": "email",
+          "type": "string",
+          "required": false,
+          "array": false,
+          "size": 255
+        },
+        {
+          "key": "gender",
+          "type": "string",
+          "required": false,
+          "array": false,
+          "size": 50
+        },
+        {
+          "key": "birthday",
+          "type": "string",
+          "required": false,
+          "array": false,
+          "size": 10
+        },
+        {
+          "key": "description",
+          "type": "string",
+          "required": false,
+          "array": false,
+          "size": 1000
+        },
+        {
+          "key": "work_company",
+          "type": "string",
+          "required": false,
+          "array": false,
+          "size": 255
+        },
+        {
+          "key": "work_position",
+          "type": "string",
+          "required": false,
+          "array": false,
+          "size": 255
+        },
+        {
+          "key": "how_we_met",
+          "type": "string",
+          "required": false,
+          "array": false,
+          "size": 500
+        },
+        {
+          "key": "interests",
+          "type": "string",
+          "required": false,
+          "array": false,
+          "size": 500
+        },
+        {
+          "key": "last_conversation",
+          "type": "string",
+          "required": false,
+          "array": false,
+          "size": 10
+        },
+        {
+          "key": "reminder_days",
+          "type": "integer",
+          "required": true,
+          "array": false,
+          "default": 30
+        },
+        {
+          "key": "next_reminder",
+          "type": "string",
+          "required": false,
+          "array": false,
+          "size": 10
+        },
+        {
+          "key": "birthday_reminder",
+          "type": "boolean",
+          "required": true,
+          "array": false,
+          "default": false
+        },
+        {
+          "key": "email_reminders",
+          "type": "boolean",
+          "required": true,
+          "array": false,
+          "default": false
+        }
+      ],
+      "indexes": [
+        {
+          "key": "user_id_index",
+          "type": "key",
+          "attributes": ["user_id"]
+        },
+        {
+          "key": "next_reminder_index",
+          "type": "key",
+          "attributes": ["next_reminder"]
+        }
+      ]
+    },
+    {
+      "$id": "tags",
+      "name": "Tags",
+      "attributes": [
+        {
+          "key": "user_id",
+          "type": "string",
+          "required": true,
+          "array": false,
+          "size": 255
+        },
+        {
+          "key": "name",
+          "type": "string",
+          "required": true,
+          "array": false,
+          "size": 100
+        },
+        {
+          "key": "color",
+          "type": "string",
+          "required": false,
+          "array": false,
+          "size": 7
+        }
+      ],
+      "indexes": [
+        {
+          "key": "user_id_index",
+          "type": "key",
+          "attributes": ["user_id"]
+        }
+      ]
+    },
+    {
+      "$id": "contact_tags",
+      "name": "Contact Tags",
+      "attributes": [
+        {
+          "key": "contact_id",
+          "type": "string",
+          "required": true,
+          "array": false,
+          "size": 255
+        },
+        {
+          "key": "tag_id",
+          "type": "string",
+          "required": true,
+          "array": false,
+          "size": 255
+        }
+      ],
+      "indexes": [
+        {
+          "key": "contact_id_index",
+          "type": "key",
+          "attributes": ["contact_id"]
+        },
+        {
+          "key": "tag_id_index",
+          "type": "key",
+          "attributes": ["tag_id"]
+        }
+      ]
+    },
+    {
+      "$id": "social_links",
+      "name": "Social Links",
+      "attributes": [
+        {
+          "key": "contact_id",
+          "type": "string",
+          "required": true,
+          "array": false,
+          "size": 255
+        },
+        {
+          "key": "platform",
+          "type": "string",
+          "required": true,
+          "array": false,
+          "size": 50
+        },
+        {
+          "key": "url",
+          "type": "string",
+          "required": true,
+          "array": false,
+          "size": 500
+        }
+      ],
+      "indexes": [
+        {
+          "key": "contact_id_index",
+          "type": "key",
+          "attributes": ["contact_id"]
+        }
+      ]
+    },
+    {
+      "$id": "conversations",
+      "name": "Conversations",
+      "attributes": [
+        {
+          "key": "contact_id",
+          "type": "string",
+          "required": true,
+          "array": false,
+          "size": 255
+        },
+        {
+          "key": "notes",
+          "type": "string",
+          "required": true,
+          "array": false,
+          "size": 5000
+        },
+        {
+          "key": "date",
+          "type": "string",
+          "required": true,
+          "array": false,
+          "size": 10
+        }
+      ],
+      "indexes": [
+        {
+          "key": "contact_id_index",
+          "type": "key",
+          "attributes": ["contact_id"]
+        },
+        {
+          "key": "date_index",
+          "type": "key",
+          "attributes": ["date"]
+        }
+      ]
+    }
+  ]
+}

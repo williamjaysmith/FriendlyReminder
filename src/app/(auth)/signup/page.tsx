@@ -1,12 +1,16 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { createClient } from '@/lib/supabase/client'
+import { useRouter } from 'next/navigation'
+import { account, ID } from '@/lib/appwrite/client'
+import { OAuthProvider } from 'appwrite'
+import { useAuth } from '@/components/auth/auth-provider'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { PasswordInput } from '@/components/ui/password-input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { LoadingSpinner } from '@/components/ui/loading-spinner'
 
 export default function SignupPage() {
   const [email, setEmail] = useState('')
@@ -15,28 +19,83 @@ export default function SignupPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [message, setMessage] = useState<string | null>(null)
-  const supabase = createClient()
+  const router = useRouter()
+  const { user, loading: authLoading } = useAuth()
 
+  // Redirect if already logged in
+  useEffect(() => {
+    if (!authLoading && user) {
+      console.log('🔄 User already logged in, redirecting to dashboard...')
+      router.push('/dashboard')
+    }
+  }, [user, authLoading, router])
   const handleEmailSignup = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
     setError(null)
     setMessage(null)
 
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          username
-        }
-      }
-    })
+    try {
+      // Validate inputs before attempting signup
+      console.log('📝 Signup attempt with:', { 
+        email, 
+        username, 
+        passwordLength: password.length,
+        hasEmail: !!email,
+        hasUsername: !!username,
+        hasPassword: !!password
+      })
 
-    if (error) {
-      setError(error.message)
-    } else {
-      setMessage('Check your email for the confirmation link!')
+      if (!email || !password || !username) {
+        setError('Please fill in all fields')
+        setLoading(false)
+        return
+      }
+
+      if (password.length < 8) {
+        setError('Password must be at least 8 characters long')
+        setLoading(false)
+        return
+      }
+
+      // Clear any existing session first to avoid conflicts during account creation
+      try {
+        await account.deleteSession('current')
+        console.log('🧹 Cleared existing session before signup')
+      } catch {
+        // Ignore if no session exists
+      }
+      
+      // Clear stored session data
+      localStorage.removeItem('appwrite-session')
+      document.cookie = `a_session_${process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID}=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT`
+      
+      const userId = ID.unique()
+      console.log('🆔 Generated user ID:', userId)
+      
+      await account.create(userId, email, password, username)
+      console.log('✅ Account created successfully')
+      setMessage('Account created successfully! You can now sign in.')
+    } catch (error: unknown) {
+      console.error('❌ Detailed signup error:', error)
+      
+      if (error instanceof Error) {
+        // Try to extract more specific error information
+        const errorMessage = error.message
+        console.log('📝 Error message:', errorMessage)
+        
+        if (errorMessage.includes('email')) {
+          setError('Email is invalid or already in use')
+        } else if (errorMessage.includes('password')) {
+          setError('Password does not meet requirements (minimum 8 characters)')
+        } else if (errorMessage.includes('user')) {
+          setError('Username is invalid or already taken')
+        } else {
+          setError(`Signup failed: ${errorMessage}`)
+        }
+      } else {
+        setError('An unexpected error occurred during signup')
+      }
     }
     
     setLoading(false)
@@ -46,25 +105,36 @@ export default function SignupPage() {
     setLoading(true)
     setError(null)
 
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || window.location.origin
-    const { data, error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: `${siteUrl}/auth/callback?next=/dashboard`
-      }
-    })
+    try {
+      // Use current origin for redirect URLs
+      const siteUrl = window.location.origin
+      const successUrl = `${siteUrl}/auth/callback?next=/dashboard`
+      const failureUrl = `${siteUrl}/signup`
+      
+      console.log('📍 Success URL:', successUrl)
+      console.log('📍 Failure URL:', failureUrl)
 
-    if (error) {
-      setError(error.message)
-      setLoading(false)
-    } else if (data?.url) {
-      window.location.href = data.url
-    } else {
-      setError('OAuth URL not generated')
+      // Use proper Appwrite SDK OAuth method
+      await account.createOAuth2Session(
+        OAuthProvider.Google,
+        successUrl,
+        failureUrl
+      )
+    } catch (error: unknown) {
+      setError(error instanceof Error ? error.message : 'An error occurred')
       setLoading(false)
     }
   }
 
+
+  // Show loading while checking authentication
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <LoadingSpinner />
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
