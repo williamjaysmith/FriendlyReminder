@@ -15,7 +15,7 @@ if (typeof window !== 'undefined') {
       // Also set a cookie for middleware detection
       document.cookie = `a_session_${process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID}=${storedSession}; path=/; SameSite=Lax`
       console.log('🔄 Restored session from localStorage')
-    } catch (error) {
+    } catch {
       console.log('⚠️ Failed to restore session, clearing stored data')
       localStorage.removeItem('appwrite-session')
       document.cookie = `a_session_${process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID}=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT`
