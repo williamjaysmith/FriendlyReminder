@@ -26,4 +26,4 @@ if (typeof window !== 'undefined') {
 export const account = new Account(client)
 export const databases = new Databases(client)
 
-export { client, ID }
+export { client, ID }// Force rebuild
