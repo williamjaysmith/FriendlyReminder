@@ -12,7 +12,7 @@ export function LoadingSpinner({ size = 'md', className = '' }: LoadingSpinnerPr
 
   return (
     <div 
-      className={`animate-spin rounded-full border-2 border-gray-200 border-t-gray-600 ${sizeClasses[size]} ${className}`}
+      className={`animate-spin rounded-full border-2 border-[var(--text-primary)]/20 border-t-[var(--brand-yellow)] ${sizeClasses[size]} ${className}`}
       role="status"
       aria-label="Loading"
     >

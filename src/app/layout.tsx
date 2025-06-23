@@ -1,23 +1,20 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Caprasimo } from "next/font/google";
+import { JetBrains_Mono, Plus_Jakarta_Sans } from "next/font/google";
 import { AuthProvider } from "@/components/auth/auth-provider";
 import { ToastProvider } from "@/components/ui/toast";
+import { ThemeProvider } from "@/components/theme/theme-provider";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const plusJakarta = Plus_Jakarta_Sans({
+  variable: "--font-plus-jakarta",
   subsets: ["latin"],
+  display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const jetbrainsMono = JetBrains_Mono({
+  variable: "--font-jetbrains-mono",
   subsets: ["latin"],
-});
-
-const caprasimo = Caprasimo({
-  weight: "400",
-  variable: "--font-caprasimo",
-  subsets: ["latin"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -33,13 +30,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${caprasimo.variable} antialiased`}
+        className={`${plusJakarta.variable} ${jetbrainsMono.variable} antialiased`}
       >
-        <AuthProvider>
-          <ToastProvider>
-            {children}
-          </ToastProvider>
-        </AuthProvider>
+        <ThemeProvider>
+          <AuthProvider>
+            <ToastProvider>
+              {children}
+            </ToastProvider>
+          </AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

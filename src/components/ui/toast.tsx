@@ -53,17 +53,17 @@ function ToastContainer() {
           key={toast.id}
           className={`px-4 py-3 rounded-md shadow-lg max-w-sm ${
             toast.type === 'success' 
-              ? 'bg-green-50 border border-green-200 text-green-800'
+              ? 'bg-[var(--brand-green)]/20 border border-[var(--brand-green)] text-[var(--brand-green)]'
               : toast.type === 'error'
-              ? 'bg-red-50 border border-red-200 text-red-800'
-              : 'bg-blue-50 border border-blue-200 text-blue-800'
+              ? 'bg-[var(--brand-red)]/20 border border-[var(--brand-red)] text-[var(--brand-red)]'
+              : 'bg-[var(--brand-blue)]/20 border border-[var(--brand-blue)] text-[var(--brand-blue)]'
           }`}
         >
           <div className="flex items-center justify-between">
             <p className="text-sm font-medium">{toast.message}</p>
             <button
               onClick={() => removeToast(toast.id)}
-              className="ml-3 text-gray-400 hover:text-gray-600"
+              className="ml-3 text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
