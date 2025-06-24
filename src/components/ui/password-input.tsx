@@ -14,7 +14,7 @@ const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
         <input
           type={showPassword ? 'text' : 'password'}
           className={cn(
-            'flex h-10 w-full rounded-md border border-[var(--text-primary)] bg-[var(--surface)] px-3 py-2 pr-10 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-secondary)] focus:outline-none focus:ring-2 focus:ring-[var(--brand-yellow)] focus:border-transparent disabled:cursor-not-allowed disabled:opacity-50',
+            'flex h-10 w-full rounded-md border border-[#231f20] bg-[#f9f4da] px-3 py-2 pr-10 text-sm text-[#231f20] placeholder:text-[#262522] focus:outline-none focus:ring-2 focus:ring-[#fcba28] focus:border-transparent disabled:cursor-not-allowed disabled:opacity-50',
             className
           )}
           ref={ref}
@@ -22,7 +22,7 @@ const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
         />
         <button
           type="button"
-          className="absolute inset-y-0 right-0 flex items-center pr-3 text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+          className="absolute inset-y-0 right-0 flex items-center pr-3 text-[#262522] hover:text-[#231f20]"
           onClick={() => setShowPassword(!showPassword)}
           tabIndex={-1}
         >

@@ -138,7 +138,9 @@ export default function SignupPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[var(--background)] py-12 px-4 sm:px-6 lg:px-8">
-      <Card className="w-full max-w-md">
+      <Card 
+        className="w-full max-w-md"
+      >
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-bold">Create your account</CardTitle>
           <CardDescription>Get started with Friendly Reminder</CardDescription>

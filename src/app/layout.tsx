@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { JetBrains_Mono, Plus_Jakarta_Sans, Leckerli_One } from "next/font/google";
 import { AuthProvider } from "@/components/auth/auth-provider";
 import { ToastProvider } from "@/components/ui/toast";
-import { ThemeProvider } from "@/components/theme/theme-provider";
 import "./globals.css";
 
 const plusJakarta = Plus_Jakarta_Sans({
@@ -35,18 +34,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" style={{backgroundColor: 'var(--bg-main)'}}>
+    <html lang="en" className="bg-[#231f20]">
       <body
-        className={`${plusJakarta.variable} ${jetbrainsMono.variable} ${leckerliOne.variable} antialiased`}
-        style={{backgroundColor: 'var(--bg-main)'}}
+        className={`${plusJakarta.variable} ${jetbrainsMono.variable} ${leckerliOne.variable} antialiased bg-[#231f20]`}
       >
-        <ThemeProvider>
-          <AuthProvider>
-            <ToastProvider>
-              {children}
-            </ToastProvider>
-          </AuthProvider>
-        </ThemeProvider>
+        <AuthProvider>
+          <ToastProvider>
+            {children}
+          </ToastProvider>
+        </AuthProvider>
       </body>
     </html>
   );

@@ -1,6 +1,5 @@
 import { HTMLAttributes, forwardRef } from "react";
 import { cn } from "@/lib/utils/cn";
-import { useTheme } from "@/components/theme/theme-provider";
 
 type CardVariant =
   | "default"
@@ -27,7 +26,6 @@ interface CardProps extends HTMLAttributes<HTMLDivElement> {
 
 const Card = forwardRef<HTMLDivElement, CardProps>(
   ({ className, variant = "default", ...props }, ref) => {
-    const { actualTheme } = useTheme();
     const isColored = variant !== "default";
 
     return (
@@ -35,25 +33,18 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
         ref={ref}
         className={cn(
           // Base styles
-          "transition-all duration-300 ease-in-out rounded-[var(--outer-radius)]",
-          // Default variant: no special classes needed (shadow handled in style)
-          !isColored && [],
+          "transition-all duration-300 ease-in-out rounded-[20px]",
+          // Default variant styling
+          !isColored && "bg-[#f9f4da] border border-[#231f20]",
           // Colored variants: cartoony style with gap
-          isColored && "p-[var(--card-gap)] border-4 border-[#231f20]",
+          isColored && "p-2 border-4 border-[#231f20]",
           cardVariants[variant],
           className
         )}
-        style={
-          !isColored
-            ? {
-                backgroundColor: "var(--bg-card)",
-                border: actualTheme === 'light' ? '1px solid #231f20' : 'none',
-                boxShadow: actualTheme === 'light' 
-                  ? '0 15px 35px rgba(123, 94, 167, 0.3), 0 8px 15px rgba(123, 94, 167, 0.2)' 
-                  : '0 10px 25px rgba(0, 0, 0, 0.04), 0 4px 10px rgba(0, 0, 0, 0.03)'
-              }
-            : undefined
-        }
+        style={{
+          boxShadow: "8px 8px 0px #7b5ea7",
+          ...props.style
+        }}
         {...props}
       />
     );
@@ -74,16 +65,9 @@ const CardHeader = forwardRef<HTMLDivElement, CardHeaderProps>(
         ref={ref}
         className={cn(
           "flex flex-col space-y-1.5",
-          isColored ? "p-6 rounded-[var(--inner-radius)]" : "p-6",
+          isColored ? "p-6 rounded-[18px] bg-[#f9f4da]" : "p-6",
           className
         )}
-        style={
-          isColored
-            ? {
-                backgroundColor: "var(--bg-card)",
-              }
-            : undefined
-        }
         {...props}
       />
     );
@@ -97,8 +81,7 @@ const CardTitle = forwardRef<
 >(({ className, ...props }, ref) => (
   <h3
     ref={ref}
-    className={cn("text-xl font-bold leading-none tracking-tight", className)}
-    style={{ color: "var(--text-primary)" }}
+    className={cn("text-xl font-bold leading-none tracking-tight text-[#231f20]", className)}
     {...props}
   />
 ));
@@ -110,8 +93,7 @@ const CardDescription = forwardRef<
 >(({ className, ...props }, ref) => (
   <p
     ref={ref}
-    className={cn("text-sm", className)}
-    style={{ color: "var(--text-secondary)" }}
+    className={cn("text-sm text-[#262522]", className)}
     {...props}
   />
 ));
@@ -129,16 +111,9 @@ const CardContent = forwardRef<HTMLDivElement, CardContentProps>(
       <div
         ref={ref}
         className={cn(
-          isColored ? "p-6 pt-0 rounded-[var(--inner-radius)]" : "p-6 pt-0",
+          isColored ? "p-6 pt-0 rounded-[18px] bg-[#f9f4da]" : "p-6 pt-0",
           className
         )}
-        style={
-          isColored
-            ? {
-                backgroundColor: "var(--bg-card)",
-              }
-            : undefined
-        }
         {...props}
       />
     );
@@ -159,16 +134,9 @@ const CardFooter = forwardRef<HTMLDivElement, CardFooterProps>(
         ref={ref}
         className={cn(
           "flex items-center",
-          isColored ? "p-6 pt-0 rounded-[var(--inner-radius)]" : "p-6 pt-0",
+          isColored ? "p-6 pt-0 rounded-[18px] bg-[#f9f4da]" : "p-6 pt-0",
           className
         )}
-        style={
-          isColored
-            ? {
-                backgroundColor: "var(--bg-card)",
-              }
-            : undefined
-        }
         {...props}
       />
     );

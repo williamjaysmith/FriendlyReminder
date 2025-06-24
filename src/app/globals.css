@@ -1,38 +1,6 @@
 @import "tailwindcss";
 
-:root {
-  /* Brand Color System - Keep for legacy compatibility */
-  --brand-coal: #0f0d0e;
-  --brand-charcoal: #231f20;
-  --brand-gray: #262522;
-  --brand-yellow: #fcba28;
-  --brand-pink: #f38ba3;
-  --brand-green: #0ba95b;
-  --brand-purple: #7b5ea7;
-  --brand-beige: #f9f4da;
-  --brand-blue: #12b5e5;
-  --brand-orange: #fc7428;
-  --brand-red: #ed203d;
-  --brand-white: #ffffff;
-
-  /* Card system variables - Keep for special borders */
-  --card-gap: 0.5rem;
-  --outer-radius: 20px;
-  --inner-radius: calc(var(--outer-radius) - var(--card-gap));
-
-  /* Theme colors that change based on dark mode */
-  --bg-main: #231f20;
-  --bg-card: #f9f4da;
-  --text-primary: #231f20;
-  --text-secondary: #262522;
-}
-
-.dark {
-  --bg-main: #fefbf0;
-  --bg-card: #f9f4da;
-  --text-primary: #231f20;
-  --text-secondary: #262522;
-}
+/* Tailwind CSS import */
 
 /* Base styles */
 * {

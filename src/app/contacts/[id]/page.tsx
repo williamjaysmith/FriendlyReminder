@@ -221,30 +221,31 @@ export default function ContactDetailPage() {
         <div className="mb-8">
           <div className="flex items-center space-x-4 mb-4">
             <Link href="/contacts">
-              <Button variant="ghost" size="sm">
+              <Button variant="ghost" size="sm" style={{ color: '#12b5e5' }}>
                 ← Back to Contacts
               </Button>
             </Link>
           </div>
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div className="flex items-center space-x-4">
-              <div className="w-16 h-16 rounded-full flex items-center justify-center" style={{ backgroundColor: '#2563eb20' }}>
-                <span className="text-xl font-medium" style={{ color: '#2563eb' }}>
+              <div className="w-16 h-16 min-w-[4rem] min-h-[4rem] aspect-square rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: '#12b5e5' }}>
+                <span className="text-3xl font-bold" style={{ color: '#231f20' }}>
                   {contact.name.charAt(0).toUpperCase()}
                 </span>
               </div>
-              <div>
-                <h2 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>{contact.name}</h2>
+              <div className="min-w-0 flex-1">
+                <h2 className="text-2xl font-bold break-words" style={{ color: '#f9f4da' }}>{contact.name}</h2>
                 {contact.email && (
-                  <p style={{ color: 'var(--text-secondary)' }}>{contact.email}</p>
+                  <p className="font-bold break-words break-all" style={{ color: '#f38ba3' }}>{contact.email}</p>
                 )}
               </div>
             </div>
-            <div className="flex space-x-3">
+            <div className="flex space-x-3 justify-end sm:justify-start sm:ml-auto">
               <Button 
                 onClick={handleJustTalked}
                 disabled={saving}
-className="hover:opacity-90" style={{ backgroundColor: '#10b981' }}
+                className="hover:opacity-90 whitespace-nowrap" 
+                style={{ backgroundColor: '#10b981' }}
               >
                 {saving ? 'Updating...' : 'Just Talked'}
               </Button>
@@ -307,7 +308,7 @@ className="hover:opacity-90" style={{ backgroundColor: '#10b981' }}
                           name="gender"
                           value={formData.gender}
                           onChange={handleInputChange}
-                          className="flex h-10 w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:border-transparent" style={{ borderColor: 'var(--text-primary)', opacity: 0.3, backgroundColor: 'var(--bg-card)', color: 'var(--text-primary)', focusRingColor: '#f59e0b' }}
+                          className="flex h-10 w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:border-transparent" style={{ borderColor: 'var(--text-primary)', opacity: 0.3, backgroundColor: 'var(--bg-card)', color: 'var(--text-primary)' }}
                         >
                           <option value="">Select...</option>
                           <option value="male">Male</option>
@@ -337,30 +338,26 @@ className="hover:opacity-90" style={{ backgroundColor: '#10b981' }}
                     </div>
                   </>
                 ) : (
-                  <>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>Email</span>
-                        <p className="font-medium" style={{ color: 'var(--text-primary)' }}>{contact.email || 'Not provided'}</p>
-                      </div>
-                      <div>
-                        <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>Gender</span>
-                        <p className="font-medium" style={{ color: 'var(--text-primary)' }}>{contact.gender || 'Not provided'}</p>
-                      </div>
+                  <div className="space-y-4">
+                    <div>
+                      <span className="text-sm font-bold block mb-1" style={{ color: 'var(--text-secondary)' }}>Email:</span>
+                      <span style={{ color: 'var(--text-primary)' }} className="break-words break-all block">{contact.email || 'Not provided'}</span>
                     </div>
-                    {contact.birthday && (
-                      <div>
-                        <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>Birthday</span>
-                        <p className="font-medium" style={{ color: 'var(--text-primary)' }}>{formatDate(contact.birthday)}</p>
-                      </div>
-                    )}
+                    <div>
+                      <span className="text-sm font-bold block mb-1" style={{ color: 'var(--text-secondary)' }}>Gender:</span>
+                      <span style={{ color: 'var(--text-primary)' }} className="break-words block">{contact.gender || 'Not provided'}</span>
+                    </div>
+                    <div>
+                      <span className="text-sm font-bold block mb-1" style={{ color: 'var(--text-secondary)' }}>Birthday:</span>
+                      <span style={{ color: 'var(--text-primary)' }} className="break-words block">{contact.birthday ? formatDate(contact.birthday) : 'Not provided'}</span>
+                    </div>
                     {contact.description && (
                       <div>
-                        <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>Description</span>
-                        <p className="font-medium" style={{ color: 'var(--text-primary)' }}>{contact.description}</p>
+                        <span className="text-sm font-bold block mb-1" style={{ color: 'var(--text-secondary)' }}>Description:</span>
+                        <span style={{ color: 'var(--text-primary)' }} className="whitespace-pre-wrap break-words block">{contact.description}</span>
                       </div>
                     )}
-                  </>
+                  </div>
                 )}
               </CardContent>
             </Card>
@@ -409,30 +406,26 @@ className="hover:opacity-90" style={{ backgroundColor: '#10b981' }}
                     </div>
                   </>
                 ) : (
-                  <>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>Company</span>
-                        <p className="font-medium" style={{ color: 'var(--text-primary)' }}>{contact.work_company || 'Not provided'}</p>
-                      </div>
-                      <div>
-                        <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>Position</span>
-                        <p className="font-medium" style={{ color: 'var(--text-primary)' }}>{contact.work_position || 'Not provided'}</p>
-                      </div>
+                  <div className="space-y-4">
+                    <div>
+                      <span className="text-sm font-bold block mb-1" style={{ color: 'var(--text-secondary)' }}>Company:</span>
+                      <span style={{ color: 'var(--text-primary)' }} className="break-words block">{contact.work_company || 'Not provided'}</span>
                     </div>
-                    {contact.how_we_met && (
-                      <div>
-                        <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>How We Met</span>
-                        <p className="font-medium" style={{ color: 'var(--text-primary)' }}>{contact.how_we_met}</p>
-                      </div>
-                    )}
+                    <div>
+                      <span className="text-sm font-bold block mb-1" style={{ color: 'var(--text-secondary)' }}>Position:</span>
+                      <span style={{ color: 'var(--text-primary)' }} className="break-words block">{contact.work_position || 'Not provided'}</span>
+                    </div>
+                    <div>
+                      <span className="text-sm font-bold block mb-1" style={{ color: 'var(--text-secondary)' }}>How We Met:</span>
+                      <span style={{ color: 'var(--text-primary)' }} className="break-words block">{contact.how_we_met || 'Not provided'}</span>
+                    </div>
                     {contact.interests && (
                       <div>
-                        <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>Interests & Notes</span>
-                        <p className="font-medium whitespace-pre-wrap" style={{ color: 'var(--text-primary)' }}>{contact.interests}</p>
+                        <span className="text-sm font-bold block mb-1" style={{ color: 'var(--text-secondary)' }}>Interests:</span>
+                        <span style={{ color: 'var(--text-primary)' }} className="whitespace-pre-wrap break-words block">{contact.interests}</span>
                       </div>
                     )}
-                  </>
+                  </div>
                 )}
               </CardContent>
             </Card>
@@ -490,40 +483,36 @@ className="hover:opacity-90" style={{ backgroundColor: '#10b981' }}
                     </div>
                   </>
                 ) : (
-                  <>
+                  <div className="space-y-3">
                     <div>
-                      <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>Reminder Interval</span>
-                      <p className="font-medium" style={{ color: 'var(--text-primary)' }}>Every {contact.reminder_days} days</p>
+                      <span className="text-sm font-bold block mb-1" style={{ color: 'var(--text-secondary)' }}>Reminder Interval:</span>
+                      <span style={{ color: 'var(--text-primary)' }} className="break-words block">Every {contact.reminder_days} days</span>
                     </div>
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>Email Reminders</span>
-                        <span className="text-sm font-medium" style={{ color: contact.email_reminders ? '#10b981' : 'var(--text-secondary)' }}>
-                          {contact.email_reminders ? 'Enabled' : 'Disabled'}
+                    <div>
+                      <span className="text-sm font-bold block mb-1" style={{ color: 'var(--text-secondary)' }}>Email Reminders:</span>
+                      <span style={{ color: contact.email_reminders ? '#10b981' : 'var(--text-secondary)' }} className="break-words block">
+                        {contact.email_reminders ? 'Enabled' : 'Disabled'}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-sm font-bold block mb-1" style={{ color: 'var(--text-secondary)' }}>Birthday Reminders:</span>
+                      <span style={{ color: contact.birthday_reminder ? '#10b981' : 'var(--text-secondary)' }} className="break-words block">
+                        {contact.birthday_reminder ? 'Enabled' : 'Disabled'}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-sm font-bold block mb-1" style={{ color: 'var(--text-secondary)' }}>Last Conversation:</span>
+                      <span style={{ color: 'var(--text-primary)' }} className="break-words block">{formatDate(contact.last_conversation)}</span>
+                    </div>
+                    {contact.next_reminder && (
+                      <div>
+                        <span className="text-sm font-bold block mb-1" style={{ color: 'var(--text-secondary)' }}>Next Reminder:</span>
+                        <span style={{ color: isOverdue(contact.next_reminder) ? '#ef4444' : 'var(--text-primary)' }} className="break-words block">
+                          {formatDate(contact.next_reminder)}
+                          {isOverdue(contact.next_reminder) && ' (Overdue)'}
                         </span>
                       </div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>Birthday Reminders</span>
-                        <span className="text-sm font-medium" style={{ color: contact.birthday_reminder ? '#10b981' : 'var(--text-secondary)' }}>
-                          {contact.birthday_reminder ? 'Enabled' : 'Disabled'}
-                        </span>
-                      </div>
-                    </div>
-                  </>
-                )}
-                
-                <div>
-                  <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>Last Conversation</span>
-                  <p className="font-medium" style={{ color: 'var(--text-primary)' }}>{formatDate(contact.last_conversation)}</p>
-                </div>
-                
-                {contact.next_reminder && (
-                  <div>
-                    <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>Next Reminder</span>
-                    <p className="font-medium" style={{ color: isOverdue(contact.next_reminder) ? '#ef4444' : 'var(--text-primary)' }}>
-                      {formatDate(contact.next_reminder)}
-                      {isOverdue(contact.next_reminder) && ' (Overdue)'}
-                    </p>
+                    )}
                   </div>
                 )}
               </CardContent>
@@ -533,14 +522,14 @@ className="hover:opacity-90" style={{ backgroundColor: '#10b981' }}
               <CardHeader>
                 <CardTitle>Contact Stats</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-3">
                 <div>
-                  <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>Added</span>
-                  <p className="font-medium" style={{ color: 'var(--text-primary)' }}>{formatDate(contact.created_at)}</p>
+                  <span className="text-sm font-bold block mb-1" style={{ color: 'var(--text-secondary)' }}>Added:</span>
+                  <span style={{ color: 'var(--text-primary)' }} className="break-words block">{formatDate(contact.created_at)}</span>
                 </div>
                 <div>
-                  <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>Last Updated</span>
-                  <p className="font-medium" style={{ color: 'var(--text-primary)' }}>{formatDate(contact.updated_at)}</p>
+                  <span className="text-sm font-bold block mb-1" style={{ color: 'var(--text-secondary)' }}>Last Updated:</span>
+                  <span style={{ color: 'var(--text-primary)' }} className="break-words block">{formatDate(contact.updated_at)}</span>
                 </div>
               </CardContent>
             </Card>
@@ -552,10 +541,9 @@ className="hover:opacity-90" style={{ backgroundColor: '#10b981' }}
                 </CardHeader>
                 <CardContent>
                   <Button 
-                    variant="destructive" 
                     onClick={handleDelete}
                     disabled={saving}
-                    className="w-full"
+                    className="w-full bg-brand-pink text-brand-beige hover:bg-brand-pink/90"
                   >
                     Delete Contact
                   </Button>

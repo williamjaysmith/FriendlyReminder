@@ -17,30 +17,30 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           'disabled:opacity-50 disabled:pointer-events-none disabled:cursor-not-allowed',
           'transform hover:scale-[1.02] active:scale-[0.98]',
           
-          // Variant styles using new brand colors
+          // Variant styles using explicit Tailwind colors
           {
             // Primary - Yellow (brand requirement)
-            'bg-[var(--button-primary)] text-[var(--button-text)] hover:bg-[var(--brand-yellow)]/90 hover:scale-105 focus-visible:ring-[var(--brand-yellow)]': 
+            'bg-[#fcba28] text-[#231f20] hover:bg-[#fcba28]/90 hover:scale-105 focus-visible:ring-[#fcba28]': 
               variant === 'default',
             
             // Secondary - Blue accent  
-            'bg-[var(--brand-blue)] text-[var(--brand-beige)] hover:bg-[var(--brand-blue)]/90 hover:scale-105 focus-visible:ring-[var(--brand-blue)]': 
+            'bg-[#12b5e5] text-[#f9f4da] hover:bg-[#12b5e5]/90 hover:scale-105 focus-visible:ring-[#12b5e5]': 
               variant === 'secondary',
             
             // Success - Green
-            'bg-[var(--brand-green)] text-[var(--brand-beige)] hover:bg-[var(--brand-green)]/90 hover:scale-105 focus-visible:ring-[var(--brand-green)]': 
+            'bg-[#0ba95b] text-[#f9f4da] hover:bg-[#0ba95b]/90 hover:scale-105 focus-visible:ring-[#0ba95b]': 
               variant === 'success',
             
             // Outline - Using brand colors
-            'border-2 border-[var(--text-primary)] bg-transparent text-[var(--text-primary)] hover:bg-[var(--text-primary)] hover:text-[var(--background)] focus-visible:ring-[var(--brand-yellow)]': 
+            'border-2 border-[#231f20] bg-transparent text-[#231f20] hover:bg-[#231f20] hover:text-[#f9f4da] focus-visible:ring-[#fcba28]': 
               variant === 'outline',
             
             // Ghost - Minimal with brand colors
-            'text-[var(--text-primary)] hover:bg-[var(--text-primary)]/10 focus-visible:ring-[var(--brand-yellow)]': 
+            'text-[#231f20] hover:bg-[#231f20]/10 focus-visible:ring-[#fcba28]': 
               variant === 'ghost',
             
             // Destructive - Brand red
-            'bg-[var(--brand-red)] text-[var(--brand-beige)] hover:bg-[var(--brand-red)]/90 hover:scale-105 focus-visible:ring-[var(--brand-red)]': 
+            'bg-[#ed203d] text-[#f9f4da] hover:bg-[#ed203d]/90 hover:scale-105 focus-visible:ring-[#ed203d]': 
               variant === 'destructive',
           },
           

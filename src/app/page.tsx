@@ -20,7 +20,7 @@ export default function Home() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background dark:bg-background-dark">
+      <div className="min-h-screen flex items-center justify-center bg-[#231f20]">
         <LoadingSpinner />
       </div>
     )
@@ -31,7 +31,7 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-background dark:bg-background-dark">
+    <div className="min-h-screen bg-[#231f20]">
       {/* Hero Section */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="pt-20 pb-16">
@@ -42,7 +42,7 @@ export default function Home() {
               Your personal relationship manager
             </div>
             
-            <h1 className="text-5xl sm:text-7xl font-bold text-text-primary dark:text-text-primary-dark mb-6 leading-tight">
+            <h1 className="text-5xl sm:text-7xl font-bold mb-6 leading-tight text-[#231f20]">
               Friendly
               <br />
               <span className="text-brand-yellow">
@@ -50,7 +50,7 @@ export default function Home() {
               </span>
             </h1>
             
-            <p className="text-xl sm:text-2xl text-text-secondary dark:text-text-secondary-dark mb-10 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-xl sm:text-2xl mb-10 max-w-3xl mx-auto leading-relaxed text-[#262522]">
               Turn networking into <span className="font-semibold text-brand-green">meaningful relationships</span>. 
               Never let another connection slip away.
             </p>
@@ -69,7 +69,7 @@ export default function Home() {
             </div>
             
             {/* Social proof */}
-            <p className="text-sm text-text-secondary dark:text-text-secondary-dark mt-8">
+            <p className="text-sm mt-8 text-[#262522]">
               Join professionals who never forget to follow up
             </p>
           </div>
@@ -78,10 +78,10 @@ export default function Home() {
         {/* Features Section */}
         <div className="py-20">
           <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold text-text-primary dark:text-text-primary-dark mb-4">
+            <h2 className="text-3xl sm:text-4xl font-bold mb-4 text-[#231f20]">
               Everything you need to stay connected
             </h2>
-            <p className="text-lg text-text-secondary dark:text-text-secondary-dark max-w-2xl mx-auto">
+            <p className="text-lg max-w-2xl mx-auto text-[#262522]">
               Simple, powerful tools to turn chance encounters into lasting professional relationships.
             </p>
           </div>

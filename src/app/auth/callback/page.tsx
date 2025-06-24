@@ -66,10 +66,10 @@ function AuthCallbackContent() {
   }, [router, searchParams])
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white">
+    <div className="min-h-screen flex items-center justify-center" style={{backgroundColor: 'var(--bg-main)'}}>
       <div className="text-center">
         <LoadingSpinner className="mx-auto mb-4" />
-        <p className="text-gray-600">Completing sign in...</p>
+        <p style={{color: 'var(--text-secondary)'}}>Completing sign in...</p>
       </div>
     </div>
   )
@@ -78,10 +78,10 @@ function AuthCallbackContent() {
 export default function AuthCallback() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center bg-white">
+      <div className="min-h-screen flex items-center justify-center" style={{backgroundColor: 'var(--bg-main)'}}>
         <div className="text-center">
           <LoadingSpinner className="mx-auto mb-4" />
-          <p className="text-gray-600">Loading...</p>
+          <p style={{color: 'var(--text-secondary)'}}>Loading...</p>
         </div>
       </div>
     }>
