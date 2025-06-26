@@ -80,7 +80,7 @@ export default function AddContactPage() {
 
   return (
     <AppLayout>
-      <main className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8" style={{ backgroundColor: 'var(--bg-main)' }}>
         <div className="mb-8">
           <div className="flex items-center space-x-4 mb-4">
             <Link href="/contacts">
@@ -89,8 +89,8 @@ export default function AddContactPage() {
               </Button>
             </Link>
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Add New Contact</h2>
-          <p className="text-gray-600">
+          <h2 className="text-2xl font-bold mb-2" style={{ color: 'var(--text-primary)' }}>Add New Contact</h2>
+          <p style={{ color: 'var(--text-secondary)' }}>
             Add someone new to your network and set up reminders to stay in touch.
           </p>
         </div>
@@ -104,7 +104,7 @@ export default function AddContactPage() {
           </CardHeader>
           <CardContent>
             {error && (
-              <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-md text-sm mb-6">
+              <div className="px-4 py-3 rounded-md text-sm mb-6" style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.2)', color: 'rgb(239, 68, 68)' }}>
                 {error}
               </div>
             )}
@@ -112,10 +112,10 @@ export default function AddContactPage() {
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Basic Information */}
               <div className="space-y-4">
-                <h3 className="text-lg font-medium text-gray-900">Basic Information</h3>
+                <h3 className="text-lg font-medium" style={{ color: 'var(--text-primary)' }}>Basic Information</h3>
                 
                 <div>
-                  <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label htmlFor="name" className="block text-sm font-medium mb-1" style={{ color: 'var(--text-primary)' }}>
                     Name *
                   </label>
                   <Input
@@ -130,7 +130,7 @@ export default function AddContactPage() {
                 </div>
 
                 <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label htmlFor="email" className="block text-sm font-medium mb-1" style={{ color: 'var(--text-primary)' }}>
                     Email
                   </label>
                   <Input
@@ -145,7 +145,7 @@ export default function AddContactPage() {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label htmlFor="gender" className="block text-sm font-medium text-gray-700 mb-1">
+                    <label htmlFor="gender" className="block text-sm font-medium mb-1" style={{ color: 'var(--text-primary)' }}>
                       Gender
                     </label>
                     <select
@@ -154,7 +154,12 @@ export default function AddContactPage() {
                       value={formData.gender}
                       onChange={handleInputChange}
                       disabled={loading}
-                      className="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:cursor-not-allowed disabled:opacity-50"
+                      className="flex h-10 w-full rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-yellow focus:border-transparent disabled:cursor-not-allowed disabled:opacity-50"
+                      style={{ 
+                        border: '1px solid rgba(var(--text-primary-rgb), 0.3)', 
+                        backgroundColor: 'var(--bg-card)', 
+                        color: 'var(--text-primary)' 
+                      }}
                     >
                       <option value="">Select...</option>
                       <option value="male">Male</option>
@@ -165,7 +170,7 @@ export default function AddContactPage() {
                   </div>
 
                   <div>
-                    <label htmlFor="birthday" className="block text-sm font-medium text-gray-700 mb-1">
+                    <label htmlFor="birthday" className="block text-sm font-medium mb-1" style={{ color: 'var(--text-primary)' }}>
                       Birthday
                     </label>
                     <Input
@@ -180,7 +185,7 @@ export default function AddContactPage() {
                 </div>
 
                 <div>
-                  <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label htmlFor="description" className="block text-sm font-medium mb-1" style={{ color: 'var(--text-primary)' }}>
                     Short Description
                   </label>
                   <textarea
@@ -190,18 +195,23 @@ export default function AddContactPage() {
                     value={formData.description}
                     onChange={handleInputChange}
                     disabled={loading}
-                    className="flex w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:cursor-not-allowed disabled:opacity-50 min-h-[80px]"
+                    className="flex w-full rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-yellow focus:border-transparent disabled:cursor-not-allowed disabled:opacity-50 min-h-[80px]"
+                    style={{ 
+                      border: '1px solid rgba(var(--text-primary-rgb), 0.3)', 
+                      backgroundColor: 'var(--bg-card)', 
+                      color: 'var(--text-primary)' 
+                    }}
                   />
                 </div>
               </div>
 
               {/* Work Information */}
               <div className="space-y-4">
-                <h3 className="text-lg font-medium text-gray-900">Work Information</h3>
+                <h3 className="text-lg font-medium" style={{ color: 'var(--text-primary)' }}>Work Information</h3>
                 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label htmlFor="work_company" className="block text-sm font-medium text-gray-700 mb-1">
+                    <label htmlFor="work_company" className="block text-sm font-medium mb-1" style={{ color: 'var(--text-primary)' }}>
                       Company
                     </label>
                     <Input
@@ -215,7 +225,7 @@ export default function AddContactPage() {
                   </div>
 
                   <div>
-                    <label htmlFor="work_position" className="block text-sm font-medium text-gray-700 mb-1">
+                    <label htmlFor="work_position" className="block text-sm font-medium mb-1" style={{ color: 'var(--text-primary)' }}>
                       Position
                     </label>
                     <Input
@@ -232,10 +242,10 @@ export default function AddContactPage() {
 
               {/* Additional Information */}
               <div className="space-y-4">
-                <h3 className="text-lg font-medium text-gray-900">Additional Information</h3>
+                <h3 className="text-lg font-medium" style={{ color: 'var(--text-primary)' }}>Additional Information</h3>
                 
                 <div>
-                  <label htmlFor="how_we_met" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label htmlFor="how_we_met" className="block text-sm font-medium mb-1" style={{ color: 'var(--text-primary)' }}>
                     How We Met
                   </label>
                   <Input
@@ -250,7 +260,7 @@ export default function AddContactPage() {
                 </div>
 
                 <div>
-                  <label htmlFor="interests" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label htmlFor="interests" className="block text-sm font-medium mb-1" style={{ color: 'var(--text-primary)' }}>
                     Interests & Notes
                   </label>
                   <textarea
@@ -260,12 +270,17 @@ export default function AddContactPage() {
                     value={formData.interests}
                     onChange={handleInputChange}
                     disabled={loading}
-                    className="flex w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:cursor-not-allowed disabled:opacity-50 min-h-[80px]"
+                    className="flex w-full rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-yellow focus:border-transparent disabled:cursor-not-allowed disabled:opacity-50 min-h-[80px]"
+                    style={{ 
+                      border: '1px solid rgba(var(--text-primary-rgb), 0.3)', 
+                      backgroundColor: 'var(--bg-card)', 
+                      color: 'var(--text-primary)' 
+                    }}
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="reminder_days" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label htmlFor="reminder_days" className="block text-sm font-medium mb-1" style={{ color: 'var(--text-primary)' }}>
                     Reminder Interval (days)
                   </label>
                   <Input
@@ -278,7 +293,7 @@ export default function AddContactPage() {
                     onChange={handleInputChange}
                     disabled={loading}
                   />
-                  <p className="text-sm text-gray-500 mt-1">
+                  <p className="text-sm mt-1" style={{ color: 'var(--text-secondary)' }}>
                     How often you want to be reminded to reach out (default: 30 days)
                   </p>
                 </div>

@@ -101,14 +101,14 @@ export default function LoginPage() {
   // Show loading while checking authentication
   if (authLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-white">
+      <div className="min-h-screen flex items-center justify-center bg-[var(--background)]">
         <LoadingSpinner />
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex items-center justify-center bg-[var(--background)] py-12 px-4 sm:px-6 lg:px-8">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-bold">Welcome back</CardTitle>
@@ -116,7 +116,7 @@ export default function LoginPage() {
         </CardHeader>
         <CardContent className="space-y-4">
           {error && (
-            <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-md text-sm">
+            <div className="bg-[var(--brand-red)]/20 border border-[var(--brand-red)] text-[var(--brand-red)] px-4 py-3 rounded-md text-sm">
               {error}
             </div>
           )}
@@ -152,10 +152,10 @@ export default function LoginPage() {
 
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-300" />
+              <div className="w-full border-t border-[var(--text-primary)]/20" />
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="bg-white px-2 text-gray-500">Or continue with</span>
+              <span className="bg-[var(--surface)] px-2 text-[var(--text-secondary)]">Or continue with</span>
             </div>
           </div>
 
@@ -171,9 +171,9 @@ export default function LoginPage() {
             </Button>
           </div>
 
-          <div className="text-center text-sm text-gray-600">
+          <div className="text-center text-sm text-[var(--text-secondary)]">
             Don&apos;t have an account?{' '}
-            <Link href="/signup" className="text-blue-600 hover:text-blue-500">
+            <Link href="/signup" className="text-[var(--brand-blue)] hover:text-[var(--brand-blue)]/80">
               Sign up
             </Link>
           </div>

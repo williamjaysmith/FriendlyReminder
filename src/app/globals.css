@@ -1,10 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  /* Brand Color System */
-  --gray-light: #1b1d23;
-  --gray-dark: #131519;
-  --gray-darkest: #0d0f11;
+  /* Brand Color System - Keep for legacy compatibility */
   --brand-coal: #0f0d0e;
   --brand-charcoal: #231f20;
   --brand-gray: #262522;
@@ -17,114 +14,24 @@
   --brand-orange: #fc7428;
   --brand-red: #ed203d;
   --brand-white: #ffffff;
-  --gentlePeachLol: #f99157;
-  --magesticPurple: #9d7dce;
-  
-  /* Color Aliases */
-  --red: var(--brand-red);
-  --white: var(--brand-beige);
-  --purple: var(--brand-purple);
-  --black: var(--brand-coal);
-  --blue: var(--brand-blue);
-  --pink: var(--brand-pink);
-  --gold: var(--brand-yellow);
-  --aqua: var(--brand-blue);
-  --gray: var(--brand-gray);
-  --yellow: var(--brand-yellow);
-  --green: var(--brand-green);
-  --orange: var(--brand-orange);
-  
-  /* Light Mode Theme */
-  --background: var(--brand-beige);
-  --foreground: var(--brand-charcoal);
-  --surface: var(--brand-beige);
-  --card-background: var(--brand-beige);
-  --text-primary: var(--brand-charcoal);
-  --text-secondary: var(--brand-gray);
-  --button-primary: var(--brand-yellow);
-  --button-text: var(--brand-charcoal);
-  
-  /* Card system variables */
+
+  /* Card system variables - Keep for special borders */
   --card-gap: 0.5rem;
   --outer-radius: 20px;
   --inner-radius: calc(var(--outer-radius) - var(--card-gap));
-  --border-main: 6px solid var(--brand-beige);
-  --border-accent: 2px solid var(--brand-charcoal);
-  
-  /* Light mode special borders - thick beige with thin charcoal lines */
-  --container-border: 
-    var(--border-main),
-    0 0 0 calc(6px + 2px) var(--brand-charcoal),
-    inset 0 0 0 2px var(--brand-charcoal);
+
+  /* Theme colors that change based on dark mode */
+  --bg-main: #231f20;
+  --bg-card: #f9f4da;
+  --text-primary: #231f20;
+  --text-secondary: #262522;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root:not(.light) {
-    /* Dark Mode Theme */
-    --background: var(--brand-charcoal);
-    --foreground: var(--brand-beige);
-    --surface: var(--brand-charcoal);
-    --card-background: var(--brand-beige);
-    --text-primary: var(--brand-beige);
-    --text-secondary: var(--brand-beige);
-    --button-primary: var(--brand-yellow);
-    --button-text: var(--brand-charcoal);
-    
-    /* Dark mode borders - simpler, no complex borders */
-    --border-main: 3px solid var(--brand-charcoal);
-    --border-accent: 1px solid var(--brand-beige);
-    --container-border: var(--border-accent);
-  }
-}
-
-/* Class-based dark mode (takes precedence over system preference) */
 .dark {
-  /* Dark Mode Theme */
-  --background: var(--brand-charcoal);
-  --foreground: var(--brand-beige);
-  --surface: var(--brand-charcoal);
-  --card-background: var(--brand-beige);
-  --text-primary: var(--brand-beige);
-  --text-secondary: var(--brand-beige);
-  --button-primary: var(--brand-yellow);
-  --button-text: var(--brand-charcoal);
-  
-  /* Dark mode borders - simpler, no complex borders */
-  --border-main: 3px solid var(--brand-charcoal);
-  --border-accent: 1px solid var(--brand-beige);
-  --container-border: var(--border-accent);
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-surface: var(--surface);
-  
-  /* Typography */
-  --font-sans: var(--font-plus-jakarta), system-ui, sans-serif;
-  --font-display: var(--font-plus-jakarta), system-ui, sans-serif;
-  --font-mono: var(--font-jetbrains-mono), 'SF Mono', Monaco, 'Cascadia Code', monospace;
-  
-  /* Font weights */
-  --font-weight-light: 300;
-  --font-weight-normal: 400;
-  --font-weight-medium: 500;
-  --font-weight-semibold: 600;
-  --font-weight-bold: 700;
-  
-  /* Spacing scale */
-  --space-xs: 0.25rem;
-  --space-sm: 0.5rem;
-  --space-md: 1rem;
-  --space-lg: 1.5rem;
-  --space-xl: 2rem;
-  --space-2xl: 3rem;
-  
-  /* Border radius */
-  --radius-sm: 0.375rem;
-  --radius-md: 0.5rem;
-  --radius-lg: 0.75rem;
-  --radius-xl: 1rem;
+  --bg-main: #fefbf0;
+  --bg-card: #f9f4da;
+  --text-primary: #231f20;
+  --text-secondary: #262522;
 }
 
 /* Base styles */
@@ -133,35 +40,26 @@
 }
 
 body {
-  background: var(--background);
-  color: var(--text-primary);
   font-family: var(--font-sans);
-  font-weight: var(--font-weight-normal);
+  font-weight: 400;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Typography improvements */
-h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-display);
-  font-weight: var(--font-weight-bold);
-  line-height: 1.2;
-  color: var(--text-primary);
-}
-
-h1 { font-size: 2.5rem; }
-h2 { font-size: 2rem; }
-h3 { font-size: 1.5rem; }
-h4 { font-size: 1.25rem; }
-
 /* Smooth transitions */
 * {
-  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  transition: color 0.2s ease, background-color 0.2s ease,
+    border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 /* Focus styles */
 :focus-visible {
   outline: 2px solid var(--brand-yellow);
   outline-offset: 2px;
+}
+
+/* Logo styles */
+.logo-font {
+  font-family: var(--font-leckerli-one), cursive !important;
 }

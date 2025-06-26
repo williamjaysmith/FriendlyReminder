@@ -29,51 +29,55 @@ export function AppLayout({ children }: AppLayoutProps) {
   return (
     <div className="min-h-screen bg-[var(--background)]">
       {/* Header */}
-      <header className="bg-[var(--surface)] shadow-sm border-b border-[var(--text-primary)]">
+      <header className="bg-[var(--brand-charcoal)] shadow-sm border-b border-[var(--brand-beige)]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
               <Link href="/dashboard">
-                <h1 className="text-xl font-semibold text-[var(--text-primary)] hover:text-[var(--brand-yellow)] transition-colors">
-                  Friendly Reminder
-                </h1>
+                <div className="w-10 h-10 bg-[var(--brand-beige)] text-[var(--brand-charcoal)] rounded-full flex items-center justify-center text-lg font-bold hover:bg-[var(--brand-yellow)] transition-colors" style={{fontFamily: 'Leckerli One, cursive'}}>
+                  FR
+                </div>
               </Link>
             </div>
 
             {/* Desktop Navigation */}
-            <nav className="hidden sm:flex items-center space-x-4">
+            <nav className="hidden sm:flex items-center space-x-2 sm:space-x-4">
               <Link 
                 href="/dashboard" 
-                className={`font-medium transition-colors ${
+                className={`transition-colors ${
                   isActive('/dashboard') 
-                    ? 'text-[var(--brand-yellow)]' 
-                    : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+                    ? 'font-bold text-sm sm:text-lg text-[var(--brand-purple)]' 
+                    : 'font-medium text-sm sm:text-base text-[var(--brand-beige)] hover:text-[var(--brand-yellow)]'
                 }`}
               >
                 Dashboard
               </Link>
               <Link 
                 href="/contacts" 
-                className={`font-medium transition-colors ${
+                className={`transition-colors ${
                   isActive('/contacts') || pathname.startsWith('/contacts')
-                    ? 'text-[var(--brand-yellow)]' 
-                    : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+                    ? 'font-bold text-sm sm:text-lg text-[var(--brand-purple)]' 
+                    : 'font-medium text-sm sm:text-base text-[var(--brand-beige)] hover:text-[var(--brand-yellow)]'
                 }`}
               >
                 Contacts
               </Link>
               <Link 
                 href="/settings" 
-                className={`font-medium transition-colors ${
+                className={`transition-colors ${
                   isActive('/settings') 
-                    ? 'text-[var(--brand-yellow)]' 
-                    : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+                    ? 'font-bold text-sm sm:text-lg text-[var(--brand-purple)]' 
+                    : 'font-medium text-sm sm:text-base text-[var(--brand-beige)] hover:text-[var(--brand-yellow)]'
                 }`}
               >
                 Settings
               </Link>
               <ThemeToggle />
-              <Button variant="outline" onClick={handleSignOut}>
+              <Button 
+                variant="outline" 
+                onClick={handleSignOut}
+                className="border-[var(--brand-beige)] text-[var(--brand-beige)] hover:bg-[var(--brand-beige)] hover:text-[var(--brand-charcoal)]"
+              >
                 Sign Out
               </Button>
             </nav>
@@ -81,12 +85,17 @@ export function AppLayout({ children }: AppLayoutProps) {
             {/* Mobile Navigation */}
             <div className="sm:hidden flex items-center space-x-2">
               <ThemeToggle />
-              <Button variant="outline" size="sm" onClick={handleSignOut}>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={handleSignOut}
+                className="border-[var(--brand-beige)] text-[var(--brand-beige)] hover:bg-[var(--brand-beige)] hover:text-[var(--brand-charcoal)]"
+              >
                 Sign Out
               </Button>
               <button
                 onClick={() => setMobileMenuOpen(true)}
-                className="p-2 rounded-md text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--text-primary)]/10 focus:outline-none focus:ring-2 focus:ring-[var(--brand-yellow)]"
+                className="p-2 rounded-md text-[var(--brand-beige)] hover:text-[var(--brand-yellow)] hover:bg-[var(--brand-beige)]/10 focus:outline-none focus:ring-2 focus:ring-[var(--brand-yellow)]"
                 aria-label="Open menu"
               >
                 <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -108,12 +117,14 @@ export function AppLayout({ children }: AppLayoutProps) {
           />
           
           {/* Menu Panel */}
-          <div className="fixed top-0 right-0 h-full w-64 bg-[var(--surface)] shadow-xl">
-            <div className="flex items-center justify-between p-4 border-b border-[var(--text-primary)]">
-              <h2 className="text-lg font-semibold text-[var(--text-primary)]">Menu</h2>
+          <div className="fixed top-0 right-0 h-full w-64 bg-[var(--brand-charcoal)] shadow-xl">
+            <div className="flex items-center justify-between p-4 border-b border-[var(--brand-beige)]">
+              <div className="w-8 h-8 bg-[var(--brand-beige)] text-[var(--brand-charcoal)] rounded-full flex items-center justify-center text-sm font-bold" style={{fontFamily: 'Leckerli One, cursive'}}>
+                FR
+              </div>
               <button
                 onClick={closeMobileMenu}
-                className="p-2 rounded-md text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--text-primary)]/10 focus:outline-none focus:ring-2 focus:ring-[var(--brand-yellow)]"
+                className="p-2 rounded-md text-[var(--brand-beige)] hover:text-[var(--brand-yellow)] hover:bg-[var(--brand-beige)]/10 focus:outline-none focus:ring-2 focus:ring-[var(--brand-yellow)]"
                 aria-label="Close menu"
               >
                 <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -127,10 +138,10 @@ export function AppLayout({ children }: AppLayoutProps) {
                 <Link 
                   href="/dashboard" 
                   onClick={closeMobileMenu}
-                  className={`block py-2 px-3 rounded-md font-medium transition-colors ${
+                  className={`block py-2 px-3 rounded-md transition-colors ${
                     isActive('/dashboard') 
-                      ? 'bg-[var(--brand-yellow)]/20 text-[var(--brand-yellow)]' 
-                      : 'text-[var(--text-secondary)] hover:bg-[var(--text-primary)]/10'
+                      ? 'bg-[var(--brand-purple)]/20 text-[var(--brand-purple)] font-bold text-lg' 
+                      : 'text-[var(--brand-beige)] hover:bg-[var(--brand-beige)]/10 font-medium'
                   }`}
                 >
                   Dashboard
@@ -138,10 +149,10 @@ export function AppLayout({ children }: AppLayoutProps) {
                 <Link 
                   href="/contacts" 
                   onClick={closeMobileMenu}
-                  className={`block py-2 px-3 rounded-md font-medium transition-colors ${
+                  className={`block py-2 px-3 rounded-md transition-colors ${
                     isActive('/contacts') || pathname.startsWith('/contacts')
-                      ? 'bg-[var(--brand-yellow)]/20 text-[var(--brand-yellow)]' 
-                      : 'text-[var(--text-secondary)] hover:bg-[var(--text-primary)]/10'
+                      ? 'bg-[var(--brand-purple)]/20 text-[var(--brand-purple)] font-bold text-lg' 
+                      : 'text-[var(--brand-beige)] hover:bg-[var(--brand-beige)]/10 font-medium'
                   }`}
                 >
                   Contacts
@@ -149,10 +160,10 @@ export function AppLayout({ children }: AppLayoutProps) {
                 <Link 
                   href="/settings" 
                   onClick={closeMobileMenu}
-                  className={`block py-2 px-3 rounded-md font-medium transition-colors ${
+                  className={`block py-2 px-3 rounded-md transition-colors ${
                     isActive('/settings') 
-                      ? 'bg-[var(--brand-yellow)]/20 text-[var(--brand-yellow)]' 
-                      : 'text-[var(--text-secondary)] hover:bg-[var(--text-primary)]/10'
+                      ? 'bg-[var(--brand-purple)]/20 text-[var(--brand-purple)] font-bold text-lg' 
+                      : 'text-[var(--brand-beige)] hover:bg-[var(--brand-beige)]/10 font-medium'
                   }`}
                 >
                   Settings

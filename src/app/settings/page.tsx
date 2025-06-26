@@ -195,7 +195,7 @@ export default function SettingsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-white">
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--bg-main)' }}>
         <LoadingSpinner />
       </div>
     )
@@ -205,20 +205,20 @@ export default function SettingsPage() {
     <AppLayout>
       <main className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Account Settings</h2>
-          <p className="text-gray-600">
+          <h2 className="text-2xl font-bold mb-2" style={{ color: 'var(--text-primary)' }}>Account Settings</h2>
+          <p style={{ color: 'var(--text-secondary)' }}>
             Manage your profile and account preferences.
           </p>
         </div>
 
         {error && (
-          <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-md text-sm mb-6">
+          <div className="px-4 py-3 rounded-md text-sm mb-6" style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.2)', color: 'rgb(239, 68, 68)' }}>
             {error}
           </div>
         )}
 
         {success && (
-          <div className="bg-green-50 border border-green-200 text-green-600 px-4 py-3 rounded-md text-sm mb-6">
+          <div className="px-4 py-3 rounded-md text-sm mb-6" style={{ backgroundColor: 'rgba(34, 197, 94, 0.1)', border: '1px solid rgba(34, 197, 94, 0.2)', color: 'rgb(34, 197, 94)' }}>
             {success}
           </div>
         )}
@@ -235,7 +235,7 @@ export default function SettingsPage() {
             <CardContent>
               <form onSubmit={handleProfileUpdate} className="space-y-4">
                 <div>
-                  <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label htmlFor="username" className="block text-sm font-medium mb-1" style={{ color: 'var(--text-primary)' }}>
                     Username
                   </label>
                   <Input
@@ -248,7 +248,7 @@ export default function SettingsPage() {
                 </div>
                 
                 <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label htmlFor="email" className="block text-sm font-medium mb-1" style={{ color: 'var(--text-primary)' }}>
                     Email
                   </label>
                   <Input
@@ -258,7 +258,7 @@ export default function SettingsPage() {
                     onChange={(e) => setProfile(prev => ({ ...prev, email: e.target.value }))}
                     disabled={saving}
                   />
-                  <p className="text-sm text-gray-500 mt-1">
+                  <p className="text-sm mt-1" style={{ color: 'var(--text-secondary)' }}>
                     Changing your email will require verification.
                   </p>
                 </div>
@@ -283,7 +283,7 @@ export default function SettingsPage() {
             <CardContent>
               <form onSubmit={handlePasswordUpdate} className="space-y-4">
                 <div>
-                  <label htmlFor="newPassword" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label htmlFor="newPassword" className="block text-sm font-medium mb-1" style={{ color: 'var(--text-primary)' }}>
                     New Password
                   </label>
                   <PasswordInput
@@ -297,7 +297,7 @@ export default function SettingsPage() {
                 </div>
                 
                 <div>
-                  <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label htmlFor="confirmPassword" className="block text-sm font-medium mb-1" style={{ color: 'var(--text-primary)' }}>
                     Confirm New Password
                   </label>
                   <PasswordInput
@@ -330,14 +330,14 @@ export default function SettingsPage() {
             <CardContent>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <span className="text-sm text-gray-500">Account Created</span>
-                  <p className="font-medium">
+                  <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>Account Created</span>
+                  <p className="font-medium" style={{ color: 'var(--text-primary)' }}>
                     {user?.$createdAt ? new Date(user.$createdAt).toLocaleDateString() : 'Unknown'}
                   </p>
                 </div>
                 <div>
-                  <span className="text-sm text-gray-500">Last Sign In</span>
-                  <p className="font-medium">
+                  <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>Last Sign In</span>
+                  <p className="font-medium" style={{ color: 'var(--text-primary)' }}>
                     {user?.$updatedAt ? new Date(user.$updatedAt).toLocaleDateString() : 'Unknown'}
                   </p>
                 </div>
@@ -354,7 +354,7 @@ export default function SettingsPage() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-gray-600 mb-4">
+              <p className="text-sm mb-4" style={{ color: 'var(--text-secondary)' }}>
                 Export all your contacts and conversation history as a JSON file.
               </p>
               <Button 
@@ -388,7 +388,7 @@ export default function SettingsPage() {
           {/* Danger Zone */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-red-600">Danger Zone</CardTitle>
+              <CardTitle style={{ color: 'rgb(239, 68, 68)' }}>Danger Zone</CardTitle>
               <CardDescription>
                 Irreversible and destructive actions.
               </CardDescription>
@@ -396,8 +396,8 @@ export default function SettingsPage() {
             <CardContent>
               <div className="space-y-4">
                 <div>
-                  <h4 className="font-medium text-gray-900 mb-2">Delete Account</h4>
-                  <p className="text-sm text-gray-600 mb-4">
+                  <h4 className="font-medium mb-2" style={{ color: 'var(--text-primary)' }}>Delete Account</h4>
+                  <p className="text-sm mb-4" style={{ color: 'var(--text-secondary)' }}>
                     Permanently delete your account and all associated data. This action cannot be undone.
                   </p>
                   <Button 

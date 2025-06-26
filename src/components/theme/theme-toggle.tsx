@@ -7,6 +7,8 @@ export function ThemeToggle() {
   const { theme, setTheme, actualTheme } = useTheme()
 
   const toggleTheme = () => {
+    const htmlClass = document.documentElement.className
+    console.log('Toggle clicked. Current theme:', theme, 'Actual theme:', actualTheme, 'HTML class:', htmlClass)
     if (theme === 'system') {
       // If currently system, toggle to opposite of current actual theme
       setTheme(actualTheme === 'dark' ? 'light' : 'dark')
@@ -22,7 +24,16 @@ export function ThemeToggle() {
       variant="ghost"
       size="sm"
       onClick={toggleTheme}
-      className="w-9 h-9 p-0"
+      className="w-9 h-9 p-0 hover:bg-[#fcba28]/10 transition-colors"
+      style={{
+        color: '#f9f4da', // beige
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.color = '#fcba28' // yellow on hover
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.color = '#f9f4da' // back to beige
+      }}
       aria-label="Toggle theme"
     >
       {actualTheme === 'dark' ? (

@@ -78,7 +78,7 @@ export default function DashboardPage() {
 
   if (loading || loadingData) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-white">
+      <div className="min-h-screen flex items-center justify-center" style={{backgroundColor: 'var(--bg-main)'}}>
         <LoadingSpinner />
       </div>
     )
@@ -92,10 +92,10 @@ export default function DashboardPage() {
     <AppLayout>
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">
+          <h2 className="text-2xl font-bold mb-2" style={{color: 'var(--text-primary)'}}>
             Welcome back, {user.name || user.email}!
           </h2>
-          <p className="text-gray-600">
+          <p style={{color: 'var(--text-secondary)'}}>
             Here&apos;s what&apos;s happening with your network today.
           </p>
         </div>
@@ -105,7 +105,7 @@ export default function DashboardPage() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Total Contacts</CardTitle>
-              <svg className="h-4 w-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{color: 'var(--text-secondary)'}}>
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
               </svg>
             </CardHeader>
@@ -117,24 +117,24 @@ export default function DashboardPage() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Overdue</CardTitle>
-              <svg className="h-4 w-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="h-4 w-4 text-[#ed203d]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-red-600">{stats.overdue}</div>
+              <div className="text-2xl font-bold text-[#ed203d]">{stats.overdue}</div>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Upcoming (7 days)</CardTitle>
-              <svg className="h-4 w-4 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="h-4 w-4 text-[#fcba28]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
               </svg>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-yellow-600">{stats.upcoming}</div>
+              <div className="text-2xl font-bold text-[#fcba28]">{stats.upcoming}</div>
             </CardContent>
           </Card>
         </div>
@@ -168,7 +168,7 @@ export default function DashboardPage() {
             <CardContent>
               {contacts.length === 0 ? (
                 <div className="text-center py-6">
-                  <p className="text-gray-500 mb-4">No contacts yet</p>
+                  <p className="mb-4" style={{color: 'var(--text-secondary)'}}>No contacts yet</p>
                   <Link href="/contacts/add">
                     <Button>Add your first contact</Button>
                   </Link>
@@ -178,17 +178,17 @@ export default function DashboardPage() {
                   {contacts.slice(0, 3).map((contact) => (
                     <div key={contact.id} className="flex items-center space-x-3">
                       <div className="flex-shrink-0">
-                        <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                          <span className="text-sm font-medium text-blue-600">
+                        <div className="w-8 h-8 bg-[#12b5e5]/20 rounded-full flex items-center justify-center">
+                          <span className="text-sm font-medium text-[#12b5e5]">
                             {contact.name.charAt(0).toUpperCase()}
                           </span>
                         </div>
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-gray-900 truncate">
+                        <p className="text-sm font-medium truncate" style={{color: 'var(--text-primary)'}}>
                           {contact.name}
                         </p>
-                        <p className="text-sm text-gray-500 truncate">
+                        <p className="text-sm truncate" style={{color: 'var(--text-secondary)'}}>
                           {contact.description || 'No description'}
                         </p>
                       </div>

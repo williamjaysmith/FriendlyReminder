@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { JetBrains_Mono, Plus_Jakarta_Sans } from "next/font/google";
+import { JetBrains_Mono, Plus_Jakarta_Sans, Leckerli_One } from "next/font/google";
 import { AuthProvider } from "@/components/auth/auth-provider";
 import { ToastProvider } from "@/components/ui/toast";
 import { ThemeProvider } from "@/components/theme/theme-provider";
@@ -17,6 +17,13 @@ const jetbrainsMono = JetBrains_Mono({
   display: "swap",
 });
 
+const leckerliOne = Leckerli_One({
+  variable: "--font-leckerli-one",
+  weight: "400",
+  subsets: ["latin"],
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   title: "Friendly Reminder",
   description: "Your personal CRM to stay connected with the people you meet",
@@ -28,9 +35,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" style={{backgroundColor: 'var(--bg-main)'}}>
       <body
-        className={`${plusJakarta.variable} ${jetbrainsMono.variable} antialiased`}
+        className={`${plusJakarta.variable} ${jetbrainsMono.variable} ${leckerliOne.variable} antialiased`}
+        style={{backgroundColor: 'var(--bg-main)'}}
       >
         <ThemeProvider>
           <AuthProvider>

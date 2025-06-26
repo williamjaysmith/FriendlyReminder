@@ -6,7 +6,7 @@ import Link from 'next/link'
 import { useAuth } from '@/components/auth/auth-provider'
 import { Button } from '@/components/ui/button'
 import { LoadingSpinner } from '@/components/ui/loading-spinner'
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
+import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 
 export default function Home() {
   const { user, loading } = useAuth()
@@ -20,7 +20,7 @@ export default function Home() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[var(--background)]">
+      <div className="min-h-screen flex items-center justify-center bg-background dark:bg-background-dark">
         <LoadingSpinner />
       </div>
     )
@@ -31,27 +31,27 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-[var(--background)]">
+    <div className="min-h-screen bg-background dark:bg-background-dark">
       {/* Hero Section */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="pt-20 pb-16">
           <div className="text-center">
             {/* Playful badge */}
-            <div className="inline-flex items-center px-4 py-2 bg-[var(--brand-yellow)] text-[var(--brand-charcoal)] text-sm font-medium rounded-full mb-8 border border-[var(--brand-charcoal)]">
-              <span className="w-2 h-2 bg-[var(--brand-charcoal)] rounded-full mr-2 animate-pulse"></span>
+            <div className="inline-flex items-center px-4 py-2 bg-brand-yellow text-brand-charcoal text-sm font-medium rounded-full mb-8 border border-brand-charcoal">
+              <span className="w-2 h-2 bg-brand-charcoal rounded-full mr-2 animate-pulse"></span>
               Your personal relationship manager
             </div>
             
-            <h1 className="text-5xl sm:text-7xl font-bold text-[var(--text-primary)] mb-6 leading-tight">
+            <h1 className="text-5xl sm:text-7xl font-bold text-text-primary dark:text-text-primary-dark mb-6 leading-tight">
               Friendly
               <br />
-              <span className="text-[var(--brand-yellow)]">
+              <span className="text-brand-yellow">
                 Reminder
               </span>
             </h1>
             
-            <p className="text-xl sm:text-2xl text-[var(--text-secondary)] mb-10 max-w-3xl mx-auto leading-relaxed">
-              Turn networking into <span className="font-semibold text-[var(--brand-green)]">meaningful relationships</span>. 
+            <p className="text-xl sm:text-2xl text-text-secondary dark:text-text-secondary-dark mb-10 max-w-3xl mx-auto leading-relaxed">
+              Turn networking into <span className="font-semibold text-brand-green">meaningful relationships</span>. 
               Never let another connection slip away.
             </p>
             
@@ -69,7 +69,7 @@ export default function Home() {
             </div>
             
             {/* Social proof */}
-            <p className="text-sm text-[var(--text-secondary)] mt-8">
+            <p className="text-sm text-text-secondary dark:text-text-secondary-dark mt-8">
               Join professionals who never forget to follow up
             </p>
           </div>
@@ -78,10 +78,10 @@ export default function Home() {
         {/* Features Section */}
         <div className="py-20">
           <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold text-[var(--text-primary)] mb-4">
+            <h2 className="text-3xl sm:text-4xl font-bold text-text-primary dark:text-text-primary-dark mb-4">
               Everything you need to stay connected
             </h2>
-            <p className="text-lg text-[var(--text-secondary)] max-w-2xl mx-auto">
+            <p className="text-lg text-text-secondary dark:text-text-secondary-dark max-w-2xl mx-auto">
               Simple, powerful tools to turn chance encounters into lasting professional relationships.
             </p>
           </div>

@@ -90,7 +90,7 @@ export default function ContactDetailPage() {
     const { name, value, type, checked } = e.target as HTMLInputElement
     setFormData(prev => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: type === 'checkbox' ? checked : type === 'number' ? parseInt(value) || 0 : value
     }))
   }
 
@@ -191,7 +191,7 @@ export default function ContactDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-white">
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--bg-main)' }}>
         <LoadingSpinner />
       </div>
     )
@@ -203,8 +203,8 @@ export default function ContactDetailPage() {
         <main className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <Card>
             <CardContent className="text-center py-12">
-              <h3 className="text-lg font-medium text-gray-900 mb-2">Contact not found</h3>
-              <p className="text-gray-600 mb-4">This contact doesn&apos;t exist or you don&apos;t have permission to view it.</p>
+              <h3 className="text-lg font-medium mb-2" style={{ color: 'var(--text-primary)' }}>Contact not found</h3>
+              <p className="mb-4" style={{ color: 'var(--text-secondary)' }}>This contact doesn&apos;t exist or you don&apos;t have permission to view it.</p>
               <Link href="/contacts">
                 <Button>Back to Contacts</Button>
               </Link>
@@ -228,15 +228,15 @@ export default function ContactDetailPage() {
           </div>
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
-                <span className="text-xl font-medium text-blue-600">
+              <div className="w-16 h-16 rounded-full flex items-center justify-center" style={{ backgroundColor: '#2563eb20' }}>
+                <span className="text-xl font-medium" style={{ color: '#2563eb' }}>
                   {contact.name.charAt(0).toUpperCase()}
                 </span>
               </div>
               <div>
-                <h2 className="text-2xl font-bold text-gray-900">{contact.name}</h2>
+                <h2 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>{contact.name}</h2>
                 {contact.email && (
-                  <p className="text-gray-600">{contact.email}</p>
+                  <p style={{ color: 'var(--text-secondary)' }}>{contact.email}</p>
                 )}
               </div>
             </div>
@@ -244,7 +244,7 @@ export default function ContactDetailPage() {
               <Button 
                 onClick={handleJustTalked}
                 disabled={saving}
-                className="bg-green-600 hover:bg-green-700"
+className="hover:opacity-90" style={{ backgroundColor: '#10b981' }}
               >
                 {saving ? 'Updating...' : 'Just Talked'}
               </Button>
@@ -267,7 +267,7 @@ export default function ContactDetailPage() {
         </div>
 
         {error && (
-          <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-md text-sm mb-6">
+          <div className="px-4 py-3 rounded-md text-sm mb-6" style={{ backgroundColor: '#ef444410', border: '1px solid #ef444420', color: '#ef4444' }}>
             {error}
           </div>
         )}
@@ -283,7 +283,7 @@ export default function ContactDetailPage() {
                 {isEditing ? (
                   <>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Name *</label>
+                      <label className="block text-sm font-medium mb-1" style={{ color: 'var(--text-primary)' }}>Name *</label>
                       <Input
                         name="name"
                         value={formData.name}
@@ -292,7 +292,7 @@ export default function ContactDetailPage() {
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                      <label className="block text-sm font-medium mb-1" style={{ color: 'var(--text-primary)' }}>Email</label>
                       <Input
                         name="email"
                         type="email"
@@ -302,12 +302,12 @@ export default function ContactDetailPage() {
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Gender</label>
+                        <label className="block text-sm font-medium mb-1" style={{ color: 'var(--text-primary)' }}>Gender</label>
                         <select
                           name="gender"
                           value={formData.gender}
                           onChange={handleInputChange}
-                          className="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          className="flex h-10 w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:border-transparent" style={{ borderColor: 'var(--text-primary)', opacity: 0.3, backgroundColor: 'var(--bg-card)', color: 'var(--text-primary)', focusRingColor: '#f59e0b' }}
                         >
                           <option value="">Select...</option>
                           <option value="male">Male</option>
@@ -317,7 +317,7 @@ export default function ContactDetailPage() {
                         </select>
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Birthday</label>
+                        <label className="block text-sm font-medium mb-1" style={{ color: 'var(--text-primary)' }}>Birthday</label>
                         <Input
                           name="birthday"
                           type="date"
@@ -327,12 +327,12 @@ export default function ContactDetailPage() {
                       </div>
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                      <label className="block text-sm font-medium mb-1" style={{ color: 'var(--text-primary)' }}>Description</label>
                       <textarea
                         name="description"
                         value={formData.description}
                         onChange={handleInputChange}
-                        className="flex w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent min-h-[80px]"
+                        className="flex w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:border-transparent min-h-[80px]" style={{ borderColor: 'var(--text-primary)', opacity: 0.3, backgroundColor: 'var(--bg-card)', color: 'var(--text-primary)' }}
                       />
                     </div>
                   </>
@@ -340,24 +340,24 @@ export default function ContactDetailPage() {
                   <>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <span className="text-sm text-gray-500">Email</span>
-                        <p className="font-medium">{contact.email || 'Not provided'}</p>
+                        <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>Email</span>
+                        <p className="font-medium" style={{ color: 'var(--text-primary)' }}>{contact.email || 'Not provided'}</p>
                       </div>
                       <div>
-                        <span className="text-sm text-gray-500">Gender</span>
-                        <p className="font-medium">{contact.gender || 'Not provided'}</p>
+                        <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>Gender</span>
+                        <p className="font-medium" style={{ color: 'var(--text-primary)' }}>{contact.gender || 'Not provided'}</p>
                       </div>
                     </div>
                     {contact.birthday && (
                       <div>
-                        <span className="text-sm text-gray-500">Birthday</span>
-                        <p className="font-medium">{formatDate(contact.birthday)}</p>
+                        <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>Birthday</span>
+                        <p className="font-medium" style={{ color: 'var(--text-primary)' }}>{formatDate(contact.birthday)}</p>
                       </div>
                     )}
                     {contact.description && (
                       <div>
-                        <span className="text-sm text-gray-500">Description</span>
-                        <p className="font-medium">{contact.description}</p>
+                        <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>Description</span>
+                        <p className="font-medium" style={{ color: 'var(--text-primary)' }}>{contact.description}</p>
                       </div>
                     )}
                   </>
@@ -374,7 +374,7 @@ export default function ContactDetailPage() {
                   <>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Company</label>
+                        <label className="block text-sm font-medium mb-1" style={{ color: 'var(--text-primary)' }}>Company</label>
                         <Input
                           name="work_company"
                           value={formData.work_company}
@@ -382,7 +382,7 @@ export default function ContactDetailPage() {
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Position</label>
+                        <label className="block text-sm font-medium mb-1" style={{ color: 'var(--text-primary)' }}>Position</label>
                         <Input
                           name="work_position"
                           value={formData.work_position}
@@ -391,7 +391,7 @@ export default function ContactDetailPage() {
                       </div>
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">How We Met</label>
+                      <label className="block text-sm font-medium mb-1" style={{ color: 'var(--text-primary)' }}>How We Met</label>
                       <Input
                         name="how_we_met"
                         value={formData.how_we_met}
@@ -399,12 +399,12 @@ export default function ContactDetailPage() {
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Interests & Notes</label>
+                      <label className="block text-sm font-medium mb-1" style={{ color: 'var(--text-primary)' }}>Interests & Notes</label>
                       <textarea
                         name="interests"
                         value={formData.interests}
                         onChange={handleInputChange}
-                        className="flex w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent min-h-[80px]"
+                        className="flex w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:border-transparent min-h-[80px]" style={{ borderColor: 'var(--text-primary)', opacity: 0.3, backgroundColor: 'var(--bg-card)', color: 'var(--text-primary)' }}
                       />
                     </div>
                   </>
@@ -412,24 +412,24 @@ export default function ContactDetailPage() {
                   <>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <span className="text-sm text-gray-500">Company</span>
-                        <p className="font-medium">{contact.work_company || 'Not provided'}</p>
+                        <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>Company</span>
+                        <p className="font-medium" style={{ color: 'var(--text-primary)' }}>{contact.work_company || 'Not provided'}</p>
                       </div>
                       <div>
-                        <span className="text-sm text-gray-500">Position</span>
-                        <p className="font-medium">{contact.work_position || 'Not provided'}</p>
+                        <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>Position</span>
+                        <p className="font-medium" style={{ color: 'var(--text-primary)' }}>{contact.work_position || 'Not provided'}</p>
                       </div>
                     </div>
                     {contact.how_we_met && (
                       <div>
-                        <span className="text-sm text-gray-500">How We Met</span>
-                        <p className="font-medium">{contact.how_we_met}</p>
+                        <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>How We Met</span>
+                        <p className="font-medium" style={{ color: 'var(--text-primary)' }}>{contact.how_we_met}</p>
                       </div>
                     )}
                     {contact.interests && (
                       <div>
-                        <span className="text-sm text-gray-500">Interests & Notes</span>
-                        <p className="font-medium whitespace-pre-wrap">{contact.interests}</p>
+                        <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>Interests & Notes</span>
+                        <p className="font-medium whitespace-pre-wrap" style={{ color: 'var(--text-primary)' }}>{contact.interests}</p>
                       </div>
                     )}
                   </>
@@ -448,7 +448,7 @@ export default function ContactDetailPage() {
                 {isEditing ? (
                   <>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                      <label className="block text-sm font-medium mb-1" style={{ color: 'var(--text-primary)' }}>
                         Reminder Interval (days)
                       </label>
                       <Input
@@ -468,9 +468,9 @@ export default function ContactDetailPage() {
                           name="email_reminders"
                           checked={formData.email_reminders}
                           onChange={handleInputChange}
-                          className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                          className="h-4 w-4 rounded" style={{ color: '#f59e0b', borderColor: 'var(--text-primary)', opacity: 0.3 }}
                         />
-                        <label htmlFor="email_reminders" className="text-sm font-medium text-gray-700">
+                        <label htmlFor="email_reminders" className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>
                           Send email reminders
                         </label>
                       </div>
@@ -481,9 +481,9 @@ export default function ContactDetailPage() {
                           name="birthday_reminder"
                           checked={formData.birthday_reminder}
                           onChange={handleInputChange}
-                          className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                          className="h-4 w-4 rounded" style={{ color: '#f59e0b', borderColor: 'var(--text-primary)', opacity: 0.3 }}
                         />
-                        <label htmlFor="birthday_reminder" className="text-sm font-medium text-gray-700">
+                        <label htmlFor="birthday_reminder" className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>
                           Send birthday reminders
                         </label>
                       </div>
@@ -492,23 +492,19 @@ export default function ContactDetailPage() {
                 ) : (
                   <>
                     <div>
-                      <span className="text-sm text-gray-500">Reminder Interval</span>
-                      <p className="font-medium">Every {contact.reminder_days} days</p>
+                      <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>Reminder Interval</span>
+                      <p className="font-medium" style={{ color: 'var(--text-primary)' }}>Every {contact.reminder_days} days</p>
                     </div>
                     <div className="space-y-2">
                       <div className="flex items-center justify-between">
-                        <span className="text-sm text-gray-500">Email Reminders</span>
-                        <span className={`text-sm font-medium ${
-                          contact.email_reminders ? 'text-green-600' : 'text-gray-400'
-                        }`}>
+                        <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>Email Reminders</span>
+                        <span className="text-sm font-medium" style={{ color: contact.email_reminders ? '#10b981' : 'var(--text-secondary)' }}>
                           {contact.email_reminders ? 'Enabled' : 'Disabled'}
                         </span>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-sm text-gray-500">Birthday Reminders</span>
-                        <span className={`text-sm font-medium ${
-                          contact.birthday_reminder ? 'text-green-600' : 'text-gray-400'
-                        }`}>
+                        <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>Birthday Reminders</span>
+                        <span className="text-sm font-medium" style={{ color: contact.birthday_reminder ? '#10b981' : 'var(--text-secondary)' }}>
                           {contact.birthday_reminder ? 'Enabled' : 'Disabled'}
                         </span>
                       </div>
@@ -517,16 +513,14 @@ export default function ContactDetailPage() {
                 )}
                 
                 <div>
-                  <span className="text-sm text-gray-500">Last Conversation</span>
-                  <p className="font-medium">{formatDate(contact.last_conversation)}</p>
+                  <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>Last Conversation</span>
+                  <p className="font-medium" style={{ color: 'var(--text-primary)' }}>{formatDate(contact.last_conversation)}</p>
                 </div>
                 
                 {contact.next_reminder && (
                   <div>
-                    <span className="text-sm text-gray-500">Next Reminder</span>
-                    <p className={`font-medium ${
-                      isOverdue(contact.next_reminder) ? 'text-red-600' : 'text-gray-900'
-                    }`}>
+                    <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>Next Reminder</span>
+                    <p className="font-medium" style={{ color: isOverdue(contact.next_reminder) ? '#ef4444' : 'var(--text-primary)' }}>
                       {formatDate(contact.next_reminder)}
                       {isOverdue(contact.next_reminder) && ' (Overdue)'}
                     </p>
@@ -541,12 +535,12 @@ export default function ContactDetailPage() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
-                  <span className="text-sm text-gray-500">Added</span>
-                  <p className="font-medium">{formatDate(contact.created_at)}</p>
+                  <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>Added</span>
+                  <p className="font-medium" style={{ color: 'var(--text-primary)' }}>{formatDate(contact.created_at)}</p>
                 </div>
                 <div>
-                  <span className="text-sm text-gray-500">Last Updated</span>
-                  <p className="font-medium">{formatDate(contact.updated_at)}</p>
+                  <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>Last Updated</span>
+                  <p className="font-medium" style={{ color: 'var(--text-primary)' }}>{formatDate(contact.updated_at)}</p>
                 </div>
               </CardContent>
             </Card>
@@ -554,7 +548,7 @@ export default function ContactDetailPage() {
             {!isEditing && (
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-red-600">Danger Zone</CardTitle>
+                  <CardTitle style={{ color: '#ef4444' }}>Danger Zone</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <Button 
