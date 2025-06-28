@@ -101,7 +101,7 @@ export default function DashboardPage() {
 
   return (
     <AppLayout>
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
         <div className="mb-8">
           <h2 className="text-2xl font-bold mb-2 text-[#f9f4da]">
             Welcome back, {user.name || user.email}!
@@ -112,16 +112,16 @@ export default function DashboardPage() {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <Card style={{
+        <div className="flex justify-center gap-1 sm:gap-4 md:gap-6 mb-8 max-w-4xl mx-auto px-2">
+          <Card className="flex-1 min-w-0 max-w-[200px]" style={{
             boxShadow: "8px 8px 0px #7b5ea7"
           }}>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Total Contacts
+            <CardHeader className="flex flex-row items-center justify-center sm:justify-between space-y-0 pb-1 sm:pb-2 px-2 sm:px-4 md:px-6 pt-2 sm:pt-4 md:pt-6">
+              <CardTitle className="text-xs sm:text-sm font-medium leading-tight">
+                Total
               </CardTitle>
               <svg
-                className="h-4 w-4 text-[#262522]"
+                className="hidden sm:block h-4 w-4 text-[#262522] shrink-0"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -134,18 +134,18 @@ export default function DashboardPage() {
                 />
               </svg>
             </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stats.total}</div>
+            <CardContent className="px-2 sm:px-4 md:px-6 pb-2 sm:pb-4 md:pb-6">
+              <div className="text-lg sm:text-xl md:text-2xl font-bold text-center text-[#262522]">{stats.total}</div>
             </CardContent>
           </Card>
 
-          <Card style={{
+          <Card className="flex-1 min-w-0 max-w-[200px]" style={{
             boxShadow: "8px 8px 0px #7b5ea7"
           }}>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Overdue</CardTitle>
+            <CardHeader className="flex flex-row items-center justify-center sm:justify-between space-y-0 pb-1 sm:pb-2 px-2 sm:px-4 md:px-6 pt-2 sm:pt-4 md:pt-6">
+              <CardTitle className="text-xs sm:text-sm font-medium leading-tight">Overdue</CardTitle>
               <svg
-                className="h-4 w-4 text-[#ed203d]"
+                className="hidden sm:block h-4 w-4 text-[#ed203d] shrink-0"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -158,22 +158,22 @@ export default function DashboardPage() {
                 />
               </svg>
             </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-[#ed203d]">
+            <CardContent className="px-2 sm:px-4 md:px-6 pb-2 sm:pb-4 md:pb-6">
+              <div className="text-lg sm:text-xl md:text-2xl font-bold text-center text-[#262522]">
                 {stats.overdue}
               </div>
             </CardContent>
           </Card>
 
-          <Card style={{
+          <Card className="flex-1 min-w-0 max-w-[200px]" style={{
             boxShadow: "8px 8px 0px #7b5ea7"
           }}>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Upcoming (7 days)
+            <CardHeader className="flex flex-row items-center justify-center sm:justify-between space-y-0 pb-1 sm:pb-2 px-2 sm:px-4 md:px-6 pt-2 sm:pt-4 md:pt-6">
+              <CardTitle className="text-xs sm:text-sm font-medium leading-tight">
+                Upcoming
               </CardTitle>
               <svg
-                className="h-4 w-4 text-[#fcba28]"
+                className="hidden sm:block h-4 w-4 text-[#fcba28] shrink-0"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -186,8 +186,8 @@ export default function DashboardPage() {
                 />
               </svg>
             </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-[#fcba28]">
+            <CardContent className="px-2 sm:px-4 md:px-6 pb-2 sm:pb-4 md:pb-6">
+              <div className="text-lg sm:text-xl md:text-2xl font-bold text-center text-[#262522]">
                 {stats.upcoming}
               </div>
             </CardContent>
@@ -195,8 +195,8 @@ export default function DashboardPage() {
         </div>
 
         {/* Action Cards */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <Card style={{
+        <div className="flex flex-wrap justify-center gap-6">
+          <Card className="w-full max-w-96" style={{
             boxShadow: "8px 8px 0px #7b5ea7"
           }}>
             <CardHeader>
@@ -217,7 +217,7 @@ export default function DashboardPage() {
             </CardContent>
           </Card>
 
-          <Card style={{
+          <Card className="w-full max-w-96" style={{
             boxShadow: "8px 8px 0px #7b5ea7"
           }}>
             <CardHeader>
@@ -259,8 +259,9 @@ export default function DashboardPage() {
                         </p>
                       </div>
                       <Link href={`/contacts/${contact.id}`}>
-                        <Button variant="ghost" size="sm">
-                          View
+                        <Button variant="ghost" size="sm" className="shrink-0">
+                          <span className="hidden sm:inline">View</span>
+                          <span className="sm:hidden">→</span>
                         </Button>
                       </Link>
                     </div>

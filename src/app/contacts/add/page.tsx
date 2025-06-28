@@ -80,7 +80,7 @@ export default function AddContactPage() {
 
   return (
     <AppLayout>
-      <main className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8" style={{ backgroundColor: 'var(--bg-main)' }}>
+      <main className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-14" style={{ backgroundColor: 'var(--bg-main)' }}>
         <div className="mb-8">
           <div className="flex items-center space-x-4 mb-4">
             <Link href="/contacts">

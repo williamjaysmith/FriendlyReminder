@@ -9,13 +9,15 @@ import { DATABASE_ID, COLLECTIONS } from '@/lib/appwrite/types'
 import { mapDocumentToContact } from '@/lib/appwrite/helpers'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Toggle } from '@/components/ui/toggle'
 import { AppLayout } from '@/components/layout/app-layout'
 import { Contact } from '@/lib/types'
 import { LoadingSpinner } from '@/components/ui/loading-spinner'
 
 export default function ContactDetailPage() {
-  const { user } = useAuth()
+  const { user, loading: authLoading } = useAuth()
   const router = useRouter()
   const params = useParams()
   const contactId = params.id as string
@@ -78,19 +80,28 @@ export default function ContactDetailPage() {
   }, [contactId, user?.$id])
 
   useEffect(() => {
+    if (authLoading) return // Wait for auth to finish loading
+    
     if (!user) {
       router.push('/login')
       return
     }
 
     fetchContact()
-  }, [user, contactId, fetchContact, router])
+  }, [user, authLoading, contactId, fetchContact, router])
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type, checked } = e.target as HTMLInputElement
     setFormData(prev => ({
       ...prev,
       [name]: type === 'checkbox' ? checked : type === 'number' ? parseInt(value) || 0 : value
+    }))
+  }
+
+  const handleToggleChange = (name: string, checked: boolean) => {
+    setFormData(prev => ({
+      ...prev,
+      [name]: checked
     }))
   }
 
@@ -135,8 +146,9 @@ export default function ContactDetailPage() {
     setError(null)
 
     try {
-      const now = new Date().toISOString().split('T')[0] // YYYY-MM-DD format
-      const nextReminder = new Date(Date.now() + (contact?.reminder_days || 30) * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+      const now = new Date().toISOString().split('T')[0] // YYYY-MM-DD format (10 chars)
+      const nextReminderDate = new Date(Date.now() + (contact?.reminder_days || 30) * 24 * 60 * 60 * 1000)
+      const nextReminder = nextReminderDate.toISOString().split('T')[0] // YYYY-MM-DD format (10 chars)
 
       await databases.updateDocument(
         DATABASE_ID,
@@ -181,15 +193,41 @@ export default function ContactDetailPage() {
 
   const formatDate = (dateString: string | null | undefined) => {
     if (!dateString) return 'Never'
+    // Handle date-only strings (YYYY-MM-DD) to avoid timezone issues
+    if (dateString.length === 10 && dateString.includes('-')) {
+      const [year, month, day] = dateString.split('-')
+      const date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day))
+      return date.toLocaleDateString()
+    }
     return new Date(dateString).toLocaleDateString()
+  }
+
+  const formatDateTime = (dateString: string | null | undefined) => {
+    if (!dateString) return 'Never'
+    // Handle date-only strings (YYYY-MM-DD) - show just the date since there's no time info
+    if (dateString.length === 10 && dateString.includes('-')) {
+      const [year, month, day] = dateString.split('-')
+      const date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day))
+      return date.toLocaleDateString()
+    }
+    // For full timestamps, show date and time
+    return new Date(dateString).toLocaleString()
   }
 
   const isOverdue = (nextReminder: string | null | undefined) => {
     if (!nextReminder) return false
+    // Handle date-only strings (YYYY-MM-DD) to avoid timezone issues
+    if (nextReminder.length === 10 && nextReminder.includes('-')) {
+      const [year, month, day] = nextReminder.split('-')
+      const reminderDate = new Date(parseInt(year), parseInt(month) - 1, parseInt(day))
+      const today = new Date()
+      today.setHours(0, 0, 0, 0) // Reset to start of day for fair comparison
+      return reminderDate < today
+    }
     return new Date(nextReminder) < new Date()
   }
 
-  if (loading) {
+  if (loading || authLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--bg-main)' }}>
         <LoadingSpinner />
@@ -200,7 +238,7 @@ export default function ContactDetailPage() {
   if (!contact) {
     return (
       <AppLayout>
-        <main className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <main className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
           <Card>
             <CardContent className="text-center py-12">
               <h3 className="text-lg font-medium mb-2" style={{ color: 'var(--text-primary)' }}>Contact not found</h3>
@@ -217,7 +255,7 @@ export default function ContactDetailPage() {
 
   return (
     <AppLayout>
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
         <div className="mb-8">
           <div className="flex items-center space-x-4 mb-4">
             <Link href="/contacts">
@@ -241,6 +279,15 @@ export default function ContactDetailPage() {
               </div>
             </div>
             <div className="flex space-x-3 justify-end sm:justify-start sm:ml-auto">
+              {isEditing && (
+                <Button 
+                  variant="outline" 
+                  onClick={() => setIsEditing(false)}
+                  className="border-[#f9f4da] text-[#f9f4da] hover:bg-[#f9f4da] hover:text-[#231f20] whitespace-nowrap"
+                >
+                  Cancel
+                </Button>
+              )}
               <Button 
                 onClick={handleJustTalked}
                 disabled={saving}
@@ -250,14 +297,9 @@ export default function ContactDetailPage() {
                 {saving ? 'Updating...' : 'Just Talked'}
               </Button>
               {isEditing ? (
-                <>
-                  <Button variant="outline" onClick={() => setIsEditing(false)}>
-                    Cancel
-                  </Button>
-                  <Button onClick={handleSave} disabled={saving}>
-                    {saving ? 'Saving...' : 'Save'}
-                  </Button>
-                </>
+                <Button onClick={handleSave} disabled={saving}>
+                  {saving ? 'Saving...' : 'Save'}
+                </Button>
               ) : (
                 <Button onClick={() => setIsEditing(true)}>
                   Edit
@@ -308,7 +350,7 @@ export default function ContactDetailPage() {
                           name="gender"
                           value={formData.gender}
                           onChange={handleInputChange}
-                          className="flex h-10 w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:border-transparent" style={{ borderColor: 'var(--text-primary)', opacity: 0.3, backgroundColor: 'var(--bg-card)', color: 'var(--text-primary)' }}
+                          className="flex h-10 w-full rounded-md border border-[#231f20]/30 bg-[#fefaf0] px-3 py-2 text-sm text-[#231f20] focus:outline-none focus:ring-2 focus:ring-[#fcba28] focus:border-transparent"
                         >
                           <option value="">Select...</option>
                           <option value="male">Male</option>
@@ -329,32 +371,33 @@ export default function ContactDetailPage() {
                     </div>
                     <div>
                       <label className="block text-sm font-medium mb-1" style={{ color: 'var(--text-primary)' }}>Description</label>
-                      <textarea
+                      <Textarea
                         name="description"
                         value={formData.description}
                         onChange={handleInputChange}
-                        className="flex w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:border-transparent min-h-[80px]" style={{ borderColor: 'var(--text-primary)', opacity: 0.3, backgroundColor: 'var(--bg-card)', color: 'var(--text-primary)' }}
+                        autoExpand
+                        placeholder="Add a description..."
                       />
                     </div>
                   </>
                 ) : (
                   <div className="space-y-4">
-                    <div>
-                      <span className="text-sm font-bold block mb-1" style={{ color: 'var(--text-secondary)' }}>Email:</span>
-                      <span style={{ color: 'var(--text-primary)' }} className="break-words break-all block">{contact.email || 'Not provided'}</span>
+                    <div className="flex flex-wrap items-baseline gap-x-2">
+                      <span className="text-sm font-bold flex-shrink-0" style={{ color: 'var(--text-secondary)' }}>Email:</span>
+                      <span style={{ color: 'var(--text-primary)' }} className="break-words min-w-0">{contact.email || 'Not provided'}</span>
                     </div>
-                    <div>
-                      <span className="text-sm font-bold block mb-1" style={{ color: 'var(--text-secondary)' }}>Gender:</span>
-                      <span style={{ color: 'var(--text-primary)' }} className="break-words block">{contact.gender || 'Not provided'}</span>
+                    <div className="flex flex-wrap items-baseline gap-x-2">
+                      <span className="text-sm font-bold flex-shrink-0" style={{ color: 'var(--text-secondary)' }}>Gender:</span>
+                      <span style={{ color: 'var(--text-primary)' }} className="break-words min-w-0">{contact.gender || 'Not provided'}</span>
                     </div>
-                    <div>
-                      <span className="text-sm font-bold block mb-1" style={{ color: 'var(--text-secondary)' }}>Birthday:</span>
-                      <span style={{ color: 'var(--text-primary)' }} className="break-words block">{contact.birthday ? formatDate(contact.birthday) : 'Not provided'}</span>
+                    <div className="flex flex-wrap items-baseline gap-x-2">
+                      <span className="text-sm font-bold flex-shrink-0" style={{ color: 'var(--text-secondary)' }}>Birthday:</span>
+                      <span style={{ color: 'var(--text-primary)' }} className="break-words min-w-0">{contact.birthday ? formatDate(contact.birthday) : 'Not provided'}</span>
                     </div>
                     {contact.description && (
-                      <div>
-                        <span className="text-sm font-bold block mb-1" style={{ color: 'var(--text-secondary)' }}>Description:</span>
-                        <span style={{ color: 'var(--text-primary)' }} className="whitespace-pre-wrap break-words block">{contact.description}</span>
+                      <div className="flex flex-wrap items-baseline gap-x-2">
+                        <span className="text-sm font-bold flex-shrink-0" style={{ color: 'var(--text-secondary)' }}>Description:</span>
+                        <span style={{ color: 'var(--text-primary)' }} className="whitespace-pre-wrap break-words min-w-0">{contact.description}</span>
                       </div>
                     )}
                   </div>
@@ -389,40 +432,43 @@ export default function ContactDetailPage() {
                     </div>
                     <div>
                       <label className="block text-sm font-medium mb-1" style={{ color: 'var(--text-primary)' }}>How We Met</label>
-                      <Input
+                      <Textarea
                         name="how_we_met"
                         value={formData.how_we_met}
                         onChange={handleInputChange}
+                        autoExpand
+                        placeholder="Tell the story of how you met..."
                       />
                     </div>
                     <div>
                       <label className="block text-sm font-medium mb-1" style={{ color: 'var(--text-primary)' }}>Interests & Notes</label>
-                      <textarea
+                      <Textarea
                         name="interests"
                         value={formData.interests}
                         onChange={handleInputChange}
-                        className="flex w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:border-transparent min-h-[80px]" style={{ borderColor: 'var(--text-primary)', opacity: 0.3, backgroundColor: 'var(--bg-card)', color: 'var(--text-primary)' }}
+                        autoExpand
+                        placeholder="Add interests, hobbies, or other notes..."
                       />
                     </div>
                   </>
                 ) : (
                   <div className="space-y-4">
-                    <div>
-                      <span className="text-sm font-bold block mb-1" style={{ color: 'var(--text-secondary)' }}>Company:</span>
-                      <span style={{ color: 'var(--text-primary)' }} className="break-words block">{contact.work_company || 'Not provided'}</span>
+                    <div className="flex flex-wrap items-baseline gap-x-2">
+                      <span className="text-sm font-bold flex-shrink-0" style={{ color: 'var(--text-secondary)' }}>Company:</span>
+                      <span style={{ color: 'var(--text-primary)' }} className="break-words min-w-0">{contact.work_company || 'Not provided'}</span>
                     </div>
-                    <div>
-                      <span className="text-sm font-bold block mb-1" style={{ color: 'var(--text-secondary)' }}>Position:</span>
-                      <span style={{ color: 'var(--text-primary)' }} className="break-words block">{contact.work_position || 'Not provided'}</span>
+                    <div className="flex flex-wrap items-baseline gap-x-2">
+                      <span className="text-sm font-bold flex-shrink-0" style={{ color: 'var(--text-secondary)' }}>Position:</span>
+                      <span style={{ color: 'var(--text-primary)' }} className="break-words min-w-0">{contact.work_position || 'Not provided'}</span>
                     </div>
-                    <div>
-                      <span className="text-sm font-bold block mb-1" style={{ color: 'var(--text-secondary)' }}>How We Met:</span>
-                      <span style={{ color: 'var(--text-primary)' }} className="break-words block">{contact.how_we_met || 'Not provided'}</span>
+                    <div className="flex flex-wrap items-baseline gap-x-2">
+                      <span className="text-sm font-bold flex-shrink-0" style={{ color: 'var(--text-secondary)' }}>How We Met:</span>
+                      <span style={{ color: 'var(--text-primary)' }} className="break-words min-w-0">{contact.how_we_met || 'Not provided'}</span>
                     </div>
                     {contact.interests && (
-                      <div>
-                        <span className="text-sm font-bold block mb-1" style={{ color: 'var(--text-secondary)' }}>Interests:</span>
-                        <span style={{ color: 'var(--text-primary)' }} className="whitespace-pre-wrap break-words block">{contact.interests}</span>
+                      <div className="flex flex-wrap items-baseline gap-x-2">
+                        <span className="text-sm font-bold flex-shrink-0" style={{ color: 'var(--text-secondary)' }}>Interests:</span>
+                        <span style={{ color: 'var(--text-primary)' }} className="whitespace-pre-wrap break-words min-w-0">{contact.interests}</span>
                       </div>
                     )}
                   </div>
@@ -453,62 +499,48 @@ export default function ContactDetailPage() {
                         onChange={handleInputChange}
                       />
                     </div>
-                    <div className="space-y-3">
-                      <div className="flex items-center space-x-2">
-                        <input
-                          type="checkbox"
-                          id="email_reminders"
-                          name="email_reminders"
-                          checked={formData.email_reminders}
-                          onChange={handleInputChange}
-                          className="h-4 w-4 rounded" style={{ color: '#f59e0b', borderColor: 'var(--text-primary)', opacity: 0.3 }}
-                        />
-                        <label htmlFor="email_reminders" className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>
-                          Send email reminders
-                        </label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <input
-                          type="checkbox"
-                          id="birthday_reminder"
-                          name="birthday_reminder"
-                          checked={formData.birthday_reminder}
-                          onChange={handleInputChange}
-                          className="h-4 w-4 rounded" style={{ color: '#f59e0b', borderColor: 'var(--text-primary)', opacity: 0.3 }}
-                        />
-                        <label htmlFor="birthday_reminder" className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>
-                          Send birthday reminders
-                        </label>
-                      </div>
+                    <div className="space-y-4">
+                      <Toggle
+                        id="email_reminders"
+                        checked={formData.email_reminders}
+                        onChange={(checked) => handleToggleChange('email_reminders', checked)}
+                        label="Send email reminders"
+                      />
+                      <Toggle
+                        id="birthday_reminder"
+                        checked={formData.birthday_reminder}
+                        onChange={(checked) => handleToggleChange('birthday_reminder', checked)}
+                        label="Send birthday reminders"
+                      />
                     </div>
                   </>
                 ) : (
                   <div className="space-y-3">
-                    <div>
-                      <span className="text-sm font-bold block mb-1" style={{ color: 'var(--text-secondary)' }}>Reminder Interval:</span>
-                      <span style={{ color: 'var(--text-primary)' }} className="break-words block">Every {contact.reminder_days} days</span>
+                    <div className="flex flex-wrap items-baseline gap-x-2">
+                      <span className="text-sm font-bold flex-shrink-0" style={{ color: 'var(--text-secondary)' }}>Reminder Interval:</span>
+                      <span style={{ color: 'var(--text-primary)' }} className="break-words min-w-0">Every {contact.reminder_days} days</span>
                     </div>
-                    <div>
-                      <span className="text-sm font-bold block mb-1" style={{ color: 'var(--text-secondary)' }}>Email Reminders:</span>
-                      <span style={{ color: contact.email_reminders ? '#10b981' : 'var(--text-secondary)' }} className="break-words block">
+                    <div className="flex flex-wrap items-baseline gap-x-2">
+                      <span className="text-sm font-bold flex-shrink-0" style={{ color: 'var(--text-secondary)' }}>Email Reminders:</span>
+                      <span style={{ color: contact.email_reminders ? '#10b981' : 'var(--text-secondary)' }} className="break-words min-w-0">
                         {contact.email_reminders ? 'Enabled' : 'Disabled'}
                       </span>
                     </div>
-                    <div>
-                      <span className="text-sm font-bold block mb-1" style={{ color: 'var(--text-secondary)' }}>Birthday Reminders:</span>
-                      <span style={{ color: contact.birthday_reminder ? '#10b981' : 'var(--text-secondary)' }} className="break-words block">
+                    <div className="flex flex-wrap items-baseline gap-x-2">
+                      <span className="text-sm font-bold flex-shrink-0" style={{ color: 'var(--text-secondary)' }}>Birthday Reminders:</span>
+                      <span style={{ color: contact.birthday_reminder ? '#10b981' : 'var(--text-secondary)' }} className="break-words min-w-0">
                         {contact.birthday_reminder ? 'Enabled' : 'Disabled'}
                       </span>
                     </div>
-                    <div>
-                      <span className="text-sm font-bold block mb-1" style={{ color: 'var(--text-secondary)' }}>Last Conversation:</span>
-                      <span style={{ color: 'var(--text-primary)' }} className="break-words block">{formatDate(contact.last_conversation)}</span>
+                    <div className="flex flex-wrap items-baseline gap-x-2">
+                      <span className="text-sm font-bold flex-shrink-0" style={{ color: 'var(--text-secondary)' }}>Last Conversation:</span>
+                      <span style={{ color: 'var(--text-primary)' }} className="break-words min-w-0">{formatDateTime(contact.last_conversation)}</span>
                     </div>
                     {contact.next_reminder && (
-                      <div>
-                        <span className="text-sm font-bold block mb-1" style={{ color: 'var(--text-secondary)' }}>Next Reminder:</span>
-                        <span style={{ color: isOverdue(contact.next_reminder) ? '#ef4444' : 'var(--text-primary)' }} className="break-words block">
-                          {formatDate(contact.next_reminder)}
+                      <div className="flex flex-wrap items-baseline gap-x-2">
+                        <span className="text-sm font-bold flex-shrink-0" style={{ color: 'var(--text-secondary)' }}>Reach Out By:</span>
+                        <span style={{ color: isOverdue(contact.next_reminder) ? '#ef4444' : 'var(--text-primary)' }} className="break-words min-w-0">
+                          {formatDateTime(contact.next_reminder)}
                           {isOverdue(contact.next_reminder) && ' (Overdue)'}
                         </span>
                       </div>
@@ -523,33 +555,32 @@ export default function ContactDetailPage() {
                 <CardTitle>Contact Stats</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                <div>
-                  <span className="text-sm font-bold block mb-1" style={{ color: 'var(--text-secondary)' }}>Added:</span>
-                  <span style={{ color: 'var(--text-primary)' }} className="break-words block">{formatDate(contact.created_at)}</span>
+                <div className="flex flex-wrap items-baseline gap-x-2">
+                  <span className="text-sm font-bold flex-shrink-0" style={{ color: 'var(--text-secondary)' }}>Added:</span>
+                  <span style={{ color: 'var(--text-primary)' }} className="break-words min-w-0">{formatDate(contact.created_at)}</span>
                 </div>
-                <div>
-                  <span className="text-sm font-bold block mb-1" style={{ color: 'var(--text-secondary)' }}>Last Updated:</span>
-                  <span style={{ color: 'var(--text-primary)' }} className="break-words block">{formatDate(contact.updated_at)}</span>
+                <div className="flex flex-wrap items-baseline gap-x-2">
+                  <span className="text-sm font-bold flex-shrink-0" style={{ color: 'var(--text-secondary)' }}>Last Updated:</span>
+                  <span style={{ color: 'var(--text-primary)' }} className="break-words min-w-0">{formatDate(contact.updated_at)}</span>
                 </div>
               </CardContent>
             </Card>
 
-            {!isEditing && (
-              <Card>
-                <CardHeader>
-                  <CardTitle style={{ color: '#ef4444' }}>Danger Zone</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <Button 
-                    onClick={handleDelete}
-                    disabled={saving}
-                    className="w-full bg-brand-pink text-brand-beige hover:bg-brand-pink/90"
-                  >
-                    Delete Contact
-                  </Button>
-                </CardContent>
-              </Card>
-            )}
+            <Card>
+              <CardHeader>
+                <CardTitle style={{ color: '#f38ba3' }}>Danger Zone</CardTitle>
+              </CardHeader>
+              <CardContent className="flex justify-center">
+                <Button 
+                  onClick={handleDelete}
+                  disabled={saving}
+                  className="max-w-40 font-bold hover:opacity-90"
+                  style={{ backgroundColor: '#f38ba3', color: '#f9f4da' }}
+                >
+                  Delete Contact
+                </Button>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </main>

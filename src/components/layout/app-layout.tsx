@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/components/auth/auth-provider";
 import { Button } from "@/components/ui/button";
@@ -30,16 +31,69 @@ export function AppLayout({ children }: AppLayoutProps) {
       {/* Header */}
       <header className="bg-[#231f20] shadow-sm border-b border-[#4a453f]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <Link href="/dashboard">
-                <div
-                  className="w-10 h-10 bg-[#7b5ea7] text-[#231f20] rounded-full flex items-center justify-center text-2xl font-bold hover:bg-[#fcba28] transition-colors"
-                  // style={{ fontFamily: "Leckerli One, cursive" }}
-                >
-                  FR
-                </div>
-              </Link>
+          <div className="flex justify-between items-center h-20">
+            <div className="flex items-center relative">
+              <div 
+                className="w-48 h-48 opacity-80 absolute top-[-4.5rem] left-[-0.625rem] z-10 cursor-pointer" 
+                style={{transformStyle: 'preserve-3d', transition: 'transform 0.25s ease-out'}}
+                onMouseEnter={(e) => {
+                  const el = e.currentTarget as HTMLElement;
+                  if (!el.dataset.spinning) el.style.transform = 'rotate(3deg)';
+                }}
+                onMouseLeave={(e) => {
+                  const el = e.currentTarget as HTMLElement;
+                  if (!el.dataset.spinning) el.style.transform = '';
+                }} 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  const element = e.currentTarget;
+                  
+                  // Prevent double clicks
+                  if (element.dataset.spinning) return;
+                  element.dataset.spinning = 'true';
+                  
+                  // Start from current position and spin 360 degrees
+                  element.style.transform = 'rotateY(0deg)';
+                  element.style.transition = 'none';
+                  
+                  // Force reflow
+                  element.offsetHeight;
+                  
+                  // Now animate to 360 degrees
+                  element.style.transform = 'rotateY(360deg)';
+                  element.style.transition = 'transform 0.5s ease-out';
+                  
+                  setTimeout(() => {
+                    // Snap to 0 degrees without animation
+                    element.style.transform = 'rotateY(0deg)';
+                    element.style.transition = 'none';
+                    
+                    // Then clear everything after a tiny delay
+                    setTimeout(() => {
+                      element.style.transform = '';
+                      element.style.transition = 'transform 0.25s ease-out';
+                      delete element.dataset.spinning;
+                    }, 10);
+                    
+                    console.log('Navigating to dashboard...');
+                    router.push('/dashboard');
+                  }, 500);
+                }}
+              >
+                <Image
+                  src="/FriendlyReminderLogo2.png"
+                  alt="Friendly Reminder"
+                  width={160}
+                  height={160}
+                  className="w-full h-full object-contain"
+                />
+              </div>
+              {/* Keep FR fallback for reference */}
+              {/* <div
+                className="w-10 h-10 bg-[#7b5ea7] text-[#231f20] rounded-full flex items-center justify-center text-2xl font-bold hover:bg-[#fcba28] transition-colors"
+              >
+                FR
+              </div> */}
             </div>
 
             {/* Desktop Navigation */}
@@ -129,11 +183,68 @@ export function AppLayout({ children }: AppLayoutProps) {
           {/* Menu Panel */}
           <div className="fixed top-0 right-0 h-full w-64 bg-[#231f20] shadow-xl">
             <div className="flex items-center justify-between p-4 border-b border-[#4a453f]">
-              <div
+              <div 
+                className="w-16 h-16 opacity-80 cursor-pointer" 
+                style={{transformStyle: 'preserve-3d', transition: 'transform 0.25s ease-out', transform: 'rotate(-10deg)'}}
+                onMouseEnter={(e) => {
+                  const el = e.currentTarget as HTMLElement;
+                  if (!el.dataset.spinning) el.style.transform = 'rotate(10deg)';
+                }}
+                onMouseLeave={(e) => {
+                  const el = e.currentTarget as HTMLElement;
+                  if (!el.dataset.spinning) el.style.transform = 'rotate(-10deg)';
+                }} 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  const element = e.currentTarget;
+                  
+                  // Prevent double clicks
+                  if (element.dataset.spinning) return;
+                  element.dataset.spinning = 'true';
+                  
+                  // Start from current position and spin 360 degrees
+                  element.style.transform = 'rotateY(0deg)';
+                  element.style.transition = 'none';
+                  
+                  // Force reflow
+                  element.offsetHeight;
+                  
+                  // Now animate to 360 degrees
+                  element.style.transform = 'rotateY(360deg)';
+                  element.style.transition = 'transform 0.5s ease-out';
+                  
+                  setTimeout(() => {
+                    // Snap to 0 degrees without animation
+                    element.style.transform = 'rotateY(0deg)';
+                    element.style.transition = 'none';
+                    
+                    // Then clear everything after a tiny delay
+                    setTimeout(() => {
+                      element.style.transform = 'rotate(-10deg)';
+                      element.style.transition = 'transform 0.25s ease-out';
+                      delete element.dataset.spinning;
+                    }, 10);
+                    
+                    console.log('Navigating to dashboard from mobile...');
+                    closeMobileMenu();
+                    router.push('/dashboard');
+                  }, 500);
+                }}
+              >
+                <Image
+                  src="/friendlyremindercirclelogo.png"
+                  alt="Friendly Reminder"
+                  width={64}
+                  height={64}
+                  className="w-full h-full object-contain"
+                />
+              </div>
+              {/* Keep FR fallback for reference */}
+              {/* <div
                 className="w-8 h-8 bg-[#7b5ea7] text-[#231f20] rounded-full flex items-center justify-center text-sm font-bold hover:bg-[#fcba28] transition-colors"
               >
                 FR
-              </div>
+              </div> */}
               <button
                 onClick={closeMobileMenu}
                 className="p-2 rounded-md text-[#f9f4da] hover:text-[#fcba28] hover:bg-[#f9f4da]/10 focus:outline-none focus:ring-2 focus:ring-[#fcba28]"

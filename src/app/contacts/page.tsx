@@ -50,7 +50,12 @@ export default function ContactsPage() {
   }, [user?.$id]);
 
   useEffect(() => {
-    if (!loading && !user) {
+    // Wait for auth to finish loading before making redirect decisions
+    if (loading) {
+      return;
+    }
+
+    if (!user) {
       router.push("/login");
       return;
     }
@@ -154,7 +159,7 @@ export default function ContactsPage() {
 
   return (
     <AppLayout>
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
         <div className="flex flex-col min-[500px]:flex-row min-[500px]:justify-between min-[500px]:items-center gap-4 mb-8">
           <div>
             <h2 className="text-2xl font-bold mb-2 text-[#f9f4da]">
@@ -308,11 +313,18 @@ export default function ContactsPage() {
                             >
                               {contact.name}
                             </div>
-                            <div
-                              className="text-sm truncate text-[#262522]"
-                            >
-                              {contact.description || "No description"}
-                            </div>
+                            {isOverdue(contact.next_reminder) && (
+                              <div className="text-sm text-[#f38ba3] font-medium">
+                                {(() => {
+                                  const overdueDays = Math.floor(
+                                    (new Date().getTime() - new Date(contact.next_reminder!).getTime()) / (1000 * 60 * 60 * 24)
+                                  );
+                                  return overdueDays === 0 
+                                    ? "Overdue today"
+                                    : `${overdueDays} day${overdueDays === 1 ? '' : 's'} overdue`;
+                                })()}
+                              </div>
+                            )}
                           </div>
                         </div>
                       </td>

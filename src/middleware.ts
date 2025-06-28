@@ -11,10 +11,11 @@ export async function middleware(req: NextRequest) {
     console.log('🍪 All cookies:', allCookies.map(c => ({ name: c.name, hasValue: !!c.value })))
     
     // Check for various possible Appwrite session cookie names
+    // Look for the actual Appwrite session cookies that start with 'a_session_' and have a project ID
     const sessionCookie = req.cookies.get('appwrite-session') || 
                          req.cookies.get('a_session_' + process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID) ||
                          req.cookies.get('a_session') ||
-                         allCookies.find(c => c.name.includes('session') || c.name.includes('appwrite'))
+                         allCookies.find(c => c.name.startsWith('a_session_') && !c.name.includes('legacy') && !c.name.includes('console'))
     
     const hasSession = !!sessionCookie?.value
 
@@ -48,9 +49,24 @@ export async function middleware(req: NextRequest) {
       return NextResponse.redirect(new URL('/dashboard', req.url))
     }
 
-    // Redirect unauthenticated users to login (except for auth pages)
+    // Allow client-side auth check for protected pages if session detection is uncertain
+    // Only redirect if we're confident there's no session
     if (!hasSession && !isAuthPage) {
-      console.log('🚫 Unauthenticated user, redirecting to login')
+      // Check if we have any appwrite-related cookies at all
+      const hasAnyAppwriteInfo = allCookies.some(c => 
+        c.name.includes('appwrite') || 
+        c.name.includes('session') ||
+        c.name.startsWith('a_')
+      )
+      
+      // If we have some appwrite info but couldn't detect session properly,
+      // let the client-side auth handle it
+      if (hasAnyAppwriteInfo) {
+        console.log('🤔 Uncertain session state, allowing client-side auth check')
+        return res
+      }
+      
+      console.log('🚫 No authentication info found, redirecting to login')
       return NextResponse.redirect(new URL('/login', req.url))
     }
 

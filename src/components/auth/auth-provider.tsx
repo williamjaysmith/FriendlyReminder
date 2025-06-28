@@ -23,6 +23,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true)
 
   const getSession = async () => {
+    // First, check localStorage and set cookie immediately if session exists
+    if (typeof window !== 'undefined') {
+      const storedSession = localStorage.getItem('appwrite-session')
+      if (storedSession) {
+        console.log('🍪 Setting cookie from stored session')
+        document.cookie = `a_session_${process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID}=${storedSession}; path=/; SameSite=Lax`
+      }
+    }
+    
     console.log('🔍 AuthProvider: Getting session...')
     try {
       const currentUser = await account.get()
