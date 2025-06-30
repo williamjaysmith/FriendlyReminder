@@ -3,6 +3,12 @@ import { NextResponse, type NextRequest } from 'next/server'
 export async function middleware(req: NextRequest) {
   const res = NextResponse.next()
   
+  // Temporary: Always allow callback page
+  if (req.nextUrl.pathname.startsWith('/auth/callback')) {
+    console.log('🔓 TEMP: Always allowing callback page')
+    return res
+  }
+  
   try {
     console.log('🔒 Middleware checking:', req.nextUrl.pathname)
     

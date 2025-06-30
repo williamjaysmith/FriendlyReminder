@@ -33,7 +33,15 @@ module.exports = {
           dark: '#231f20', // Dark mode
         },
         surface: {
-          DEFAULT: '#f9f4da', // Light mode
+          DEFAULT: '
+Access blocked: This request is blocked by Google’s policies
+
+williamjaysmith@gmail.com
+This request does not comply with Google’s ”Use secure browsers” policy. If Friendly Reminder has a website, you can open a web browser and try signing in from there. If you are attempting to access a wireless network, please follow these instructions.
+If you’re seeing this error message in Friendly Reminder’s app, you can contact the developer to let them know their app must comply with Google’s ”Use secure browsers” policy.
+Learn more about this error
+If you are a developer of Friendly Reminder, see error details.
+Error 403: disallowed_useragent // Light mode
           dark: '#231f20', // Dark mode
         },
         text: {
