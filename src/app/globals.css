@@ -46,3 +46,21 @@ input:autofill {
   background-color: #fefaf0 !important;
   color: #231f20 !important;
 }
+
+/* Scrolling animation */
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(calc(-320px * 3 - 32px * 2));
+  }
+}
+
+.animate-scroll {
+  animation: scroll 20s linear infinite;
+}
+
+.animate-scroll:hover {
+  animation-play-state: paused;
+}

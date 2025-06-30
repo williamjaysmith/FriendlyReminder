@@ -84,51 +84,105 @@ export default function Home() {
             </p>
           </div>
           
-          <div className="grid md:grid-cols-3 gap-8">
-            {/* Feature 1 - Smart Reminders */}
-            <Card className="group bg-[#f9f4da] border border-[#231f20]" style={{boxShadow: "8px 8px 0px #7b5ea7"}}>
-              <CardHeader>
-                <div className="w-14 h-14 bg-[#7b5ea7] rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
-                  <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                </div>
-                <CardTitle>Smart Reminders</CardTitle>
-                <CardDescription>
-                  Never forget to follow up. Set custom intervals and get gentle nudges when it&apos;s time to reconnect.
-                </CardDescription>
-              </CardHeader>
-            </Card>
+          {/* Scrolling Cards Container */}
+          <div className="relative overflow-hidden pb-4">
+            <div className="flex animate-scroll gap-8">
+              {/* First set of cards */}
+              <div className="flex gap-8 min-w-max">
+                {/* Feature 1 - Smart Reminders */}
+                <Card className="group bg-[#f9f4da] border border-[#231f20] w-80 flex-shrink-0" style={{boxShadow: "8px 8px 0px #7b5ea7"}}>
+                  <CardHeader>
+                    <div className="w-14 h-14 bg-[#7b5ea7] rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                      <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </div>
+                    <CardTitle>Smart Reminders</CardTitle>
+                    <CardDescription>
+                      Never forget to follow up. Set custom intervals and get gentle nudges when it&apos;s time to reconnect.
+                    </CardDescription>
+                  </CardHeader>
+                </Card>
 
-            {/* Feature 2 - Track Network */}
-            <Card className="group bg-[#f9f4da] border border-[#231f20]" style={{boxShadow: "8px 8px 0px #0ba95b"}}>
-              <CardHeader>
-                <div className="w-14 h-14 bg-[#0ba95b] rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
-                  <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                  </svg>
-                </div>
-                <CardTitle>Track Your Network</CardTitle>
-                <CardDescription>
-                  Visualize your networking habits with beautiful analytics and maintain consistency with streak tracking.
-                </CardDescription>
-              </CardHeader>
-            </Card>
+                {/* Feature 2 - Track Network */}
+                <Card className="group bg-[#f9f4da] border border-[#231f20] w-80 flex-shrink-0" style={{boxShadow: "8px 8px 0px #0ba95b"}}>
+                  <CardHeader>
+                    <div className="w-14 h-14 bg-[#0ba95b] rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                      <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                        </svg>
+                      </div>
+                      <CardTitle>Track Your Network</CardTitle>
+                      <CardDescription>
+                        Visualize your networking habits with beautiful analytics and maintain consistency with streak tracking.
+                      </CardDescription>
+                    </CardHeader>
+                </Card>
 
-            {/* Feature 3 - Rich Profiles */}
-            <Card className="group bg-[#f9f4da] border border-[#231f20]" style={{boxShadow: "8px 8px 0px #f38ba3"}}>
-              <CardHeader>
-                <div className="w-14 h-14 bg-[#f38ba3] rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
-                  <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                  </svg>
-                </div>
-                <CardTitle>Rich Profiles</CardTitle>
-                <CardDescription>
-                  Remember the details that matter. Store conversation history, interests, and personal notes that help you connect.
-                </CardDescription>
-              </CardHeader>
-            </Card>
+                {/* Feature 3 - Rich Profiles */}
+                <Card className="group bg-[#f9f4da] border border-[#231f20] w-80 flex-shrink-0" style={{boxShadow: "8px 8px 0px #f38ba3"}}>
+                  <CardHeader>
+                    <div className="w-14 h-14 bg-[#f38ba3] rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                      <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                      </svg>
+                    </div>
+                    <CardTitle>Rich Profiles</CardTitle>
+                    <CardDescription>
+                      Remember the details that matter. Store conversation history, interests, and personal notes that help you connect.
+                    </CardDescription>
+                  </CardHeader>
+                </Card>
+              </div>
+
+              {/* Duplicate set for seamless loop */}
+              <div className="flex gap-8 min-w-max">
+                {/* Feature 1 - Smart Reminders */}
+                <Card className="group bg-[#f9f4da] border border-[#231f20] w-80 flex-shrink-0" style={{boxShadow: "8px 8px 0px #7b5ea7"}}>
+                  <CardHeader>
+                    <div className="w-14 h-14 bg-[#7b5ea7] rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">  
+                      <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </div>
+                    <CardTitle>Smart Reminders</CardTitle>
+                    <CardDescription>
+                      Never forget to follow up. Set custom intervals and get gentle nudges when it&apos;s time to reconnect.
+                    </CardDescription>
+                  </CardHeader>
+                </Card>
+
+                {/* Feature 2 - Track Network */}
+                <Card className="group bg-[#f9f4da] border border-[#231f20] w-80 flex-shrink-0" style={{boxShadow: "8px 8px 0px #0ba95b"}}>
+                  <CardHeader>
+                    <div className="w-14 h-14 bg-[#0ba95b] rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                      <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                      </svg>
+                    </div>
+                    <CardTitle>Track Your Network</CardTitle>
+                    <CardDescription>
+                      Visualize your networking habits with beautiful analytics and maintain consistency with streak tracking.
+                    </CardDescription>
+                  </CardHeader>
+                </Card>
+
+                {/* Feature 3 - Rich Profiles */}
+                <Card className="group bg-[#f9f4da] border border-[#231f20] w-80 flex-shrink-0" style={{boxShadow: "8px 8px 0px #f38ba3"}}>
+                  <CardHeader>
+                    <div className="w-14 h-14 bg-[#f38ba3] rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                      <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                      </svg>
+                    </div>
+                    <CardTitle>Rich Profiles</CardTitle>
+                    <CardDescription>
+                      Remember the details that matter. Store conversation history, interests, and personal notes that help you connect.
+                    </CardDescription>
+                  </CardHeader>
+                </Card>
+              </div>
+            </div>
           </div>
         </div>
       </div>
