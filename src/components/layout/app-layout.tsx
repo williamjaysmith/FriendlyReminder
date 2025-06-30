@@ -57,7 +57,7 @@ export function AppLayout({ children }: AppLayoutProps) {
                   element.style.transition = 'none';
                   
                   // Force reflow
-                  element.offsetHeight;
+                  void element.offsetHeight;
                   
                   // Now animate to 360 degrees
                   element.style.transform = 'rotateY(360deg)';
@@ -207,7 +207,7 @@ export function AppLayout({ children }: AppLayoutProps) {
                   element.style.transition = 'none';
                   
                   // Force reflow
-                  element.offsetHeight;
+                  void element.offsetHeight;
                   
                   // Now animate to 360 degrees
                   element.style.transform = 'rotateY(360deg)';
