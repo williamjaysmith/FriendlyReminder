@@ -20,6 +20,11 @@ function AuthCallbackContent() {
       const secret = searchParams.get('secret')
       
       console.log('🔑 OAuth params:', { userId, secret: secret ? '***' : null })
+      
+      // Mobile debug: Show OAuth parameters
+      if (!userId || !secret) {
+        alert(`MOBILE DEBUG: Missing OAuth params - userId: ${!!userId}, secret: ${!!secret}`)
+      }
 
       try {
         // If we have OAuth session parameters, create the session
