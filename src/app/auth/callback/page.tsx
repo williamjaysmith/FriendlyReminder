@@ -54,11 +54,18 @@ function AuthCallbackContent() {
           router.push(next)
         } else {
           console.log('❌ No user found')
-          router.push('/login?error=' + encodeURIComponent('Authentication failed'))
+          alert('MOBILE DEBUG: No user found after OAuth')
+          setTimeout(() => {
+            router.push('/login?error=' + encodeURIComponent('Authentication failed'))
+          }, 3000)
         }
       } catch (error) {
         console.error('💥 Unexpected callback error:', error)
-        router.push('/login?error=' + encodeURIComponent('Authentication failed'))
+        // Mobile debug: show error instead of redirecting immediately
+        alert(`MOBILE DEBUG ERROR: ${error}`)
+        setTimeout(() => {
+          router.push('/login?error=' + encodeURIComponent('Authentication failed'))
+        }, 5000)
       }
     }
 
