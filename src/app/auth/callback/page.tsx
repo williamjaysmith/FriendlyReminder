@@ -67,7 +67,10 @@ function AuthCallbackContent() {
 
   return (
     <div className="min-h-screen flex items-center justify-center" style={{backgroundColor: 'var(--bg-main)'}}>
-      <LoadingSpinner showText={true} text="Completing sign in..." />
+      <div className="text-center">
+        <div className="text-red-500 font-bold mb-4">MOBILE DEBUG - CALLBACK PAGE LOADED</div>
+        <LoadingSpinner showText={true} text="Completing sign in..." />
+      </div>
     </div>
   )
 }
