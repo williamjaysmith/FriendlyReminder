@@ -67,10 +67,7 @@ function AuthCallbackContent() {
 
   return (
     <div className="min-h-screen flex items-center justify-center" style={{backgroundColor: 'var(--bg-main)'}}>
-      <div className="text-center">
-        <LoadingSpinner className="mx-auto mb-4" />
-        <p style={{color: 'var(--text-secondary)'}}>Completing sign in...</p>
-      </div>
+      <LoadingSpinner showText={true} text="Completing sign in..." />
     </div>
   )
 }
@@ -79,10 +76,7 @@ export default function AuthCallback() {
   return (
     <Suspense fallback={
       <div className="min-h-screen flex items-center justify-center" style={{backgroundColor: 'var(--bg-main)'}}>
-        <div className="text-center">
-          <LoadingSpinner className="mx-auto mb-4" />
-          <p style={{color: 'var(--text-secondary)'}}>Loading...</p>
-        </div>
+        <LoadingSpinner showText={true} text="Loading..." />
       </div>
     }>
       <AuthCallbackContent />

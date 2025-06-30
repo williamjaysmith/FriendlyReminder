@@ -152,19 +152,17 @@ export default function LoginPage() {
             </Button>
           </form>
 
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-[var(--text-primary)]/20" />
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="bg-[var(--surface)] px-2 text-[var(--text-secondary)]">Or continue with</span>
+          <div className="space-y-4">
+            <div className="w-full border-t border-[var(--text-primary)]/20" />
+            <div className="flex justify-center text-sm">
+              <span className="text-[var(--text-secondary)]">Or continue with</span>
             </div>
           </div>
 
           <div className="space-y-2">
             <Button 
               type="button" 
-              variant="outline" 
+              variant="oauth"
               className="w-full"
               onClick={handleGoogleLogin}
               disabled={loading}

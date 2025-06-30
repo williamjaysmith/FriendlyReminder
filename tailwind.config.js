@@ -47,7 +47,7 @@ module.exports = {
           }
         },
         input: {
-          DEFAULT: '#fefbf0', // Always light beige for inputs
+          DEFAULT: '#fefaf0', // Always light beige for inputs
         }
       },
       fontFamily: {

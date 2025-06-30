@@ -31,3 +31,18 @@ body {
 .logo-font {
   font-family: var(--font-leckerli-one), cursive !important;
 }
+
+/* Override browser autofill styles */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px #fefaf0 inset !important;
+  -webkit-text-fill-color: #231f20 !important;
+}
+
+/* For other browsers */
+input:autofill {
+  background-color: #fefaf0 !important;
+  color: #231f20 !important;
+}
