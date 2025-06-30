@@ -82,6 +82,9 @@ export default function LoginPage() {
       
       console.log('📍 Success URL:', successUrl)
       console.log('📍 Failure URL:', failureUrl)
+      
+      // Mobile debug: Show exact URLs being sent
+      alert(`MOBILE DEBUG URLs:\nSuccess: ${successUrl}\nFailure: ${failureUrl}\nOrigin: ${window.location.origin}`)
 
       // Use proper Appwrite SDK OAuth method
       await account.createOAuth2Session(
