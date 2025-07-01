@@ -22,7 +22,7 @@ export default function LoginPage() {
 
   // Debug: Check Appwrite configuration
   console.log('🔧 Appwrite Endpoint:', process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT)
-  console.log('🔑 Appwrite Project ID exists:', !!process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID)
+  console.log('🔑 Appwrite Project ID:', process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID)
 
   // Redirect if already logged in
   useEffect(() => {
@@ -84,9 +84,15 @@ export default function LoginPage() {
       console.log('📍 Failure URL:', failureUrl)
       
       // Mobile debug: Show exact URLs being sent
-      alert(`MOBILE DEBUG URLs:\nSuccess: ${successUrl}\nFailure: ${failureUrl}\nOrigin: ${window.location.origin}`)
+      alert(`MOBILE DEBUG:\nProject ID: ${process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID}\nEndpoint: ${process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT}\nSuccess: ${successUrl}\nFailure: ${failureUrl}`)
 
       // Use proper Appwrite SDK OAuth method
+      console.log('🚀 About to call createOAuth2Session with:', {
+        provider: 'Google',
+        success: successUrl,
+        failure: failureUrl
+      })
+      
       await account.createOAuth2Session(
         OAuthProvider.Google,
         successUrl,

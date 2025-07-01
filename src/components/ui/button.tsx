@@ -1,70 +1,88 @@
-import { ButtonHTMLAttributes, forwardRef } from 'react'
-import { cn } from '@/lib/utils/cn'
+'use client'
 
-export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'default' | 'outline' | 'ghost' | 'destructive' | 'secondary' | 'success' | 'oauth'
-  size?: 'default' | 'sm' | 'lg' | 'xl'
-}
+import { forwardRef } from 'react'
+import { cn } from '@/lib/utils'
+import { ButtonProps } from '@/lib/types'
 
-const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant = 'default', size = 'default', ...props }, ref) => {
-    return (
-      <button
-        className={cn(
-          // Base styles - modern, playful design
-          'inline-flex items-center justify-center font-medium transition-all duration-200 ease-in-out',
-          'focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2',
-          'disabled:opacity-50 disabled:pointer-events-none disabled:cursor-not-allowed',
-          'transform hover:scale-[1.02] active:scale-[0.98]',
-          
-          // Variant styles using explicit Tailwind colors
-          {
-            // Primary - Yellow (brand requirement)
-            'bg-[#fcba28] text-[#231f20] hover:bg-[#fc7428] hover:scale-105 focus-visible:ring-[#fcba28]': 
-              variant === 'default',
-            
-            // Secondary - Blue accent  
-            'bg-[#12b5e5] text-[#f9f4da] hover:bg-[#12b5e5]/90 hover:scale-105 focus-visible:ring-[#12b5e5]': 
-              variant === 'secondary',
-            
-            // Success - Green
-            'bg-[#0ba95b] text-[#f9f4da] hover:bg-[#0ba95b]/90 hover:scale-105 focus-visible:ring-[#0ba95b]': 
-              variant === 'success',
-            
-            // Outline - Using brand colors
-            'border-2 border-[#231f20] bg-transparent text-[#231f20] hover:bg-[#231f20] hover:text-[#f9f4da] focus-visible:ring-[#fcba28]': 
-              variant === 'outline',
-            
-            // Ghost - Minimal with brand colors
-            'text-[#231f20] hover:bg-[#231f20]/10 focus-visible:ring-[#fcba28]': 
-              variant === 'ghost',
-            
-            // Destructive - Brand red
-            'bg-[#ed203d] text-[#f9f4da] hover:bg-[#ed203d]/90 hover:scale-105 focus-visible:ring-[#ed203d]': 
-              variant === 'destructive',
-            
-            // OAuth - Brand blue
-            'bg-[#12b5e5] text-[#f9f4da] hover:bg-[#7b5ea7] focus-visible:ring-[#7b5ea7]': 
-              variant === 'oauth',
-          },
-          
-          // Size styles - more generous spacing
-          {
-            'h-10 px-6 py-2 text-sm rounded-lg': size === 'default',
-            'h-8 px-4 py-1 text-xs rounded-md': size === 'sm', 
-            'h-12 px-8 py-3 text-base rounded-xl': size === 'lg',
-            'h-14 px-10 py-4 text-lg rounded-xl': size === 'xl',
-          },
-          
-          className
-        )}
-        ref={ref}
-        {...props}
-      />
-    )
+const Button = forwardRef<HTMLButtonElement, ButtonProps>(({ 
+  className,
+  variant = 'primary',
+  size = 'md',
+  disabled = false,
+  loading = false,
+  type = 'button',
+  onClick,
+  children,
+  ...props
+}, ref) => {
+  const handleClick = () => {
+    if (!disabled && !loading && onClick) {
+      onClick()
+    }
+  }
+  return (
+    <button
+      ref={ref}
+      type={type}
+      disabled={disabled || loading}
+      onClick={handleClick}
+      className={cn(
+        // Base styles
+        'inline-flex items-center justify-center gap-2 rounded-md font-medium',
+        'transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2',
+        'disabled:opacity-50 disabled:cursor-not-allowed',
+        
+        // Variant styles
+        {
+          'bg-[#fcba28] text-[#231f20] hover:bg-[#fc7428] focus:ring-[#fcba28]/50': variant === 'primary',
+          'bg-[#e0e0e0] text-[#262522] hover:bg-[#d0d0d0] focus:ring-[#e0e0e0]/50': variant === 'secondary',
+          'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500/50': variant === 'danger',
+          'bg-transparent text-[#262522] hover:bg-[#e0e0e0] focus:ring-[#e0e0e0]/50': variant === 'ghost',
+          'border border-[#ddd] bg-transparent text-[#262522] hover:bg-[#f5f5f5] focus:ring-[#ddd]/50': variant === 'outline'
+        },
+        
+        // Size styles
+        {
+          'px-3 py-1.5 text-sm': size === 'sm',
+          'px-4 py-2 text-base': size === 'md',
+          'px-6 py-3 text-lg': size === 'lg'
+        },
+        
+        // Loading state
+        loading && 'cursor-not-allowed',
+        
+        className
+      )}
+      {...props}
+    >
+      {loading && (
+        <svg
+          className="animate-spin h-4 w-4"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+        >
+          <circle
+            className="opacity-25"
+            cx="12"
+            cy="12"
+            r="10"
+            stroke="currentColor"
+            strokeWidth="4"
+          />
+          <path
+            className="opacity-75"
+            fill="currentColor"
+            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+          />
+        </svg>
+      )}
+      {children}
+    </button>
+  )
   }
 )
 
 Button.displayName = 'Button'
 
-export { Button }
+export default Button
