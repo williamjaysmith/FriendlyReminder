@@ -55,7 +55,7 @@ function ToastContainer() {
             toast.type === 'success' 
               ? 'bg-[#0ba95b]/20 border border-[#0ba95b] text-[#0ba95b]'
               : toast.type === 'error'
-              ? 'bg-[#ed203d]/20 border border-[#ed203d] text-[#ed203d]'
+              ? 'bg-[#E4405F]/20 border border-[#E4405F] text-[#E4405F]'
               : 'bg-[#12b5e5]/20 border border-[#12b5e5] text-[#12b5e5]'
           }`}
         >

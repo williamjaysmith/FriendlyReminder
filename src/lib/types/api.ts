@@ -25,13 +25,6 @@ export interface PaginatedResponse<T> {
 }
 
 // Query types
-export interface QueryParams {
-  page?: number
-  limit?: number
-  search?: string
-  sort?: string
-  filter?: Record<string, any>
-}
 
 // Database operation types
 export interface DatabaseResponse<T> {

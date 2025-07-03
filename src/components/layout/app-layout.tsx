@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/components/auth/auth-provider";
-import { Button } from "@/components/ui/button";
+import Button from "@/components/ui/button";
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -97,13 +97,13 @@ export function AppLayout({ children }: AppLayoutProps) {
             </div>
 
             {/* Desktop Navigation */}
-            <nav className="hidden sm:flex items-center space-x-2 sm:space-x-4">
+            <nav className="hidden md:flex items-center space-x-2 md:space-x-4">
               <Link
                 href="/dashboard"
                 className={`transition-colors ${
                   isActive("/dashboard")
-                    ? "font-bold text-sm sm:text-lg text-[#7b5ea7]"
-                    : "font-medium text-sm sm:text-base text-[#f9f4da] hover:text-[#fcba28]"
+                    ? "font-bold text-sm md:text-lg text-[#7b5ea7]"
+                    : "font-medium text-sm md:text-base text-[#f9f4da] hover:text-[#fcba28]"
                 }`}
               >
                 Dashboard
@@ -112,18 +112,28 @@ export function AppLayout({ children }: AppLayoutProps) {
                 href="/contacts"
                 className={`transition-colors ${
                   isActive("/contacts") || pathname.startsWith("/contacts")
-                    ? "font-bold text-sm sm:text-lg text-[#7b5ea7]"
-                    : "font-medium text-sm sm:text-base text-[#f9f4da] hover:text-[#fcba28]"
+                    ? "font-bold text-sm md:text-lg text-[#7b5ea7]"
+                    : "font-medium text-sm md:text-base text-[#f9f4da] hover:text-[#fcba28]"
                 }`}
               >
                 Contacts
               </Link>
               <Link
+                href="/calendar"
+                className={`transition-colors ${
+                  isActive("/calendar")
+                    ? "font-bold text-sm md:text-lg text-[#7b5ea7]"
+                    : "font-medium text-sm md:text-base text-[#f9f4da] hover:text-[#fcba28]"
+                }`}
+              >
+                Calendar
+              </Link>
+              <Link
                 href="/settings"
                 className={`transition-colors ${
                   isActive("/settings")
-                    ? "font-bold text-sm sm:text-lg text-[#7b5ea7]"
-                    : "font-medium text-sm sm:text-base text-[#f9f4da] hover:text-[#fcba28]"
+                    ? "font-bold text-sm md:text-lg text-[#7b5ea7]"
+                    : "font-medium text-sm md:text-base text-[#f9f4da] hover:text-[#fcba28]"
                 }`}
               >
                 Settings
@@ -138,7 +148,7 @@ export function AppLayout({ children }: AppLayoutProps) {
             </nav>
 
             {/* Mobile Navigation */}
-            <div className="sm:hidden flex items-center space-x-2">
+            <div className="md:hidden flex items-center space-x-2">
               <Button
                 variant="outline"
                 size="sm"
@@ -173,7 +183,7 @@ export function AppLayout({ children }: AppLayoutProps) {
 
       {/* Mobile Menu Modal */}
       {mobileMenuOpen && (
-        <div className="fixed inset-0 z-50 sm:hidden">
+        <div className="fixed inset-0 z-50 md:hidden">
           {/* Backdrop */}
           <div
             className="fixed inset-0 bg-[#231f20] bg-opacity-75"
@@ -289,6 +299,17 @@ export function AppLayout({ children }: AppLayoutProps) {
                   }`}
                 >
                   Contacts
+                </Link>
+                <Link
+                  href="/calendar"
+                  onClick={closeMobileMenu}
+                  className={`block py-2 px-3 rounded-md transition-colors ${
+                    isActive("/calendar")
+                      ? "bg-[#7b5ea7]/20 text-[#7b5ea7] font-bold text-lg"
+                      : "text-[#f9f4da] hover:bg-[#f9f4da]/10 font-medium"
+                  }`}
+                >
+                  Calendar
                 </Link>
                 <Link
                   href="/settings"

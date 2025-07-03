@@ -1,7 +1,8 @@
 // Contact service for database operations
 import { Contact, ContactFormData, ContactUpdate } from '@/lib/types'
 import { ApiResponse, PaginatedResponse, QueryParams } from '@/lib/types'
-import { createError, errorHandler } from '@/lib/utils'
+import { createError, errorHandler, ValidationError } from '@/lib/utils'
+import { GuestService } from './GuestService'
 
 export class ContactService {
   // Get all contacts for a user
@@ -10,6 +11,15 @@ export class ContactService {
     params?: QueryParams
   ): Promise<ApiResponse<Contact[]>> {
     try {
+      // Handle guest mode
+      if (userId === 'guest' && GuestService.isGuestMode()) {
+        const guestContacts = GuestService.getGuestContacts();
+        return {
+          data: guestContacts,
+          success: true
+        };
+      }
+      
       // This would integrate with your actual database/API
       // For now, returning mock data structure
       const contacts: Contact[] = []
@@ -56,6 +66,21 @@ export class ContactService {
     userId: string
   ): Promise<ApiResponse<Contact>> {
     try {
+      // Handle guest mode
+      if (userId === 'guest' && GuestService.isGuestMode()) {
+        const guestContacts = GuestService.getGuestContacts();
+        const contact = guestContacts.find(c => c.id === contactId);
+        
+        if (!contact) {
+          throw createError.notFound('Contact');
+        }
+
+        return {
+          data: contact,
+          success: true
+        };
+      }
+      
       // This would integrate with your actual database/API
       const contact: Contact | null = null
       
@@ -68,7 +93,7 @@ export class ContactService {
         success: true
       }
     } catch (error) {
-      errorHandler.log(error, { action: 'getContact', contactId, userId })
+      errorHandler.log(error, { action: 'getContact', metadata: { contactId, userId } })
       throw error
     }
   }
@@ -82,7 +107,17 @@ export class ContactService {
       // Validate the data
       const validationErrors = this.validateContactData(data)
       if (Object.keys(validationErrors).length > 0) {
-        throw createError.validation('Invalid contact data', validationErrors)
+        throw new ValidationError('Invalid contact data', validationErrors)
+      }
+
+      // Handle guest mode
+      if (userId === 'guest' && GuestService.isGuestMode()) {
+        const contact = GuestService.addGuestContact(data);
+        return {
+          data: contact,
+          success: true,
+          message: 'Contact created successfully (Guest Mode)'
+        };
       }
 
       // This would integrate with your actual database/API
@@ -121,7 +156,20 @@ export class ContactService {
       // Validate the update data
       const validationErrors = this.validateContactUpdateData(data)
       if (Object.keys(validationErrors).length > 0) {
-        throw createError.validation('Invalid contact data', validationErrors)
+        throw new ValidationError('Invalid contact data', validationErrors)
+      }
+
+      // Handle guest mode
+      if (userId === 'guest' && GuestService.isGuestMode()) {
+        const updatedContact = GuestService.updateGuestContact(contactId, data);
+        if (!updatedContact) {
+          throw createError.notFound('Contact');
+        }
+        return {
+          data: updatedContact,
+          success: true,
+          message: 'Contact updated successfully (Guest Mode)'
+        };
       }
 
       // This would integrate with your actual database/API
@@ -137,7 +185,7 @@ export class ContactService {
         message: 'Contact updated successfully'
       }
     } catch (error) {
-      errorHandler.log(error, { action: 'updateContact', contactId, userId })
+      errorHandler.log(error, { action: 'updateContact', userId, metadata: { contactId } })
       throw error
     }
   }
@@ -154,6 +202,19 @@ export class ContactService {
         throw createError.notFound('Contact')
       }
 
+      // Handle guest mode
+      if (userId === 'guest' && GuestService.isGuestMode()) {
+        const deleted = GuestService.deleteGuestContact(contactId);
+        if (!deleted) {
+          throw createError.notFound('Contact');
+        }
+        return {
+          data: undefined,
+          success: true,
+          message: 'Contact deleted successfully (Guest Mode)'
+        };
+      }
+
       // This would integrate with your actual database/API
       // Delete the contact
 
@@ -163,7 +224,7 @@ export class ContactService {
         message: 'Contact deleted successfully'
       }
     } catch (error) {
-      errorHandler.log(error, { action: 'deleteContact', contactId, userId })
+      errorHandler.log(error, { action: 'deleteContact', userId, metadata: { contactId } })
       throw error
     }
   }
@@ -190,7 +251,7 @@ export class ContactService {
         success: true
       }
     } catch (error) {
-      errorHandler.log(error, { action: 'searchContacts', userId, query })
+      errorHandler.log(error, { action: 'searchContacts', userId, metadata: { query } })
       throw createError.generic('Failed to search contacts')
     }
   }
@@ -210,7 +271,7 @@ export class ContactService {
 
       return await this.updateContact(contactId, userId, updateData)
     } catch (error) {
-      errorHandler.log(error, { action: 'updateLastConversation', contactId, userId })
+      errorHandler.log(error, { action: 'updateLastConversation', userId, metadata: { contactId } })
       throw error
     }
   }
@@ -236,14 +297,19 @@ export class ContactService {
     }
   }
 
-  // Get contacts with upcoming birthdays
+  // Get contacts with upcoming birthdays who have birthday reminders enabled
   static async getUpcomingBirthdays(
     userId: string,
     daysAhead: number = 7
   ): Promise<ApiResponse<Contact[]>> {
     try {
       // This would integrate with your actual database/API
-      // Query for contacts with birthdays in the next N days
+      // Query for contacts with birthdays in the next N days AND birthday_reminder = true
+      // Example query logic:
+      // 1. Get all contacts for the user where birthday_reminder = true
+      // 2. Filter contacts by birthday within the next daysAhead days
+      // 3. Handle year rollover for birthdays
+      
       const contacts: Contact[] = []
 
       return {

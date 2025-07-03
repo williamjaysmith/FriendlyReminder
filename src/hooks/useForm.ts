@@ -15,7 +15,7 @@ export interface UseFormOptions<T> {
 // Custom hook for form management
 export function useForm<T extends Record<string, any>>({
   initialValues,
-  validators = {},
+  validators = {} as Record<keyof T, Validator<any>>,
   onSubmit,
   validateOnChange = false,
   validateOnBlur = true
@@ -67,7 +67,7 @@ export function useForm<T extends Record<string, any>>({
   }, [validateOnChange, validateSingleField])
 
   // Set multiple values at once
-  const setValues = useCallback((newValues: Partial<T>) => {
+  const setFormValues = useCallback((newValues: Partial<T>) => {
     setValues(prev => ({ ...prev, ...newValues }))
     
     if (validateOnChange) {
@@ -174,7 +174,7 @@ export function useForm<T extends Record<string, any>>({
 
     // Field helpers
     setValue,
-    setValues,
+    setValues: setFormValues,
     getFieldError,
     isFieldTouched,
 

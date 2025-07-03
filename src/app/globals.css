@@ -47,6 +47,59 @@ input:autofill {
   color: #231f20 !important;
 }
 
+/* Force brand colors to override browser defaults */
+.text-brand-beige {
+  color: #f9f4da !important;
+}
+
+.text-brand-pink {
+  color: #f38ba3 !important;
+}
+
+.text-brand-yellow {
+  color: #fcba28 !important;
+}
+
+.text-brand-green {
+  color: #0ba95b !important;
+}
+
+.text-brand-purple {
+  color: #7b5ea7 !important;
+}
+
+.text-brand-blue {
+  color: #12b5e5 !important;
+}
+
+.text-brand-orange {
+  color: #fc7428 !important;
+}
+
+.text-brand-red {
+  color: #E4405F !important;
+}
+
+.text-brand-coal {
+  color: #0f0d0e !important;
+}
+
+.text-brand-charcoal {
+  color: #231f20 !important;
+}
+
+.text-brand-gray {
+  color: #262522 !important;
+}
+
+.text-brand-light-gray {
+  color: #4a453f !important;
+}
+
+.text-brand-white {
+  color: #ffffff !important;
+}
+
 /* Scrolling animation */
 @keyframes scroll {
   0% {

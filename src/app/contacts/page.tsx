@@ -8,12 +8,15 @@ import { databases } from "@/lib/appwrite/client";
 import { DATABASE_ID, COLLECTIONS } from "@/lib/appwrite/types";
 import { mapDocumentToContact } from "@/lib/appwrite/helpers";
 import { Query } from "appwrite";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import Button from "@/components/ui/button";
+import Input from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
+import { ConfirmationModal } from "@/components/ui";
 import { AppLayout } from "@/components/layout/app-layout";
 import { Contact } from "@/lib/types";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { useConfirmation } from "@/hooks";
+import { GuestService } from "@/lib/services/GuestService";
 
 type SortField = "name" | "company";
 type SortDirection = "asc" | "desc";
@@ -21,6 +24,7 @@ type SortDirection = "asc" | "desc";
 export default function ContactsPage() {
   const { user, loading } = useAuth();
   const router = useRouter();
+  const { confirmation, confirm } = useConfirmation();
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [filteredContacts, setFilteredContacts] = useState<Contact[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -30,24 +34,29 @@ export default function ContactsPage() {
 
   const fetchContacts = useCallback(async () => {
     try {
-      const response = await databases.listDocuments(
-        DATABASE_ID,
-        COLLECTIONS.CONTACTS,
-        [Query.equal("user_id", user?.$id || ""), Query.orderAsc("name")]
-      );
+      if (user?.is_guest) {
+        const guestContacts = GuestService.getGuestContacts();
+        setContacts(guestContacts);
+      } else {
+        const response = await databases.listDocuments(
+          DATABASE_ID,
+          COLLECTIONS.CONTACTS,
+          [Query.equal("user_id", user?.$id || ""), Query.orderAsc("name")]
+        );
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const contactsData = response.documents.map((doc: any) =>
-        mapDocumentToContact(doc)
-      );
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const contactsData = response.documents.map((doc: any) =>
+          mapDocumentToContact(doc)
+        );
 
-      setContacts(contactsData);
+        setContacts(contactsData);
+      }
     } catch (error) {
       console.error("Error fetching contacts:", error);
     } finally {
       setLoadingData(false);
     }
-  }, [user?.$id]);
+  }, [user?.$id, user?.is_guest]);
 
   useEffect(() => {
     // Wait for auth to finish loading before making redirect decisions
@@ -123,19 +132,34 @@ export default function ContactsPage() {
   };
 
   const handleDeleteContact = async (contactId: string, contactName: string) => {
-    if (!confirm(`Are you sure you want to delete ${contactName}? This action cannot be undone.`)) {
+    const confirmed = await confirm({
+      title: 'Delete Contact',
+      message: `Are you sure you want to delete ${contactName}? This action cannot be undone.`,
+      confirmText: 'Delete',
+      cancelText: 'Cancel',
+      confirmVariant: 'danger'
+    });
+
+    if (!confirmed) {
       return;
     }
 
     try {
-      await databases.deleteDocument(
-        DATABASE_ID,
-        COLLECTIONS.CONTACTS,
-        contactId
-      );
+      if (user?.is_guest) {
+        GuestService.deleteGuestContact(contactId);
+      } else {
+        await databases.deleteDocument(
+          DATABASE_ID,
+          COLLECTIONS.CONTACTS,
+          contactId
+        );
+      }
       
       // Update local state to remove the deleted contact
       setContacts(prev => prev.filter(contact => contact.id !== contactId));
+      
+      // Ensure we stay on the contacts page after deletion
+      router.push('/contacts');
     } catch (error) {
       console.error("Error deleting contact:", error);
       alert("Failed to delete contact. Please try again.");
@@ -180,7 +204,7 @@ export default function ContactsPage() {
             type="text"
             placeholder="Search contacts by name, company, email..."
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={setSearchTerm}
             className="w-full max-w-md"
           />
         </div>
@@ -336,26 +360,22 @@ export default function ContactsPage() {
                         </div>
                       </td>
                       <td className={`p-4 ${isLast ? "rounded-br-[20px]" : ""}`}>
-                        <div className="flex gap-2">
+                        <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
                           <Button
                             size="sm"
-                            onClick={(e) => {
-                              e.stopPropagation();
+                            onClick={() => {
                               router.push(`/contacts/${contact.id}`);
                             }}
-                            style={{ backgroundColor: '#f9f4da', color: '#231f20', border: '1px solid #231f20' }}
-                            className="hover:!bg-[#f9f4da] hover:!opacity-100 font-bold"
+                            className="font-bold"
                           >
                             View
                           </Button>
                           <Button
                             size="sm"
-                            onClick={(e) => {
-                              e.stopPropagation();
+                            onClick={() => {
                               handleDeleteContact(contact.id, contact.name);
                             }}
-                            style={{ backgroundColor: '#f38ba3', color: '#231f20' }}
-                            className="hover:opacity-90 font-bold"
+                            className="bg-[#f38ba3] text-[#231f20] hover:bg-[#f07d93] font-bold"
                           >
                             Delete
                           </Button>
@@ -370,6 +390,18 @@ export default function ContactsPage() {
           </Card>
         )}
       </main>
+      
+      {/* Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={confirmation.isOpen}
+        onConfirm={confirmation.onConfirm}
+        onCancel={confirmation.onCancel}
+        title={confirmation.title}
+        message={confirmation.message}
+        confirmText={confirmation.confirmText}
+        cancelText={confirmation.cancelText}
+        confirmVariant={confirmation.confirmVariant}
+      />
     </AppLayout>
   );
 }

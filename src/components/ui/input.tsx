@@ -31,15 +31,14 @@ const Input = forwardRef<HTMLInputElement, InputProps>(({
       id={id}
       name={name}
       placeholder={placeholder}
-      value={value}
-      defaultValue={defaultValue}
+      {...(value !== undefined ? { value } : defaultValue !== undefined ? { defaultValue } : {})}
       disabled={disabled}
       required={required}
       onChange={handleChange}
       onBlur={onBlur}
       className={cn(
         // Base styles
-        'flex h-10 w-full rounded-md border border-[#ddd] bg-white px-3 py-2',
+        'flex h-10 w-full rounded-md border border-[#ddd] px-3 py-2',
         'text-sm ring-offset-white file:border-0 file:bg-transparent',
         'file:text-sm file:font-medium placeholder:text-[#999]',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#fcba28]',
@@ -50,6 +49,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(({
         
         className
       )}
+      style={{ backgroundColor: '#fefaf0', color: '#231f20' }}
       {...props}
     />
   )

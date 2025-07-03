@@ -37,7 +37,6 @@ export interface ContactDocument {
   reminder_days: number
   next_reminder?: string
   birthday_reminder: boolean
-  email_reminders: boolean
   $createdAt: string
   $updatedAt: string
 }

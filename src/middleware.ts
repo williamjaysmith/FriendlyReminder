@@ -12,6 +12,14 @@ export async function middleware(req: NextRequest) {
   try {
     console.log('🔒 Middleware checking:', req.nextUrl.pathname)
     
+    // Check for guest mode first
+    const guestUserCookie = req.cookies.get('guest_user')
+    const isGuestMode = !!guestUserCookie?.value
+    
+    if (isGuestMode) {
+      console.log('🎭 Middleware: Guest mode detected')
+    }
+    
     // Debug: Log all cookies to see what Appwrite actually sets
     const allCookies = req.cookies.getAll()
     console.log('🍪 All cookies:', allCookies.map(c => ({ name: c.name, hasValue: !!c.value })))
@@ -23,7 +31,7 @@ export async function middleware(req: NextRequest) {
                          req.cookies.get('a_session') ||
                          allCookies.find(c => c.name.startsWith('a_session_') && !c.name.includes('legacy') && !c.name.includes('console'))
     
-    const hasSession = !!sessionCookie?.value
+    const hasSession = !!sessionCookie?.value || isGuestMode
 
     console.log('👤 Session in middleware:', {
       hasSession,

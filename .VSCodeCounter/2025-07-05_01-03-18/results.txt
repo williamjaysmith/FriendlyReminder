@@ -1,0 +1,154 @@
+Date : 2025-07-05 01:03:18
+Directory : /Users/williamsmith/Documents/GITHUB/FriendlyReminder
+Total : 88 files,  24294 codes, 564 comments, 1816 blanks, all 26674 lines
+
+Languages
++--------------------+------------+------------+------------+------------+------------+
+| language           | files      | code       | comment    | blank      | total      |
++--------------------+------------+------------+------------+------------+------------+
+| JSON               |          4 |     12,822 |          0 |          2 |     12,824 |
+| TypeScript JSX     |         35 |      5,973 |        203 |        732 |      6,908 |
+| TypeScript         |         41 |      4,965 |        313 |        977 |      6,255 |
+| JavaScript         |          5 |        311 |         39 |         42 |        392 |
+| Markdown           |          1 |        110 |          0 |         37 |        147 |
+| PostCSS            |          1 |         86 |          9 |         25 |        120 |
+| JSON with Comments |          1 |         27 |          0 |          1 |         28 |
++--------------------+------------+------------+------------+------------+------------+
+
+Directories
++---------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                                          | files      | code       | comment    | blank      | total      |
++---------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                                             |         88 |     24,294 |        564 |      1,816 |     26,674 |
+| . (Files)                                                                                                     |         12 |     13,278 |         40 |         85 |     13,403 |
+| src                                                                                                           |         76 |     11,016 |        524 |      1,731 |     13,271 |
+| src (Files)                                                                                                   |          1 |         67 |         13 |         18 |         98 |
+| src/app                                                                                                       |         12 |      3,335 |        106 |        321 |      3,762 |
+| src/app (Files)                                                                                               |          3 |        292 |         21 |         49 |        362 |
+| src/app/(auth)                                                                                                |          2 |        358 |         13 |         45 |        416 |
+| src/app/(auth)/login                                                                                          |          1 |        161 |          4 |         20 |        185 |
+| src/app/(auth)/signup                                                                                         |          1 |        197 |          9 |         25 |        231 |
+| src/app/auth                                                                                                  |          1 |         45 |          2 |          8 |         55 |
+| src/app/auth/callback                                                                                         |          1 |         45 |          2 |          8 |         55 |
+| src/app/calendar                                                                                              |          1 |         93 |          1 |         14 |        108 |
+| src/app/contacts                                                                                              |          3 |      1,585 |         36 |        120 |      1,741 |
+| src/app/contacts (Files)                                                                                      |          1 |        373 |          7 |         28 |        408 |
+| src/app/contacts/[id]                                                                                         |          1 |        872 |         26 |         61 |        959 |
+| src/app/contacts/add                                                                                          |          1 |        340 |          3 |         31 |        374 |
+| src/app/dashboard                                                                                             |          1 |        492 |         22 |         46 |        560 |
+| src/app/settings                                                                                              |          1 |        470 |         11 |         39 |        520 |
+| src/components                                                                                                |         25 |      2,735 |        109 |        438 |      3,282 |
+| src/components/auth                                                                                           |          1 |        146 |          9 |         19 |        174 |
+| src/components/dashboard                                                                                      |          2 |        644 |         32 |         89 |        765 |
+| src/components/layout                                                                                         |          1 |        277 |         31 |         28 |        336 |
+| src/components/ui                                                                                             |         21 |      1,668 |         37 |        302 |      2,007 |
+| src/components/ui (Files)                                                                                     |         15 |      1,036 |         24 |        113 |      1,173 |
+| src/components/ui/__tests__                                                                                   |          6 |        632 |         13 |        189 |        834 |
+| src/hooks                                                                                                     |          7 |        405 |         41 |         92 |        538 |
+| src/hooks (Files)                                                                                             |          6 |        324 |         37 |         69 |        430 |
+| src/hooks/__tests__                                                                                           |          1 |         81 |          4 |         23 |        108 |
+| src/lib                                                                                                       |         31 |      4,474 |        255 |        862 |      5,591 |
+| src/lib/appwrite                                                                                              |          4 |        148 |         10 |         26 |        184 |
+| src/lib/services                                                                                              |          5 |      1,232 |         91 |        206 |      1,529 |
+| src/lib/services (Files)                                                                                      |          4 |        985 |         85 |        130 |      1,200 |
+| src/lib/services/__tests__                                                                                    |          1 |        247 |          6 |         76 |        329 |
+| src/lib/types                                                                                                 |          7 |        596 |         50 |         70 |        716 |
+| src/lib/utils                                                                                                 |         15 |      2,498 |        104 |        560 |      3,162 |
+| src/lib/utils (Files)                                                                                         |          9 |      1,022 |         95 |        200 |      1,317 |
+| src/lib/utils/__tests__                                                                                       |          6 |      1,476 |          9 |        360 |      1,845 |
++---------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++---------------------------------------------------------------------------------------------------------------+--------------------+------------+------------+------------+------------+
+| filename                                                                                                      | language           | code       | comment    | blank      | total      |
++---------------------------------------------------------------------------------------------------------------+--------------------+------------+------------+------------+------------+
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/.mcp_config.json                                        | JSON               |         17 |          0 |          0 |         17 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/README.md                                               | Markdown           |        110 |          0 |         37 |        147 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/appwrite.json                                           | JSON               |        362 |          0 |          0 |        362 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/eslint.config.mjs                                       | JavaScript         |         12 |          0 |          5 |         17 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/jest.config.js                                          | JavaScript         |         66 |         18 |         17 |        101 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/jest.setup.js                                           | JavaScript         |        144 |         17 |         18 |        179 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/next.config.ts                                          | TypeScript         |          8 |          1 |          3 |         12 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/package-lock.json                                       | JSON               |     12,397 |          0 |          1 |     12,398 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/package.json                                            | JSON               |         46 |          0 |          1 |         47 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/postcss.config.mjs                                      | JavaScript         |          6 |          1 |          1 |          8 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/src/app/(auth)/login/page.tsx                           | TypeScript JSX     |        161 |          4 |         20 |        185 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/src/app/(auth)/signup/page.tsx                          | TypeScript JSX     |        197 |          9 |         25 |        231 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/src/app/auth/callback/page.tsx                          | TypeScript JSX     |         45 |          2 |          8 |         55 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/src/app/calendar/page.tsx                               | TypeScript JSX     |         93 |          1 |         14 |        108 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/src/app/contacts/[id]/page.tsx                          | TypeScript JSX     |        872 |         26 |         61 |        959 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/src/app/contacts/add/page.tsx                           | TypeScript JSX     |        340 |          3 |         31 |        374 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/src/app/contacts/page.tsx                               | TypeScript JSX     |        373 |          7 |         28 |        408 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/src/app/dashboard/page.tsx                              | TypeScript JSX     |        492 |         22 |         46 |        560 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/src/app/globals.css                                     | PostCSS            |         86 |          9 |         25 |        120 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/src/app/layout.tsx                                      | TypeScript JSX     |         44 |          0 |          6 |         50 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/src/app/page.tsx                                        | TypeScript JSX     |        162 |         12 |         18 |        192 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/src/app/settings/page.tsx                               | TypeScript JSX     |        470 |         11 |         39 |        520 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/src/components/auth/auth-provider.tsx                   | TypeScript JSX     |        146 |          9 |         19 |        174 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/src/components/dashboard/calendar-view.tsx              | TypeScript JSX     |        339 |         18 |         43 |        400 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/src/components/dashboard/yearly-calendar-view.tsx       | TypeScript JSX     |        305 |         14 |         46 |        365 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/src/components/layout/app-layout.tsx                    | TypeScript JSX     |        277 |         31 |         28 |        336 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/src/components/ui/FormField.tsx                         | TypeScript JSX     |         33 |          0 |          3 |         36 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/src/components/ui/LoadingSpinner.tsx                    | TypeScript JSX     |         53 |          0 |          4 |         57 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/src/components/ui/Modal.tsx                             | TypeScript JSX     |         98 |          5 |         11 |        114 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/src/components/ui/StatCard.tsx                          | TypeScript JSX     |         76 |          0 |          5 |         81 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/src/components/ui/Table.tsx                             | TypeScript JSX     |        118 |          0 |          8 |        126 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/src/components/ui/__tests__/Button.test.tsx             | TypeScript JSX     |         86 |          1 |         28 |        115 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/src/components/ui/__tests__/FormField.test.tsx          | TypeScript JSX     |        138 |          0 |         26 |        164 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/src/components/ui/__tests__/Input.test.tsx              | TypeScript JSX     |        114 |          1 |         37 |        152 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/src/components/ui/__tests__/LoadingSpinner.test.tsx     | TypeScript JSX     |         89 |          3 |         30 |        122 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/src/components/ui/__tests__/Modal.test.tsx              | TypeScript JSX     |        149 |          6 |         52 |        207 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/src/components/ui/__tests__/confirmation-modal.test.tsx | TypeScript JSX     |         56 |          2 |         16 |         74 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/src/components/ui/button.tsx                            | TypeScript JSX     |         76 |          4 |          8 |         88 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/src/components/ui/card.tsx                              | TypeScript JSX     |        134 |          3 |         18 |        155 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/src/components/ui/confirmation-modal.tsx                | TypeScript JSX     |         87 |          5 |         11 |        103 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/src/components/ui/index.ts                              | TypeScript         |         11 |          3 |          2 |         16 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/src/components/ui/input.tsx                             | TypeScript JSX     |         54 |          2 |          6 |         62 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/src/components/ui/loading-spinner.tsx                   | TypeScript JSX     |         36 |          0 |          2 |         38 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/src/components/ui/password-input.tsx                    | TypeScript JSX     |         57 |          0 |          7 |         64 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/src/components/ui/textarea.tsx                          | TypeScript JSX     |         47 |          1 |          9 |         57 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/src/components/ui/toast.tsx                             | TypeScript JSX     |         71 |          1 |         13 |         85 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/src/components/ui/toggle.tsx                            | TypeScript JSX     |         85 |          0 |          6 |         91 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/src/hooks/__tests__/useConfirmation.test.ts             | TypeScript         |         81 |          4 |         23 |        108 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/src/hooks/index.ts                                      | TypeScript         |          5 |          1 |          2 |          8 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/src/hooks/useAsync.ts                                   | TypeScript         |         45 |          1 |         10 |         56 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/src/hooks/useConfirmation.ts                            | TypeScript         |         51 |          0 |          6 |         57 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/src/hooks/useDebounce.ts                                | TypeScript         |         30 |          4 |         10 |         44 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/src/hooks/useForm.ts                                    | TypeScript         |        140 |         22 |         31 |        193 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/src/hooks/useLocalStorage.ts                            | TypeScript         |         53 |          9 |         10 |         72 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/src/lib/appwrite/client.ts                              | TypeScript         |         26 |          3 |          7 |         36 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/src/lib/appwrite/helpers.ts                             | TypeScript         |         36 |          3 |          5 |         44 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/src/lib/appwrite/server.ts                              | TypeScript         |         24 |          1 |          7 |         32 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/src/lib/appwrite/types.ts                               | TypeScript         |         62 |          3 |          7 |         72 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/src/lib/services/AuthService.ts                         | TypeScript         |        322 |         37 |         52 |        411 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/src/lib/services/ContactService.ts                      | TypeScript         |        288 |         42 |         48 |        378 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/src/lib/services/GuestService.ts                        | TypeScript         |        365 |          3 |         27 |        395 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/src/lib/services/__tests__/GuestService.test.ts         | TypeScript         |        247 |          6 |         76 |        329 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/src/lib/services/index.ts                               | TypeScript         |         10 |          3 |          3 |         16 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/src/lib/types/api.ts                                    | TypeScript         |         62 |          7 |         11 |         80 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/src/lib/types/components.ts                             | TypeScript         |        116 |         15 |         17 |        148 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/src/lib/types/database.ts                               | TypeScript         |        178 |          0 |          1 |        179 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/src/lib/types/entities.ts                               | TypeScript         |         73 |          4 |          9 |         86 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/src/lib/types/forms.ts                                  | TypeScript         |         60 |          4 |         10 |         74 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/src/lib/types/index.ts                                  | TypeScript         |          6 |          1 |          0 |          7 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/src/lib/types/utilities.ts                              | TypeScript         |        101 |         19 |         22 |        142 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/src/lib/utils/__tests__/async.test.ts                   | TypeScript         |        297 |          2 |         99 |        398 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/src/lib/utils/__tests__/date.test.ts                    | TypeScript         |        239 |          5 |         46 |        290 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/src/lib/utils/__tests__/errors.test.ts                  | TypeScript         |        252 |          0 |         67 |        319 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/src/lib/utils/__tests__/formatting.test.ts              | TypeScript         |        208 |          0 |         40 |        248 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/src/lib/utils/__tests__/storage.test.ts                 | TypeScript         |        216 |          2 |         62 |        280 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/src/lib/utils/__tests__/validation.test.ts              | TypeScript         |        264 |          0 |         46 |        310 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/src/lib/utils/async.ts                                  | TypeScript         |        232 |         12 |         47 |        291 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/src/lib/utils/cn.ts                                     | TypeScript         |          5 |          0 |          1 |          6 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/src/lib/utils/date.ts                                   | TypeScript         |         34 |          0 |          7 |         41 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/src/lib/utils/env.ts                                    | TypeScript         |         24 |         16 |          7 |         47 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/src/lib/utils/errors.ts                                 | TypeScript         |        194 |         17 |         36 |        247 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/src/lib/utils/formatting.ts                             | TypeScript         |        153 |         16 |         32 |        201 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/src/lib/utils/index.ts                                  | TypeScript         |         16 |          8 |          6 |         30 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/src/lib/utils/storage.ts                                | TypeScript         |        199 |          8 |         36 |        243 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/src/lib/utils/validation.ts                             | TypeScript         |        165 |         18 |         28 |        211 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/src/middleware.ts                                       | TypeScript         |         67 |         13 |         18 |         98 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/tailwind.config.js                                      | JavaScript         |         83 |          3 |          1 |         87 |
+| /Users/williamsmith/Documents/GITHUB/FriendlyReminder/tsconfig.json                                           | JSON with Comments |         27 |          0 |          1 |         28 |
+| Total                                                                                                         |                    |     24,294 |        564 |      1,816 |     26,674 |
++---------------------------------------------------------------------------------------------------------------+--------------------+------------+------------+------------+------------+

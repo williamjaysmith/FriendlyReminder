@@ -34,11 +34,11 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(({
         
         // Variant styles
         {
-          'bg-[#fcba28] text-[#231f20] hover:bg-[#fc7428] focus:ring-[#fcba28]/50': variant === 'primary',
-          'bg-[#e0e0e0] text-[#262522] hover:bg-[#d0d0d0] focus:ring-[#e0e0e0]/50': variant === 'secondary',
+          'bg-[#fcba28] text-[#231f20] hover:bg-[#e6a825] focus:ring-[#fcba28]/50': variant === 'primary',
+          'bg-[#e0e0e0] text-[#262522] hover:bg-[#cacaca] focus:ring-[#e0e0e0]/50': variant === 'secondary',
           'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500/50': variant === 'danger',
-          'bg-transparent text-[#262522] hover:bg-[#e0e0e0] focus:ring-[#e0e0e0]/50': variant === 'ghost',
-          'border border-[#ddd] bg-transparent text-[#262522] hover:bg-[#f5f5f5] focus:ring-[#ddd]/50': variant === 'outline'
+          'bg-transparent text-[#262522] hover:bg-[#cacaca] focus:ring-[#e0e0e0]/50': variant === 'ghost',
+          'border border-[#ddd] bg-transparent text-[#262522] hover:bg-[#e8e8e8] focus:ring-[#ddd]/50': variant === 'outline'
         },
         
         // Size styles

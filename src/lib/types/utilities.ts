@@ -104,6 +104,14 @@ export interface AppConfig {
   }
 }
 
+// Query and pagination types
+export interface QueryParams {
+  page?: number
+  limit?: number
+  search?: string
+  sort?: string
+  filter?: Record<string, any>
+}
 // Generic CRUD types
 export interface CrudOperations<T, CreateData = Partial<T>, UpdateData = Partial<T>> {
   create: (data: CreateData) => Promise<T>

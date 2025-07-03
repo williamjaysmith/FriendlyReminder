@@ -35,6 +35,7 @@ export function Toggle({ checked, onChange, label, id, disabled = false }: Toggl
         onClick={handleToggle}
         className={`
           relative inline-flex h-7 w-12 items-center rounded-full transition-all duration-300 ease-in-out
+          flex-shrink-0 min-w-[3rem] min-h-[1.75rem]
           ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
           focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500
         `}
@@ -60,6 +61,7 @@ export function Toggle({ checked, onChange, label, id, disabled = false }: Toggl
         <span
           className={`
             inline-block h-5 w-5 rounded-full transition-all duration-300 ease-in-out
+            flex-shrink-0 min-w-[1.25rem] min-h-[1.25rem]
             transform ${isChecked ? 'translate-x-6' : 'translate-x-1'}
           `}
           style={{

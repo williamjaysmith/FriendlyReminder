@@ -1,55 +1,85 @@
 'use client'
 
-import { useState, useCallback } from 'react'
-import { AsyncState, AsyncAction } from '@/lib/types'
+import { useState, useCallback, useEffect, useRef } from 'react'
 
-// Custom hook for managing async operations
-export function useAsync<T>(
-  initialState: AsyncState<T> = { data: null, loading: false, error: null }
-) {
-  const [state, setState] = useState<AsyncState<T>>(initialState)
+type AsyncStatus = 'idle' | 'loading' | 'success' | 'error'
 
-  const execute = useCallback(async (asyncFn: AsyncAction<T, any>): Promise<T | null> => {
-    setState(prev => ({ ...prev, loading: true, error: null }))
+interface AsyncState<T> {
+  data: T | null
+  error: Error | null
+  status: AsyncStatus
+}
+
+interface AsyncActions {
+  execute: (promiseOrFn: Promise<any> | (() => Promise<any>)) => Promise<any>
+  reset: () => void
+}
+
+interface AsyncReturn<T> extends AsyncState<T>, AsyncActions {
+  isIdle: boolean
+  isLoading: boolean
+  isSuccess: boolean
+  isError: boolean
+}
+
+export function useAsync<T = any>(
+  initialPromise?: Promise<T> | (() => Promise<T>)
+): AsyncReturn<T> {
+  const [state, setState] = useState<AsyncState<T>>({
+    data: null,
+    error: null,
+    status: 'idle'
+  })
+
+  const currentPromiseRef = useRef<Promise<any> | null>(null)
+
+  const execute = useCallback((promiseOrFn: Promise<T> | (() => Promise<T>)) => {
+    setState(prev => ({ ...prev, status: 'loading', error: null }))
     
-    try {
-      const data = await asyncFn()
-      setState({ data, loading: false, error: null })
-      return data
-    } catch (error) {
-      const errorObj = error instanceof Error ? error : new Error(String(error))
-      setState(prev => ({ 
-        ...prev, 
-        loading: false, 
-        error: errorObj
-      }))
-      return null
+    const promise = typeof promiseOrFn === 'function' ? promiseOrFn() : promiseOrFn
+    currentPromiseRef.current = promise
+    
+    promise
+      .then(data => {
+        // Only update state if this is still the current promise
+        if (currentPromiseRef.current === promise) {
+          setState({ data, error: null, status: 'success' })
+        }
+      })
+      .catch(error => {
+        // Only update state if this is still the current promise
+        if (currentPromiseRef.current === promise) {
+          const errorObj = typeof error === 'string' ? error : (error instanceof Error ? error : new Error(String(error)))
+          setState(prev => ({ 
+            ...prev, 
+            error: errorObj as any, 
+            status: 'error'
+          }))
+        }
+      })
+      
+    return promise
+  }, [])
+
+  const reset = useCallback(() => {
+    setState({ data: null, error: null, status: 'idle' })
+  }, [])
+
+  // Execute initial promise if provided
+  useEffect(() => {
+    if (initialPromise) {
+      execute(initialPromise)
     }
-  }, [])
-
-  const reset = useCallback((): void => {
-    setState(initialState)
-  }, [initialState])
-
-  const setData = useCallback((data: T): void => {
-    setState(prev => ({ ...prev, data }))
-  }, [])
-
-  const setError = useCallback((error: Error): void => {
-    setState(prev => ({ ...prev, error, loading: false }))
-  }, [])
-
-  const setLoading = useCallback((loading: boolean): void => {
-    setState(prev => ({ ...prev, loading }))
-  }, [])
+  }, []) // Only run on mount
 
   return {
     ...state,
     execute,
     reset,
-    setData,
-    setError,
-    setLoading
+    isIdle: state.status === 'idle',
+    isLoading: state.status === 'loading',
+    isSuccess: state.status === 'success',
+    isError: state.status === 'error'
   }
 }
 

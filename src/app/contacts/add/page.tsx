@@ -6,10 +6,12 @@ import Link from 'next/link'
 import { useAuth } from '@/components/auth/auth-provider'
 import { databases, ID } from '@/lib/appwrite/client'
 import { DATABASE_ID, COLLECTIONS } from '@/lib/appwrite/types'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
+import Button from '@/components/ui/button'
+import Input from '@/components/ui/input'
+import { Toggle } from '@/components/ui/toggle'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { AppLayout } from '@/components/layout/app-layout'
+import { GuestService } from '@/lib/services/GuestService'
 
 export default function AddContactPage() {
   const { user } = useAuth()
@@ -27,14 +29,30 @@ export default function AddContactPage() {
     work_position: '',
     how_we_met: '',
     interests: '',
-    reminder_days: 30
+    reminder_days: 30,
+    birthday_reminder: true
   })
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const { name, value } = e.target
     setFormData(prev => ({
       ...prev,
       [name]: value
+    }))
+  }
+
+  const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const { name, value } = e.target
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }))
+  }
+
+  const handleToggleChange = (name: string, checked: boolean) => {
+    setFormData(prev => ({
+      ...prev,
+      [name]: checked
     }))
   }
 
@@ -46,28 +64,53 @@ export default function AddContactPage() {
     setError(null)
 
     try {
-      const contactData = {
-        user_id: user.$id,
-        name: formData.name,
-        email: formData.email || undefined,
-        gender: formData.gender || undefined,
-        birthday: formData.birthday || undefined,
-        description: formData.description || undefined,
-        work_company: formData.work_company || undefined,
-        work_position: formData.work_position || undefined,
-        how_we_met: formData.how_we_met || undefined,
-        interests: formData.interests || undefined,
-        reminder_days: formData.reminder_days,
-        birthday_reminder: false,
-        email_reminders: false
-      }
+      const now = new Date()
+      const nextReminderDate = new Date(now.getTime() + formData.reminder_days * 24 * 60 * 60 * 1000)
+      
+      if (user.is_guest) {
+        const guestContactData = {
+          name: formData.name,
+          email: formData.email || undefined,
+          gender: formData.gender || undefined,
+          birthday: formData.birthday || undefined,
+          notes: formData.description || undefined,
+          work_company: formData.work_company || undefined,
+          work_position: formData.work_position || undefined,
+          how_we_met: formData.how_we_met || undefined,
+          interests: formData.interests || undefined,
+          reminder_days: formData.reminder_days,
+          birthday_reminder: formData.birthday_reminder,
+          last_conversation: now.toISOString(),
+          next_reminder: nextReminderDate.toISOString(),
+          social_links: []
+        }
 
-      await databases.createDocument(
-        DATABASE_ID,
-        COLLECTIONS.CONTACTS,
-        ID.unique(),
-        contactData
-      )
+        GuestService.addGuestContact(guestContactData)
+      } else {
+        const contactData = {
+          user_id: user.$id,
+          name: formData.name,
+          email: formData.email || undefined,
+          gender: formData.gender || undefined,
+          birthday: formData.birthday || undefined,
+          description: formData.description || undefined,
+          work_company: formData.work_company || undefined,
+          work_position: formData.work_position || undefined,
+          how_we_met: formData.how_we_met || undefined,
+          interests: formData.interests || undefined,
+          reminder_days: formData.reminder_days,
+          birthday_reminder: formData.birthday_reminder,
+          last_conversation: now.toISOString().split('T')[0], // YYYY-MM-DD format (10 chars)
+          next_reminder: nextReminderDate.toISOString().split('T')[0] // YYYY-MM-DD format (10 chars)
+        }
+
+        await databases.createDocument(
+          DATABASE_ID,
+          COLLECTIONS.CONTACTS,
+          ID.unique(),
+          contactData
+        )
+      }
 
       router.push('/contacts')
     } catch (error: unknown) {
@@ -89,8 +132,8 @@ export default function AddContactPage() {
               </Button>
             </Link>
           </div>
-          <h2 className="text-2xl font-bold mb-2" style={{ color: 'var(--text-primary)' }}>Add New Contact</h2>
-          <p style={{ color: 'var(--text-secondary)' }}>
+          <h2 className="text-2xl font-bold mb-2" style={{ color: '#f9f4da' }}>Add New Contact</h2>
+          <p style={{ color: '#f38ba3' }}>
             Add someone new to your network and set up reminders to stay in touch.
           </p>
         </div>
@@ -112,10 +155,10 @@ export default function AddContactPage() {
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Basic Information */}
               <div className="space-y-4">
-                <h3 className="text-lg font-medium" style={{ color: 'var(--text-primary)' }}>Basic Information</h3>
+                <h3 className="text-lg font-medium" style={{ color: '#231f20' }}>Basic Information</h3>
                 
                 <div>
-                  <label htmlFor="name" className="block text-sm font-medium mb-1" style={{ color: 'var(--text-primary)' }}>
+                  <label htmlFor="name" className="block text-sm font-medium mb-1" style={{ color: '#231f20' }}>
                     Name *
                   </label>
                   <Input
@@ -124,13 +167,13 @@ export default function AddContactPage() {
                     type="text"
                     required
                     value={formData.name}
-                    onChange={handleInputChange}
+                    onChange={(value) => setFormData(prev => ({ ...prev, name: value }))}
                     disabled={loading}
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="email" className="block text-sm font-medium mb-1" style={{ color: 'var(--text-primary)' }}>
+                  <label htmlFor="email" className="block text-sm font-medium mb-1" style={{ color: '#231f20' }}>
                     Email
                   </label>
                   <Input
@@ -138,27 +181,27 @@ export default function AddContactPage() {
                     name="email"
                     type="email"
                     value={formData.email}
-                    onChange={handleInputChange}
+                    onChange={(value) => setFormData(prev => ({ ...prev, email: value }))}
                     disabled={loading}
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label htmlFor="gender" className="block text-sm font-medium mb-1" style={{ color: 'var(--text-primary)' }}>
+                    <label htmlFor="gender" className="block text-sm font-medium mb-1" style={{ color: '#231f20' }}>
                       Gender
                     </label>
                     <select
                       id="gender"
                       name="gender"
                       value={formData.gender}
-                      onChange={handleInputChange}
+                      onChange={handleSelectChange}
                       disabled={loading}
                       className="flex h-10 w-full rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-yellow focus:border-transparent disabled:cursor-not-allowed disabled:opacity-50"
                       style={{ 
-                        border: '1px solid rgba(var(--text-primary-rgb), 0.3)', 
-                        backgroundColor: 'var(--bg-card)', 
-                        color: 'var(--text-primary)' 
+                        border: '1px solid #ddd', 
+                        backgroundColor: '#fefaf0', 
+                        color: '#231f20' 
                       }}
                     >
                       <option value="">Select...</option>
@@ -170,7 +213,7 @@ export default function AddContactPage() {
                   </div>
 
                   <div>
-                    <label htmlFor="birthday" className="block text-sm font-medium mb-1" style={{ color: 'var(--text-primary)' }}>
+                    <label htmlFor="birthday" className="block text-sm font-medium mb-1" style={{ color: '#231f20' }}>
                       Birthday
                     </label>
                     <Input
@@ -178,14 +221,14 @@ export default function AddContactPage() {
                       name="birthday"
                       type="date"
                       value={formData.birthday}
-                      onChange={handleInputChange}
+                      onChange={(value) => setFormData(prev => ({ ...prev, birthday: value }))}
                       disabled={loading}
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label htmlFor="description" className="block text-sm font-medium mb-1" style={{ color: 'var(--text-primary)' }}>
+                  <label htmlFor="description" className="block text-sm font-medium mb-1" style={{ color: '#231f20' }}>
                     Short Description
                   </label>
                   <textarea
@@ -193,13 +236,13 @@ export default function AddContactPage() {
                     name="description"
                     placeholder="Brief description of this person..."
                     value={formData.description}
-                    onChange={handleInputChange}
+                    onChange={handleTextareaChange}
                     disabled={loading}
                     className="flex w-full rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-yellow focus:border-transparent disabled:cursor-not-allowed disabled:opacity-50 min-h-[80px]"
                     style={{ 
-                      border: '1px solid rgba(var(--text-primary-rgb), 0.3)', 
-                      backgroundColor: 'var(--bg-card)', 
-                      color: 'var(--text-primary)' 
+                      border: '1px solid #ddd', 
+                      backgroundColor: '#fefaf0', 
+                      color: '#231f20' 
                     }}
                   />
                 </div>
@@ -207,11 +250,11 @@ export default function AddContactPage() {
 
               {/* Work Information */}
               <div className="space-y-4">
-                <h3 className="text-lg font-medium" style={{ color: 'var(--text-primary)' }}>Work Information</h3>
+                <h3 className="text-lg font-medium" style={{ color: '#231f20' }}>Work Information</h3>
                 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label htmlFor="work_company" className="block text-sm font-medium mb-1" style={{ color: 'var(--text-primary)' }}>
+                    <label htmlFor="work_company" className="block text-sm font-medium mb-1" style={{ color: '#231f20' }}>
                       Company
                     </label>
                     <Input
@@ -219,13 +262,13 @@ export default function AddContactPage() {
                       name="work_company"
                       type="text"
                       value={formData.work_company}
-                      onChange={handleInputChange}
+                      onChange={(value) => setFormData(prev => ({ ...prev, work_company: value }))}
                       disabled={loading}
                     />
                   </div>
 
                   <div>
-                    <label htmlFor="work_position" className="block text-sm font-medium mb-1" style={{ color: 'var(--text-primary)' }}>
+                    <label htmlFor="work_position" className="block text-sm font-medium mb-1" style={{ color: '#231f20' }}>
                       Position
                     </label>
                     <Input
@@ -233,7 +276,7 @@ export default function AddContactPage() {
                       name="work_position"
                       type="text"
                       value={formData.work_position}
-                      onChange={handleInputChange}
+                      onChange={(value) => setFormData(prev => ({ ...prev, work_position: value }))}
                       disabled={loading}
                     />
                   </div>
@@ -242,10 +285,10 @@ export default function AddContactPage() {
 
               {/* Additional Information */}
               <div className="space-y-4">
-                <h3 className="text-lg font-medium" style={{ color: 'var(--text-primary)' }}>Additional Information</h3>
+                <h3 className="text-lg font-medium" style={{ color: '#231f20' }}>Additional Information</h3>
                 
                 <div>
-                  <label htmlFor="how_we_met" className="block text-sm font-medium mb-1" style={{ color: 'var(--text-primary)' }}>
+                  <label htmlFor="how_we_met" className="block text-sm font-medium mb-1" style={{ color: '#231f20' }}>
                     How We Met
                   </label>
                   <Input
@@ -254,13 +297,13 @@ export default function AddContactPage() {
                     type="text"
                     placeholder="Conference, mutual friend, etc."
                     value={formData.how_we_met}
-                    onChange={handleInputChange}
+                    onChange={(value) => setFormData(prev => ({ ...prev, how_we_met: value }))}
                     disabled={loading}
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="interests" className="block text-sm font-medium mb-1" style={{ color: 'var(--text-primary)' }}>
+                  <label htmlFor="interests" className="block text-sm font-medium mb-1" style={{ color: '#231f20' }}>
                     Interests & Notes
                   </label>
                   <textarea
@@ -268,19 +311,19 @@ export default function AddContactPage() {
                     name="interests"
                     placeholder="Their interests, hobbies, things to remember..."
                     value={formData.interests}
-                    onChange={handleInputChange}
+                    onChange={handleTextareaChange}
                     disabled={loading}
                     className="flex w-full rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-yellow focus:border-transparent disabled:cursor-not-allowed disabled:opacity-50 min-h-[80px]"
                     style={{ 
-                      border: '1px solid rgba(var(--text-primary-rgb), 0.3)', 
-                      backgroundColor: 'var(--bg-card)', 
-                      color: 'var(--text-primary)' 
+                      border: '1px solid #ddd', 
+                      backgroundColor: '#fefaf0', 
+                      color: '#231f20' 
                     }}
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="reminder_days" className="block text-sm font-medium mb-1" style={{ color: 'var(--text-primary)' }}>
+                  <label htmlFor="reminder_days" className="block text-sm font-medium mb-1" style={{ color: '#231f20' }}>
                     Reminder Interval (days)
                   </label>
                   <Input
@@ -289,12 +332,25 @@ export default function AddContactPage() {
                     type="number"
                     min="1"
                     max="365"
-                    value={formData.reminder_days}
-                    onChange={handleInputChange}
+                    value={formData.reminder_days.toString()}
+                    onChange={(value) => setFormData(prev => ({ ...prev, reminder_days: parseInt(value) || 0 }))}
                     disabled={loading}
                   />
-                  <p className="text-sm mt-1" style={{ color: 'var(--text-secondary)' }}>
+                  <p className="text-sm mt-1" style={{ color: '#262522' }}>
                     How often you want to be reminded to reach out (default: 30 days)
+                  </p>
+                </div>
+
+                <div>
+                  <Toggle
+                    id="birthday_reminder"
+                    checked={formData.birthday_reminder}
+                    onChange={(checked) => handleToggleChange('birthday_reminder', checked)}
+                    label="Enable birthday reminders"
+                    disabled={loading}
+                  />
+                  <p className="text-sm mt-1" style={{ color: '#262522' }}>
+                    If enabled and this contact has a birthday, it will appear as a special reminder on your dashboard
                   </p>
                 </div>
               </div>

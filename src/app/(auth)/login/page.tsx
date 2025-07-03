@@ -6,11 +6,12 @@ import Link from 'next/link'
 import { account } from '@/lib/appwrite/client'
 import { OAuthProvider } from 'appwrite'
 import { useAuth } from '@/components/auth/auth-provider'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
+import Button from '@/components/ui/button'
+import Input from '@/components/ui/input'
 import { PasswordInput } from '@/components/ui/password-input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { LoadingSpinner } from '@/components/ui/loading-spinner'
+import { AuthService } from '@/lib/services/AuthService'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
@@ -20,14 +21,11 @@ export default function LoginPage() {
   const router = useRouter()
   const { user, loading: authLoading, refreshUser } = useAuth()
 
-  // Debug: Check Appwrite configuration
-  console.log('🔧 Appwrite Endpoint:', process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT)
-  console.log('🔑 Appwrite Project ID:', process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID)
 
   // Redirect if already logged in
   useEffect(() => {
     if (!authLoading && user) {
-      console.log('🔄 User already logged in, redirecting to dashboard...')
+      console.log('🔄 Login page: User detected, redirecting to dashboard')
       router.push('/dashboard')
     }
   }, [user, authLoading, router])
@@ -38,31 +36,11 @@ export default function LoginPage() {
     setError(null)
 
     try {
-      // Clear any existing session first to avoid conflicts
-      try {
-        await account.deleteSession('current')
-        console.log('🧹 Cleared existing session before email login')
-      } catch {
-        // Ignore if no session exists
-      }
-      
-      // Clear stored session data
-      localStorage.removeItem('appwrite-session')
-      document.cookie = `a_session_${process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID}=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT`
-      
-      const session = await account.createEmailPasswordSession(email, password)
-      console.log('✅ Email login session created:', session)
-      
-      // Store session for middleware
-      localStorage.setItem('appwrite-session', session.$id)
-      document.cookie = `a_session_${process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID}=${session.$id}; path=/; SameSite=Lax`
-      
-      // Refresh auth state to pick up the new user
+      await account.createEmailPasswordSession(email, password)
       await refreshUser()
       
       router.push('/dashboard')
     } catch (error: unknown) {
-      console.error('❌ Email login error:', error)
       setError(error instanceof Error ? error.message : 'An error occurred')
     } finally {
       setLoading(false)
@@ -70,36 +48,40 @@ export default function LoginPage() {
   }
 
   const handleGoogleLogin = async () => {
-    console.log('🚀 Google login button clicked')
     setLoading(true)
     setError(null)
 
     try {
-      // Use current origin for redirect URLs
       const siteUrl = window.location.origin
       const successUrl = `${siteUrl}/auth/callback?next=/dashboard`
       const failureUrl = `${siteUrl}/login`
       
-      console.log('📍 Success URL:', successUrl)
-      console.log('📍 Failure URL:', failureUrl)
-      
-      // Mobile debug: Show exact URLs being sent
-      alert(`MOBILE DEBUG:\nProject ID: ${process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID}\nEndpoint: ${process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT}\nSuccess: ${successUrl}\nFailure: ${failureUrl}`)
-
-      // Use proper Appwrite SDK OAuth method
-      console.log('🚀 About to call createOAuth2Session with:', {
-        provider: 'Google',
-        success: successUrl,
-        failure: failureUrl
-      })
-      
-      await account.createOAuth2Session(
+      // Use createOAuth2Token for Safari compatibility (works for all browsers)
+      await account.createOAuth2Token(
         OAuthProvider.Google,
         successUrl,
         failureUrl
       )
     } catch (error: unknown) {
-      console.error('❌ OAuth error:', error)
+      setError(error instanceof Error ? error.message : 'An error occurred')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleGuestLogin = async () => {
+    setLoading(true)
+    setError(null)
+
+    try {
+      console.log('🎭 Starting guest login...')
+      await AuthService.guestLogin()
+      console.log('🎭 Guest login successful, refreshing user...')
+      await refreshUser() // Refresh the auth provider to pick up guest user
+      console.log('🎭 User refreshed, navigating to dashboard...')
+      // Don't use router.push here since the useEffect will handle the redirect
+    } catch (error: unknown) {
+      console.error('🎭 Guest login error:', error)
       setError(error instanceof Error ? error.message : 'An error occurred')
     } finally {
       setLoading(false)
@@ -107,8 +89,8 @@ export default function LoginPage() {
   }
 
 
-  // Show loading while checking authentication
-  if (authLoading) {
+  // Show loading while checking authentication or if already logged in
+  if (authLoading || user) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[var(--background)]">
         <LoadingSpinner />
@@ -138,7 +120,7 @@ export default function LoginPage() {
                 type="email"
                 placeholder="Email address"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={setEmail}
                 required
                 disabled={loading}
               />
@@ -147,7 +129,7 @@ export default function LoginPage() {
               <PasswordInput
                 placeholder="Password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={setPassword}
                 required
                 disabled={loading}
               />
@@ -171,12 +153,22 @@ export default function LoginPage() {
           <div className="space-y-2">
             <Button 
               type="button" 
-              variant="oauth"
+              variant="outline"
               className="w-full"
               onClick={handleGoogleLogin}
               disabled={loading}
             >
               Continue with Google
+            </Button>
+            
+            <Button 
+              type="button" 
+              variant="ghost"
+              className="w-full text-[var(--brand-purple)]"
+              onClick={handleGuestLogin}
+              disabled={loading}
+            >
+              Try as Guest
             </Button>
           </div>
 

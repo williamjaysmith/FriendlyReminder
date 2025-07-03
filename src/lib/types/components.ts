@@ -14,12 +14,13 @@ export interface ButtonProps extends BaseComponentProps {
   disabled?: boolean
   loading?: boolean
   type?: 'button' | 'submit' | 'reset'
+  style?: React.CSSProperties
   onClick?: () => void
 }
 
 // Input component types
 export interface InputProps extends BaseComponentProps {
-  type?: 'text' | 'email' | 'password' | 'number' | 'tel' | 'url'
+  type?: 'text' | 'email' | 'password' | 'number' | 'tel' | 'url' | 'date'
   placeholder?: string
   value?: string
   defaultValue?: string
@@ -29,6 +30,8 @@ export interface InputProps extends BaseComponentProps {
   id?: string
   onChange?: (value: string) => void
   onBlur?: () => void
+  min?: string
+  max?: string
   error?: string
 }
 
@@ -37,6 +40,8 @@ export interface FormFieldProps extends BaseComponentProps {
   label: string
   name: string
   required?: boolean
+  min?: string
+  max?: string
   error?: string
   children: ReactNode
 }

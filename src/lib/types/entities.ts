@@ -15,7 +15,6 @@ export interface Contact {
   reminder_days: number
   next_reminder?: string
   birthday_reminder: boolean
-  email_reminders: boolean
   created_at: string
   updated_at: string
   tags?: Tag[]
@@ -52,6 +51,22 @@ export interface Profile {
   email?: string
   created_at: string
   updated_at: string
+}
+
+export interface User {
+  id: string
+  email: string
+  name?: string
+  created_at: string
+  updated_at: string
+  is_guest?: boolean
+}
+
+export interface ConversationEntry {
+  id: string
+  contact_id: string
+  content: string
+  created_at: string
 }
 
 // Common field unions for type safety

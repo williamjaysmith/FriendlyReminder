@@ -166,13 +166,14 @@ describe('Modal', () => {
   it('should have proper accessibility attributes', () => {
     render(<Modal {...defaultProps} title="Accessible Modal" />)
     
-    const modal = screen.getByText('Modal content').closest('div[role]')
-    // Note: role might be implicitly set by the modal structure
+    const modal = screen.getByRole('dialog')
     expect(modal).toBeInTheDocument()
+    expect(modal).toHaveAttribute('aria-modal', 'true')
+    expect(modal).toHaveAttribute('aria-labelledby', 'modal-title')
     
-    // Check for backdrop
-    const backdrop = screen.getByText('Modal content').closest('div')?.parentElement
-    expect(backdrop).toHaveClass('fixed', 'inset-0', 'z-50')
+    // Check that title has the correct id
+    const title = screen.getByText('Accessible Modal')
+    expect(title).toHaveAttribute('id', 'modal-title')
   })
 
   it('should cleanup event listeners on unmount', () => {

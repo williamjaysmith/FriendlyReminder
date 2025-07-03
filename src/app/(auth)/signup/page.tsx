@@ -6,8 +6,8 @@ import { useRouter } from 'next/navigation'
 import { account, ID } from '@/lib/appwrite/client'
 import { OAuthProvider } from 'appwrite'
 import { useAuth } from '@/components/auth/auth-provider'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
+import Button from '@/components/ui/button'
+import Input from '@/components/ui/input'
 import { PasswordInput } from '@/components/ui/password-input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { LoadingSpinner } from '@/components/ui/loading-spinner'
@@ -164,10 +164,10 @@ export default function SignupPage() {
                 type="text"
                 placeholder="Username"
                 value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                onChange={setUsername}
                 required
                 disabled={loading}
-                style={{ backgroundColor: '#fefaf0' }}
+                className="bg-[#fefaf0]"
               />
             </div>
             <div>
@@ -175,7 +175,7 @@ export default function SignupPage() {
                 type="email"
                 placeholder="Email address"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={setEmail}
                 required
                 disabled={loading}
               />
@@ -184,11 +184,10 @@ export default function SignupPage() {
               <PasswordInput
                 placeholder="Password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={setPassword}
                 required
                 disabled={loading}
-                minLength={6}
-                style={{ backgroundColor: '#fefaf0' }}
+                className="bg-[#fefaf0]"
               />
             </div>
             <Button 
@@ -210,7 +209,7 @@ export default function SignupPage() {
           <div className="space-y-2">
             <Button 
               type="button" 
-              variant="oauth"
+              variant="outline"
               className="w-full"
               onClick={handleGoogleSignup}
               disabled={loading}

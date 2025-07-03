@@ -58,12 +58,7 @@ const customJestConfig = {
     }
   },
   
-  // Transform configuration
-  transform: {
-    '^.+\\.(ts|tsx)$': ['ts-jest', {
-      tsconfig: 'tsconfig.json'
-    }]
-  },
+  // Let Next.js handle transforms
   
   // Module file extensions
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],

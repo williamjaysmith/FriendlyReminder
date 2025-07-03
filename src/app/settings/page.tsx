@@ -6,8 +6,8 @@ import { useAuth } from "@/components/auth/auth-provider";
 import { databases, account } from "@/lib/appwrite/client";
 import { DATABASE_ID, COLLECTIONS } from "@/lib/appwrite/types";
 import { Query } from "appwrite";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import Button from "@/components/ui/button";
+import Input from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/password-input";
 import {
   Card,
@@ -217,13 +217,10 @@ export default function SettingsPage() {
     <AppLayout>
       <main className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
         <div className="mb-8">
-          <h2
-            className="text-2xl font-bold mb-2"
-            style={{ color: "var(--text-primary)" }}
-          >
+          <h2 className="text-2xl font-bold mb-2 text-brand-beige">
             Account Settings
           </h2>
-          <p style={{ color: "var(--text-secondary)" }}>
+          <p className="text-brand-pink">
             Manage your profile and account preferences.
           </p>
         </div>
@@ -277,10 +274,10 @@ export default function SettingsPage() {
                     id="username"
                     type="text"
                     value={profile.username}
-                    onChange={(e) =>
+                    onChange={(value) =>
                       setProfile((prev) => ({
                         ...prev,
-                        username: e.target.value,
+                        username: value,
                       }))
                     }
                     disabled={saving}
@@ -299,8 +296,8 @@ export default function SettingsPage() {
                     id="email"
                     type="email"
                     value={profile.email}
-                    onChange={(e) =>
-                      setProfile((prev) => ({ ...prev, email: e.target.value }))
+                    onChange={(value) =>
+                      setProfile((prev) => ({ ...prev, email: value }))
                     }
                     disabled={saving}
                   />
@@ -343,14 +340,13 @@ export default function SettingsPage() {
                     id="newPassword"
                     placeholder="Enter new password"
                     value={passwordData.newPassword}
-                    onChange={(e) =>
+                    onChange={(value) =>
                       setPasswordData((prev) => ({
                         ...prev,
-                        newPassword: e.target.value,
+                        newPassword: value,
                       }))
                     }
                     disabled={saving}
-                    minLength={6}
                   />
                 </div>
 
@@ -366,14 +362,13 @@ export default function SettingsPage() {
                     id="confirmPassword"
                     placeholder="Confirm new password"
                     value={passwordData.confirmPassword}
-                    onChange={(e) =>
+                    onChange={(value) =>
                       setPasswordData((prev) => ({
                         ...prev,
-                        confirmPassword: e.target.value,
+                        confirmPassword: value,
                       }))
                     }
                     disabled={saving}
-                    minLength={6}
                   />
                 </div>
 
@@ -507,7 +502,7 @@ export default function SettingsPage() {
                     This action cannot be undone.
                   </p>
                   <Button
-                    variant="destructive"
+                    variant="danger"
                     onClick={handleDeleteAccount}
                     disabled={deleting}
                   >

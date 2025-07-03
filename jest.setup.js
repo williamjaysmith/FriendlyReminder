@@ -46,8 +46,9 @@ jest.mock('next/navigation', () => ({
   },
 }))
 
-// Mock window.matchMedia
-Object.defineProperty(window, 'matchMedia', {
+// Mock window.matchMedia (only in jsdom environment)
+if (typeof window !== 'undefined') {
+  Object.defineProperty(window, 'matchMedia', {
   writable: true,
   value: jest.fn().mockImplementation(query => ({
     matches: false,
@@ -60,6 +61,7 @@ Object.defineProperty(window, 'matchMedia', {
     dispatchEvent: jest.fn(),
   })),
 })
+}
 
 // Mock IntersectionObserver
 global.IntersectionObserver = class IntersectionObserver {

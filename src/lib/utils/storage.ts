@@ -8,7 +8,7 @@ export const storage = {
       if (typeof window === 'undefined') return null
       
       try {
-        const item = localStorage.getItem(key)
+        const item = window.localStorage.getItem(key)
         return item ? JSON.parse(item) : null
       } catch (error) {
         console.warn(`Failed to get localStorage item ${key}:`, error)
@@ -20,7 +20,7 @@ export const storage = {
       if (typeof window === 'undefined') return false
       
       try {
-        localStorage.setItem(key, JSON.stringify(value))
+        window.localStorage.setItem(key, JSON.stringify(value))
         return true
       } catch (error) {
         console.warn(`Failed to set localStorage item ${key}:`, error)
@@ -32,7 +32,7 @@ export const storage = {
       if (typeof window === 'undefined') return false
       
       try {
-        localStorage.removeItem(key)
+        window.localStorage.removeItem(key)
         return true
       } catch (error) {
         console.warn(`Failed to remove localStorage item ${key}:`, error)
@@ -44,7 +44,7 @@ export const storage = {
       if (typeof window === 'undefined') return false
       
       try {
-        localStorage.clear()
+        window.localStorage.clear()
         return true
       } catch (error) {
         console.warn('Failed to clear localStorage:', error)
@@ -59,7 +59,7 @@ export const storage = {
       if (typeof window === 'undefined') return null
       
       try {
-        const item = sessionStorage.getItem(key)
+        const item = window.sessionStorage.getItem(key)
         return item ? JSON.parse(item) : null
       } catch (error) {
         console.warn(`Failed to get sessionStorage item ${key}:`, error)
@@ -71,7 +71,7 @@ export const storage = {
       if (typeof window === 'undefined') return false
       
       try {
-        sessionStorage.setItem(key, JSON.stringify(value))
+        window.sessionStorage.setItem(key, JSON.stringify(value))
         return true
       } catch (error) {
         console.warn(`Failed to set sessionStorage item ${key}:`, error)
@@ -83,7 +83,7 @@ export const storage = {
       if (typeof window === 'undefined') return false
       
       try {
-        sessionStorage.removeItem(key)
+        window.sessionStorage.removeItem(key)
         return true
       } catch (error) {
         console.warn(`Failed to remove sessionStorage item ${key}:`, error)
@@ -95,7 +95,7 @@ export const storage = {
       if (typeof window === 'undefined') return false
       
       try {
-        sessionStorage.clear()
+        window.sessionStorage.clear()
         return true
       } catch (error) {
         console.warn('Failed to clear sessionStorage:', error)
@@ -110,7 +110,7 @@ export const storage = {
       if (typeof document === 'undefined') return null
       
       const cookies = document.cookie.split(';')
-      for (let cookie of cookies) {
+      for (const cookie of cookies) {
         const [name, value] = cookie.split('=').map(c => c.trim())
         if (name === key) {
           return decodeURIComponent(value)

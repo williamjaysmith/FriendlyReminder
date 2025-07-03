@@ -30,7 +30,7 @@ function Table<T extends Record<string, any>>({
 
   const handleSelectRow = (row: T, checked: boolean) => {
     if (onSelectionChange) {
-      const currentSelection = [] // This would come from parent component state
+      const currentSelection: T[] = [] // This would come from parent component state
       const newSelection = checked 
         ? [...currentSelection, row]
         : currentSelection.filter(item => item !== row)

@@ -1,6 +1,6 @@
-import { render, screen, fireEvent } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import Input from '../Input'
+import Input from '../input'
 
 describe('Input', () => {
   it('should render with default props', () => {
@@ -18,7 +18,8 @@ describe('Input', () => {
     expect(screen.getByRole('textbox')).toHaveAttribute('type', 'email')
 
     rerender(<Input type="password" />)
-    expect(screen.getByLabelText(/password/i) || screen.getByDisplayValue('')).toHaveAttribute('type', 'password')
+    const passwordInput = document.querySelector('input[type="password"]')
+    expect(passwordInput).toHaveAttribute('type', 'password')
 
     rerender(<Input type="number" />)
     expect(screen.getByRole('spinbutton')).toHaveAttribute('type', 'number')
@@ -28,8 +29,10 @@ describe('Input', () => {
     const { rerender } = render(<Input value="test value" onChange={() => {}} />)
     expect(screen.getByDisplayValue('test value')).toBeInTheDocument()
 
-    rerender(<Input defaultValue="default value" />)
-    expect(screen.getByDisplayValue('default value')).toBeInTheDocument()
+    // Completely re-render with different props
+    rerender(<Input key="different" defaultValue="default value" />)
+    const inputWithDefault = document.querySelector('input[type="text"]') as HTMLInputElement
+    expect(inputWithDefault?.value).toBe('default value')
   })
 
   it('should handle placeholder', () => {

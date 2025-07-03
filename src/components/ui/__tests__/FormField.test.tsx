@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react'
 import FormField from '../FormField'
-import Input from '../Input'
+import Input from '../input'
 
 describe('FormField', () => {
   it('should render label and children', () => {

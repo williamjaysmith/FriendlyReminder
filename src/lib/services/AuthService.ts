@@ -1,7 +1,8 @@
 // Authentication service
-import { Profile, LoginFormData, SignupFormData } from '@/lib/types'
+import { LoginFormData, SignupFormData } from '@/lib/types'
 import { ApiResponse } from '@/lib/types'
-import { createError, errorHandler } from '@/lib/utils'
+import { createError, errorHandler, ValidationError } from '@/lib/utils'
+import { GuestService } from './GuestService'
 
 export interface AuthUser {
   id: string
@@ -19,13 +20,47 @@ export interface AuthSession {
 }
 
 export class AuthService {
+  // Guest login
+  static async guestLogin(): Promise<ApiResponse<AuthSession>> {
+    try {
+      GuestService.initializeGuestMode();
+      const guestUser = GuestService.getGuestUser();
+      
+      if (!guestUser) {
+        throw createError.auth('Failed to initialize guest mode');
+      }
+
+      const session: AuthSession = {
+        user: {
+          id: guestUser.id,
+          email: guestUser.email,
+          name: guestUser.name,
+          emailVerified: true,
+          createdAt: guestUser.created_at
+        },
+        accessToken: 'guest-access-token',
+        refreshToken: 'guest-refresh-token',
+        expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString() // 24 hours
+      };
+
+      return {
+        data: session,
+        success: true,
+        message: 'Guest login successful'
+      };
+    } catch (error) {
+      errorHandler.log(error, { action: 'guestLogin' });
+      throw error;
+    }
+  }
+
   // Login with email and password
   static async login(data: LoginFormData): Promise<ApiResponse<AuthSession>> {
     try {
       // Validate input
       const errors = this.validateLoginData(data)
       if (Object.keys(errors).length > 0) {
-        throw createError.validation('Invalid login data', errors)
+        throw new ValidationError('Invalid login data', errors)
       }
 
       // This would integrate with your actual auth provider (Supabase, Firebase, etc.)
@@ -48,7 +83,7 @@ export class AuthService {
         message: 'Login successful'
       }
     } catch (error) {
-      errorHandler.log(error, { action: 'login', email: data.email })
+      errorHandler.log(error, { action: 'login', metadata: { email: data.email } })
       throw error
     }
   }
@@ -59,7 +94,7 @@ export class AuthService {
       // Validate input
       const errors = this.validateSignupData(data)
       if (Object.keys(errors).length > 0) {
-        throw createError.validation('Invalid signup data', errors)
+        throw new ValidationError('Invalid signup data', errors)
       }
 
       // This would integrate with your actual auth provider
@@ -76,7 +111,7 @@ export class AuthService {
         message: 'Account created successfully. Please check your email to verify your account.'
       }
     } catch (error) {
-      errorHandler.log(error, { action: 'signup', email: data.email })
+      errorHandler.log(error, { action: 'signup', metadata: { email: data.email } })
       throw error
     }
   }
@@ -84,6 +119,11 @@ export class AuthService {
   // Logout
   static async logout(): Promise<ApiResponse<void>> {
     try {
+      // Clear guest data if in guest mode
+      if (GuestService.isGuestMode()) {
+        GuestService.clearGuestData();
+      }
+      
       // This would clear the session from your auth provider
       // Clear local storage, cookies, etc.
       
@@ -101,6 +141,23 @@ export class AuthService {
   // Get current user
   static async getCurrentUser(): Promise<ApiResponse<AuthUser | null>> {
     try {
+      // Check if in guest mode first
+      if (GuestService.isGuestMode()) {
+        const guestUser = GuestService.getGuestUser();
+        if (guestUser) {
+          return {
+            data: {
+              id: guestUser.id,
+              email: guestUser.email,
+              name: guestUser.name,
+              emailVerified: true,
+              createdAt: guestUser.created_at
+            },
+            success: true
+          };
+        }
+      }
+      
       // This would get the current user from your auth provider
       // Check session validity, refresh tokens if needed
       
@@ -150,7 +207,7 @@ export class AuthService {
   static async requestPasswordReset(email: string): Promise<ApiResponse<void>> {
     try {
       if (!email || !this.isValidEmail(email)) {
-        throw createError.validation('Valid email is required')
+        throw createError.validation('email', 'Valid email is required')
       }
 
       // This would send a password reset email via your auth provider
@@ -161,7 +218,7 @@ export class AuthService {
         message: 'Password reset email sent. Please check your inbox.'
       }
     } catch (error) {
-      errorHandler.log(error, { action: 'requestPasswordReset', email })
+      errorHandler.log(error, { action: 'requestPasswordReset', metadata: { email } })
       throw error
     }
   }
@@ -173,11 +230,11 @@ export class AuthService {
   ): Promise<ApiResponse<void>> {
     try {
       if (!token) {
-        throw createError.validation('Reset token is required')
+        throw createError.validation('token', 'Reset token is required')
       }
 
       if (!newPassword || !this.isValidPassword(newPassword)) {
-        throw createError.validation('Password must be at least 8 characters with uppercase, lowercase, and number')
+        throw createError.validation('password', 'Password must be at least 8 characters with uppercase, lowercase, and number')
       }
 
       // This would reset the password via your auth provider
@@ -201,7 +258,7 @@ export class AuthService {
     try {
       // Validate updates
       if (updates.email && !this.isValidEmail(updates.email)) {
-        throw createError.validation('Invalid email address')
+        throw createError.validation('email', 'Invalid email address')
       }
 
       // This would update the user profile via your auth provider
@@ -219,7 +276,7 @@ export class AuthService {
         message: 'Profile updated successfully'
       }
     } catch (error) {
-      errorHandler.log(error, { action: 'updateProfile', userId })
+      errorHandler.log(error, { action: 'updateProfile', metadata: { userId } })
       throw error
     }
   }
@@ -228,7 +285,7 @@ export class AuthService {
   static async verifyEmail(token: string): Promise<ApiResponse<void>> {
     try {
       if (!token) {
-        throw createError.validation('Verification token is required')
+        throw createError.validation('token', 'Verification token is required')
       }
 
       // This would verify the email via your auth provider
@@ -255,7 +312,7 @@ export class AuthService {
         success: true
       }
     } catch (error) {
-      errorHandler.log(error, { action: 'oauthLogin', provider })
+      errorHandler.log(error, { action: 'oauthLogin', metadata: { provider } })
       throw createError.generic(`Failed to initiate ${provider} login`)
     }
   }
@@ -268,7 +325,7 @@ export class AuthService {
   ): Promise<ApiResponse<AuthSession>> {
     try {
       if (!code) {
-        throw createError.validation('Authorization code is required')
+        throw createError.validation('code', 'Authorization code is required')
       }
 
       // This would handle the OAuth callback with your auth provider
@@ -290,7 +347,7 @@ export class AuthService {
         message: 'OAuth login successful'
       }
     } catch (error) {
-      errorHandler.log(error, { action: 'handleOAuthCallback', provider })
+      errorHandler.log(error, { action: 'handleOAuthCallback', metadata: { provider } })
       throw createError.auth('OAuth authentication failed')
     }
   }

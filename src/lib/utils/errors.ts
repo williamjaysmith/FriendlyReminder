@@ -1,3 +1,4 @@
+import React from 'react'
 // Error handling utilities
 import { ApiError, ErrorContext } from '../types'
 
@@ -176,7 +177,7 @@ export function withErrorBoundary<T extends Record<string, any>>(
   return function WrappedComponent(props: T) {
     // This would be implemented with a proper error boundary component
     // For now, just return the original component
-    return Component(props)
+    return React.createElement(Component, props)
   }
 }
 

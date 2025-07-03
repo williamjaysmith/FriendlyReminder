@@ -4,7 +4,7 @@ import { useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { cn } from '@/lib/utils'
 import { ModalProps } from '@/lib/types'
-import Button from './Button'
+import Button from './button'
 
 const Modal = ({
   isOpen,
@@ -61,6 +61,9 @@ const Modal = ({
       
       {/* Modal */}
       <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={title ? 'modal-title' : undefined}
         className={cn(
           'relative w-full rounded-lg bg-white shadow-lg',
           sizeClasses[size],
@@ -71,7 +74,7 @@ const Modal = ({
         {(title || !preventClosing) && (
           <div className="flex items-center justify-between p-6 border-b border-[#ddd]">
             {title && (
-              <h2 className="text-lg font-semibold text-[#262522]">
+              <h2 id="modal-title" className="text-lg font-semibold text-[#262522]">
                 {title}
               </h2>
             )}

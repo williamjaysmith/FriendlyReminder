@@ -6,6 +6,9 @@ module.exports = {
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   darkMode: "class",
+  corePlugins: {
+    preflight: true, // Ensure Tailwind's CSS reset is enabled
+  },
   theme: {
     extend: {
       screens: {
@@ -17,6 +20,7 @@ module.exports = {
           coal: "#0f0d0e",
           charcoal: "#231f20",
           gray: "#262522",
+          lightgray: "#4a453f",
           yellow: "#fcba28",
           pink: "#f38ba3",
           green: "#0ba95b",
@@ -24,7 +28,7 @@ module.exports = {
           beige: "#f9f4da",
           blue: "#12b5e5",
           orange: "#fc7428",
-          red: "#ed203d",
+          red: "#E4405F",
           white: "#ffffff",
         },
         // Semantic color system for light/dark mode

@@ -1,3 +1,7 @@
+// Import services first
+import { ContactService } from './ContactService'
+import { AuthService } from './AuthService'
+
 // Re-export all services for easy importing
 export { ContactService } from './ContactService'
 export { AuthService } from './AuthService'

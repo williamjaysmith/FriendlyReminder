@@ -2,9 +2,10 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { localStorage } from '@/lib/utils'
+import { StorageValue } from '@/lib/types'
 
 // Custom hook for localStorage with React state synchronization
-export function useLocalStorage<T>(
+export function useLocalStorage<T extends StorageValue>(
   key: string,
   initialValue: T
 ): [T, (value: T | ((prev: T) => T)) => void, () => void] {

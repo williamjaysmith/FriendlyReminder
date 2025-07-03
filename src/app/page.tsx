@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useAuth } from '@/components/auth/auth-provider'
-import { Button } from '@/components/ui/button'
+import Button from '@/components/ui/button'
 import { LoadingSpinner } from '@/components/ui/loading-spinner'
 import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 
@@ -59,12 +59,12 @@ export default function Home() {
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <Link href="/signup">
-                <Button variant="secondary" size="xl" className="min-w-[200px]">
+                <Button variant="secondary" size="lg" className="min-w-[200px]">
                   Start Building Connections
                 </Button>
               </Link>
               <Link href="/login">
-                <Button variant="outline" size="xl" className="min-w-[160px] border-[#f9f4da] text-[#f9f4da] hover:bg-[#f9f4da] hover:text-[#231f20]">
+                <Button variant="outline" size="lg" className="min-w-[160px] border-[#f9f4da] text-[#f9f4da] hover:bg-[#f9f4da] hover:text-[#231f20]">
                   Sign In
                 </Button>
               </Link>

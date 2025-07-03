@@ -11,7 +11,6 @@ export interface ContactFormData {
   interests: string
   reminder_days: number
   birthday_reminder: boolean
-  email_reminders: boolean
 }
 
 export interface ProfileFormData {

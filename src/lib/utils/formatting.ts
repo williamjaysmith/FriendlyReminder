@@ -20,11 +20,11 @@ export const formatting = {
       return localDate.toLocaleDateString()
     }
     
-    const options: Intl.DateTimeFormatOptions = {
-      short: { dateStyle: 'short' },
-      medium: { dateStyle: 'medium' },
-      long: { dateStyle: 'long' },
-      full: { dateStyle: 'full' },
+    const options: Intl.DateTimeFormatOptions | undefined = {
+      short: { dateStyle: 'short' as const },
+      medium: { dateStyle: 'medium' as const },
+      long: { dateStyle: 'long' as const },
+      full: { dateStyle: 'full' as const },
       iso: undefined
     }[format]
     
@@ -186,7 +186,7 @@ export const formatting = {
 }
 
 // Commonly used format functions
-export const formatDate = formatting.date
+export const formatDateFormatted = formatting.date
 export const formatRelativeTime = formatting.relativeTime
 export const formatNumber = formatting.number
 export const formatCurrency = formatting.currency

@@ -11,67 +11,23 @@ function AuthCallbackContent() {
 
   useEffect(() => {
     const handleAuthCallback = async () => {
-      console.log('🔄 Auth callback page loaded')
-      console.log('🔗 Current URL:', window.location.href)
-      console.log('📝 Search params:', Object.fromEntries(searchParams.entries()))
-
-      // Check if we have OAuth parameters
       const userId = searchParams.get('userId')
       const secret = searchParams.get('secret')
       
-      console.log('🔑 OAuth params:', { userId, secret: secret ? '***' : null })
-      
-      // Mobile debug: Show OAuth parameters
-      if (!userId || !secret) {
-        alert(`MOBILE DEBUG: Missing OAuth params - userId: ${!!userId}, secret: ${!!secret}`)
-      }
-
-      try {
-        // If we have OAuth session parameters, create the session
-        if (userId && secret) {
-          console.log('🔐 Creating OAuth session...')
+      // Fast-track: If we have OAuth params, redirect immediately with minimal processing
+      if (userId && secret) {
+        try {
           await account.createSession(userId, secret)
-          console.log('✅ OAuth session created successfully')
-        }
-
-        // Now get the user
-        console.log('🎯 Getting user session...')
-        const user = await account.get()
-        
-        console.log('📊 User data:', user)
-        
-        if (user) {
-          console.log('✅ User authenticated! Email:', user.email)
-          
-          // Store session for middleware after OAuth
-          try {
-            const session = await account.getSession('current')
-            console.log('💾 OAuth: Storing session for middleware...')
-            localStorage.setItem('appwrite-session', session.$id)
-            document.cookie = `a_session_${process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID}=${session.$id}; path=/; SameSite=Lax`
-          } catch (sessionError) {
-            console.log('⚠️ OAuth: Could not get session details:', sessionError)
-          }
-          
-          // Get the intended redirect destination
           const next = searchParams.get('next') || '/dashboard'
-          console.log('🚀 Redirecting to:', next)
-          router.push(next)
-        } else {
-          console.log('❌ No user found')
-          alert('MOBILE DEBUG: No user found after OAuth')
-          setTimeout(() => {
-            router.push('/login?error=' + encodeURIComponent('Authentication failed'))
-          }, 3000)
+          window.location.href = next
+          return
+        } catch (error: any) {
+          console.error('Session creation error:', error)
         }
-      } catch (error) {
-        console.error('💥 Unexpected callback error:', error)
-        // Mobile debug: show error instead of redirecting immediately
-        alert(`MOBILE DEBUG ERROR: ${error}`)
-        setTimeout(() => {
-          router.push('/login?error=' + encodeURIComponent('Authentication failed'))
-        }, 5000)
       }
+      
+      // Fallback: redirect to login with error
+      router.push('/login?error=' + encodeURIComponent('Authentication failed'))
     }
 
     handleAuthCallback()
@@ -80,8 +36,7 @@ function AuthCallbackContent() {
   return (
     <div className="min-h-screen flex items-center justify-center" style={{backgroundColor: 'var(--bg-main)'}}>
       <div className="text-center">
-        <div className="text-red-500 font-bold mb-4">MOBILE DEBUG - CALLBACK PAGE LOADED</div>
-        <LoadingSpinner showText={true} text="Completing sign in..." />
+        <LoadingSpinner showText={true} text="Redirecting..." />
       </div>
     </div>
   )

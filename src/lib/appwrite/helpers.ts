@@ -18,7 +18,6 @@ export function mapDocumentToContact(doc: ContactDocument): Contact {
     reminder_days: doc.reminder_days,
     next_reminder: doc.next_reminder,
     birthday_reminder: doc.birthday_reminder,
-    email_reminders: doc.email_reminders,
     created_at: doc.$createdAt,
     updated_at: doc.$updatedAt
   }

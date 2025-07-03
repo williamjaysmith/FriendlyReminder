@@ -1,20 +1,37 @@
 'use client'
 
-import { useState, forwardRef, InputHTMLAttributes } from 'react'
+import { useState, forwardRef } from 'react'
 import { cn } from '@/lib/utils/cn'
+import { InputProps } from '@/lib/types'
 
-type PasswordInputProps = Omit<InputHTMLAttributes<HTMLInputElement>, 'type'>
+type PasswordInputProps = Omit<InputProps, 'type'>
 
 const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
-  ({ className, ...props }, ref) => {
+  ({ className, placeholder, value, defaultValue, disabled = false, required = false, name, id, onChange, onBlur, error, ...props }, ref) => {
     const [showPassword, setShowPassword] = useState(false)
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (onChange) {
+        onChange(e.target.value)
+      }
+    }
 
     return (
       <div className="relative">
         <input
           type={showPassword ? 'text' : 'password'}
+          id={id}
+          name={name}
+          placeholder={placeholder}
+          value={value}
+          defaultValue={defaultValue}
+          disabled={disabled}
+          required={required}
+          onChange={handleChange}
+          onBlur={onBlur}
           className={cn(
-            'flex h-10 w-full rounded-md border border-[#231f20] bg-[#fefaf0] !bg-[#fefaf0] px-3 py-2 pr-10 text-sm text-[#231f20] placeholder:text-[#262522] focus:outline-none focus:ring-2 focus:ring-[#fcba28] focus:border-[#fcba28] focus:shadow-[0_0_0_2px_#fcba28] disabled:cursor-not-allowed disabled:opacity-50 [&:focus]:!outline-none [&:focus]:!ring-2 [&:focus]:!ring-[#fcba28]',
+            'flex h-10 w-full rounded-md border border-[#231f20] bg-[#fefaf0] px-3 py-2 pr-10 text-sm text-[#231f20] placeholder:text-[#262522] focus:outline-none focus:ring-2 focus:ring-[#fcba28] focus:border-[#fcba28] focus:shadow-[0_0_0_2px_#fcba28] disabled:cursor-not-allowed disabled:opacity-50',
+            error && 'border-red-500 focus:ring-red-500',
             className
           )}
           ref={ref}
