@@ -1,4 +1,10 @@
-# Friendly Reminder 📱
+# Friendly Reminder 
+
+https://friendly-reminder-sage.vercel.app/dashboard
+
+
+
+
 
 Your personal CRM to stay connected with the people you meet. A hybrid of a contact manager, Anki flashcards, and a personal assistant.
 
